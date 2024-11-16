@@ -43,6 +43,26 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     def update(self):
         # probably make a move function and within it handle keys
         self.handle_keys()
+
+        self.animate()
+        #add gravity
+        
+
+    def jump(self):
+        if(self.is_doubleJump):
+            self.is_doubleJump = False #fake code, TODO: Implement double jump and call it
+        else:
+            self.jumping = True
+        self.is_airborn = True
+        #reset current sprite and make it the fist jump
+        self.current_sprite = 0
+        self.image = self.jumpSprites[self.current_sprite]
+
+
+    def move_ip(self, x, y):
+        self.pos
+
+    def animate(self):
         if(self.is_airborn):
             if(self.jumping and self.current_sprite >= 5):
                 self.jumping = False
@@ -59,23 +79,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             self.image = self.runSprites[self.current_sprite]
             
         self.image = pygame.transform.scale(self.image, (90, 80)) 
-
-    def jump(self):
-        if(self.is_doubleJump):
-            self.is_doubleJump = False #fake code, TODO: Implement double jump and call it
-        else:
-            self.jumping = True
-        self.is_airborn = True
-        #reset current sprite and make it the fist jump
-        self.current_sprite = 0
-        self.image = self.jumpSprites[self.current_sprite]
-
-
-    def move_ip(self, x, y):
-        self.pos
-
-    #def land(self):
-
 
     def __spritify(self):
         # Set run Sprites
