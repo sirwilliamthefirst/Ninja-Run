@@ -105,5 +105,5 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def drag(self):
         if(not self.is_airborn):
-            self.pos_x += 0.2
+            self.pos_x += -0.2
 
