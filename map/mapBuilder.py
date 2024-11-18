@@ -1,9 +1,13 @@
 import pygame, sys, os, random
 from perlin_noise import PerlinNoise
 
+PLATFORM_WIDTH = 75 #32
+PLATFORM_HEIGHT = 12 #4
+GENERATIONALGO = "random"
+
 
 class MapBuilder():
-    def __init__(self, screen_width, screen_height, grid_x_units, num_of_paths):
+    def __init__(self, screen_width, screen_height, grid_x_units, num_of_paths, player):
         self.path_list = []
         self.num_of_paths = num_of_paths
         self.mypath = os.path.dirname(os.path.realpath( __file__ ))
@@ -20,7 +24,8 @@ class MapBuilder():
 
         #seedTile = random.randint(0, 2**32 - 1)
         self.height_functions = []
-        self.generateRandom()
+        GENERATION[GENERATIONALGO](self, player)
+        #self.generateRandom(player)
 
     def update(self):
         #append to end of list using 
@@ -34,7 +39,7 @@ class MapBuilder():
                 if random.random() >  0.85:  # Adjust this threshold for more/less platforms
                     y_pos = random.randint(50, self.screen_height - 100)
 
-                    img = pygame.transform.scale(self.tile_img, (32, 4))  # Flexible tile size
+                    img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
                     img_rect = img.get_rect()
                     img_rect.x = self.screen_width
                     img_rect.y = y_pos
@@ -50,6 +55,14 @@ class MapBuilder():
         for path in self.path_list:
             for tile in path:
                 screen.blit(tile[0], tile[1])
+
+    def get_map(self):
+        tile_list_all = []
+        for tile_list in self.path_list:
+            for tile in tile_list:
+                tile_list_all.append(tile)
+        return tile_list_all
+            
 
     def generatePerlin(self):
         for i in range(self.num_of_paths):
@@ -71,7 +84,7 @@ class MapBuilder():
                 y_pos += random.randint(-50,50) #add more randomness
                  # Decide whether to place a platform (using noise threshold)
                 if normalized_val > random.uniform(0.2, 0.4):  # Adjust this threshold for more/less platforms
-                    img = pygame.transform.scale(self.tile_img, (32, 4))  # Flexible tile size
+                    img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
                     img_rect = img.get_rect()
                     img_rect.x = x
                     img_rect.y = y_pos
@@ -83,18 +96,29 @@ class MapBuilder():
              # Append the generated path to path_list
             self.path_list.append(tile_list)
 
-    def generateRandom(self):
+    def generateRandom(self, player):
 
         #tileNoise = PerlinNoise(octaves=3, seed=seedTile)
+        player_tile_made = False
         for p in range(self.num_of_paths):
             tile_list = []
+            if not player_tile_made:
+                img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
+                img_rect = img.get_rect()
+                img_rect.x = player.rect.centerx
+                img_rect.y = player.rect.bottom
+
+                # Add tile to the list
+                tile = [img, img_rect]
+                tile_list.append(tile)
+                player_tile_made = True
             for i in range(self.grid_x_units):
                 x = i * self.unit_size
                
                 if random.random() >  0.85:  # Adjust this threshold for more/less platforms
                     y_pos = random.randint(50, self.screen_height - 100)
 
-                    img = pygame.transform.scale(self.tile_img, (32, 4))  # Flexible tile size
+                    img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
                     img_rect = img.get_rect()
                     img_rect.x = x
                     img_rect.y = y_pos
@@ -105,3 +129,8 @@ class MapBuilder():
                     tile_list.append(tile)
              # Append the generated path to path_list
             self.path_list.append(tile_list)
+
+GENERATION = {
+    "perlin": MapBuilder.generatePerlin,
+    "random": MapBuilder.generateRandom
+}

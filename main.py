@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, tools
 from player import *
 from map import *
 from pygame.locals import *
@@ -26,7 +26,7 @@ moving_sprites.add(player1)
 
 
 #get map
-map = MapBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, GRID_UNITS_X, 3) 
+map = MapBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, GRID_UNITS_X, 3, player1) 
 
 # Timing
 map_update_interval = 10  # Update every 500ms (0.5 seconds)
@@ -45,14 +45,15 @@ while run:
     moving_sprites.draw(screen)
     if current_time - last_map_update > map_update_interval:
         map.update()
+        tools.collisionHandler.handle_verticle_collision(player1, map.get_map())
+        player1.handle_move()
         player1.drag()
         last_map_update = current_time
     
     map.draw(screen)
+    #pygame.draw.rect(screen, (255, 255, 255), player1.rect)
     #draw_grid()
-    
-    player1.handle_keys()
-    
+        
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
