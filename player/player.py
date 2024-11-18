@@ -5,9 +5,10 @@ BASE_SPEED = 3
 MAX_SPEED = 3
 GRAVITY = 0.2
 AIRBORN_SHIFT = 0.15
-JUMP = -8
+JUMP = -6
 VERTICLE_SHIFT = 0.1 #MAybe seperate into up direction and down direction
-
+SPRITE_WIDTH = 50   # use a proportion calculator to change please ratio is 90/80
+SPRITE_HEIGHT = 44
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
     def __init__(self, pos_x, pos_y):
@@ -21,7 +22,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.is_doubleJump = False
         self.current_sprite = 0
         self.image = self.runSprites[self.current_sprite] #init as running
-        self.image = pygame.transform.scale(self.image, (90, 80)) 
+        self.image = pygame.transform.scale(self.image, (SPRITE_WIDTH, SPRITE_HEIGHT)) 
         self.rect = self.image.get_rect()
 
         #set position and keep track
@@ -111,7 +112,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
                 self.current_sprite = 0
             self.image = self.runSprites[self.current_sprite]
             
-        self.image = pygame.transform.scale(self.image, (90, 80)) 
+        self.image = pygame.transform.scale(self.image, (SPRITE_WIDTH, SPRITE_HEIGHT))  
 
     def __spritify(self):
         # Set run Sprites
