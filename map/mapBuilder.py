@@ -1,8 +1,9 @@
 import pygame, sys, os, random
-from perlin_noise import PerlinNoise
+# from perlin_noise import PerlinNoise
 
 PLATFORM_WIDTH = 75 #32
 PLATFORM_HEIGHT = 12 #4
+PLATFORM_PROBABILITY = 0.85 #Threshhold for random num generator to determine number of platforms
 GENERATIONALGO = "random"
 
 
@@ -36,7 +37,7 @@ class MapBuilder():
                     tile_list.remove(tile)
             #add new tiles        
             if self.update_count >= self.unit_size:
-                if random.random() >  0.85:  # Adjust this threshold for more/less platforms
+                if random.random() > PLATFORM_PROBABILITY:  # Adjust this threshold for more/less platforms
                     y_pos = random.randint(50, self.screen_height - 100)
 
                     img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
@@ -64,6 +65,7 @@ class MapBuilder():
         return tile_list_all
             
 
+    #DON'T CALL
     def generatePerlin(self):
         for i in range(self.num_of_paths):
             seedHeight = random.randint(0, 2**32 - 1)

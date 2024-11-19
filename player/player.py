@@ -1,9 +1,11 @@
 import pygame, sys, os
 
 
+
 BASE_SPEED = 3
 MAX_SPEED = 3
 GRAVITY = 0.2
+MAX_GRAVITY = 5 #Fastest Acceleration Speed (Downwards)
 AIRBORN_SHIFT = 0.15
 JUMP = -6
 DRAG_SPEED = 0.5
@@ -11,6 +13,7 @@ FALL_THRU_TOLERENCE = 0.5 #How much the player must move down on joystick to con
 VERTICLE_SHIFT = 0.1 #Maybe seperate into up direction and down direction
 SPRITE_WIDTH = 50   # use a proportion calculator to change please ratio is 90/80
 SPRITE_HEIGHT = 44
+
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
     def __init__(self, pos_x, pos_y, joystick = None):
@@ -103,7 +106,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def handle_gravity(self):
         if self.is_airborn:
-            if self.y_vel < 5:
+            if self.y_vel < MAX_GRAVITY:
                 self.y_vel += GRAVITY
 
         
