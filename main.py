@@ -18,10 +18,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Ninja Run')
 clock = pygame.time.Clock()
 
+#look for joysticks
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
 #create sprites and groups
 moving_sprites = pygame.sprite.Group()
-player1 = Player(SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
+player1 = Player(SCREEN_WIDTH/2,SCREEN_HEIGHT/2, joysticks[0] if joysticks and joysticks[0] else None)
 moving_sprites.add(player1)
 
 

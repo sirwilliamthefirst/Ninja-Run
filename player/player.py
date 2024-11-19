@@ -1,22 +1,26 @@
 import pygame, sys, os
 
 
-BASE_SPEED = 3  #Speed on Branch
-MAX_SPEED = 3   #Max Speed in Air
-GRAVITY = 0.2   #Acceleration Speed (Downwards)
+
+BASE_SPEED = 3
+MAX_SPEED = 3
+GRAVITY = 0.2
 MAX_GRAVITY = 5 #Fastest Acceleration Speed (Downwards)
-AIRBORN_SHIFT = 0.15    #Horizontal Acceleration per Frame (Bounded by Max Speed)
-JUMP = -6   #Jump Height
-DRAG_SPEED = 0.5    #Branch Drag back speed
-VERTICLE_SHIFT = 0.1 #Vertical Acceleration per Frame modifier #Maybe seperate into up direction and down direction
-SPRITE_WIDTH = 50   #Sprite character Size # use a proportion calculator to change please ratio is 90/80
-SPRITE_HEIGHT = 44  #Sprite character Size
+AIRBORN_SHIFT = 0.15
+JUMP = -6
+DRAG_SPEED = 0.5
+FALL_THRU_TOLERENCE = 0.5 #How much the player must move down on joystick to constitute a fall thru
+VERTICLE_SHIFT = 0.1 #Maybe seperate into up direction and down direction
+SPRITE_WIDTH = 50   # use a proportion calculator to change please ratio is 90/80
+SPRITE_HEIGHT = 44
+
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
-    def __init__(self, pos_x, pos_y):
+    def __init__(self, pos_x, pos_y, joystick = None):
         super().__init__()
         # Find our path
         self.mypath = os.path.dirname(os.path.realpath( __file__ ))
+        self.joystick = joystick
         # Get the sprites
         self.__spritify()
         self.is_airborn = False
@@ -26,19 +30,56 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.image = self.runSprites[self.current_sprite] #init as running
         self.image = pygame.transform.scale(self.image, (SPRITE_WIDTH, SPRITE_HEIGHT)) 
         self.rect = self.image.get_rect()
-
+        self.fall_thru = False
         #set position and keep track
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.y_vel = 0
         self.x_vel = 0
         self.rect.topleft = [pos_x, pos_y]
+        
 
     def handle_move(self):
-        key = pygame.key.get_pressed()
         if not self.is_airborn:
             self.x_vel = 0
             self.y_vel = 0
+        if(self.joystick):
+            self.handle_joystick()
+        else:
+            self.handle_keys()
+
+        self.handle_gravity()
+
+        self.pos_x += self.x_vel
+        self.pos_y += self.y_vel
+        self.rect.topleft = [self.pos_x, self.pos_y]
+
+    def handle_joystick(self):
+        x_axis = self.joystick.get_axis(0) #left negative right pos
+        y_axis = self.joystick.get_axis(1)
+
+        if self.is_airborn and ((x_axis > 0 and self.x_vel < MAX_SPEED) or (x_axis < 0 and self.x_vel > -MAX_SPEED)):
+            self.x_vel += AIRBORN_SHIFT * x_axis
+        elif(not self.is_airborn):
+                self.x_vel += BASE_SPEED * x_axis
+
+        if self.joystick.get_button(0):
+            self.jump()
+
+        if y_axis < 0:
+            if self.is_airborn:
+                self.y_vel += VERTICLE_SHIFT * y_axis
+        if y_axis > 0:
+            if self.is_airborn:
+                self.y_vel += VERTICLE_SHIFT * abs(y_axis)
+            if y_axis > FALL_THRU_TOLERENCE: #some tolerance, so player must really press on joystick
+                    self.fall_thru = True
+                    self.is_airborn = True #drop from platform
+            else:
+                self.fall_thru = False    
+
+    def handle_keys(self):
+        key = pygame.key.get_pressed()
         if key[pygame.K_RIGHT]:
             if self.is_airborn and self.x_vel < MAX_SPEED:
                 self.x_vel += AIRBORN_SHIFT
@@ -51,19 +92,17 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
                 self.x_vel += -BASE_SPEED
         if key[pygame.K_SPACE]:
             self.jump()
+        if key[pygame.K_UP]:
+            if self.is_airborn:
+                self.y_vel += -VERTICLE_SHIFT
         if key[pygame.K_DOWN]:
+            self.fall_thru = True
             if self.is_airborn:
                 self.y_vel += VERTICLE_SHIFT
             else:
                 self.is_airborn = True #drop from platform
-        if key[pygame.K_UP]:
-            if self.is_airborn:
-                self.y_vel -= VERTICLE_SHIFT
-        self.handle_gravity()
-
-        self.pos_x += self.x_vel
-        self.pos_y += self.y_vel
-        self.rect.topleft = [self.pos_x, self.pos_y]
+        else:
+            self.fall_thru = False    
 
     def handle_gravity(self):
         if self.is_airborn:
@@ -154,3 +193,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def fall(self):
         self.is_airborn = True
+    
+    def get_fall_thru(self):
+        return self.fall_thru
