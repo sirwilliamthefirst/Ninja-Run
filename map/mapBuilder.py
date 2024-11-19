@@ -1,9 +1,12 @@
 import pygame, sys, os, random
+import math
 # from perlin_noise import PerlinNoise
 
 PLATFORM_WIDTH = 75 #32
 PLATFORM_HEIGHT = 12 #4
 PLATFORM_PROBABILITY = 0.85 #Threshhold for random num generator to determine number of platforms
+
+BACKGROUND_IMAGE_DIMENSIONS = [928, 600] #Width and Height of background image file, used for moving background
 GENERATIONALGO = "random"
 
 
@@ -18,10 +21,15 @@ class MapBuilder():
         self.unit_size = screen_width/grid_x_units
         self.update_count = 0
         self.freq = 0.05
+        self.background_position = 0
         #load images
         
         #initialize the world
         self.tile_img = pygame.image.load((os.path.join(self.mypath, 'img/tile.png')))
+        self.background_img = pygame.image.load((os.path.join(self.mypath, 'img/background.png')))
+
+        #Calculate number of background tiles needed
+        self.num_background_tiles = math.ceil(self.screen_width / BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
 
         #seedTile = random.randint(0, 2**32 - 1)
         self.height_functions = []
@@ -53,9 +61,21 @@ class MapBuilder():
       
 
     def draw(self, screen):
+        #Render the background tiles
+        i = 0
+        while(i < self.num_background_tiles): 
+            screen.blit(self.background_img, [self.background_position+i*BACKGROUND_IMAGE_DIMENSIONS[0], 0]) 
+            i += 1
+
         for path in self.path_list:
             for tile in path:
                 screen.blit(tile[0], tile[1])
+
+        self.background_position -= 1
+
+        #Reset background counter when tile reaches end of screen
+        if abs(self.background_position) >= BACKGROUND_IMAGE_DIMENSIONS[0]:
+            self.background_position = 0
 
     def get_map(self):
         tile_list_all = []
