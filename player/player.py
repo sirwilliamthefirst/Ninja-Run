@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.image = self.runSprites[self.current_sprite] #init as running
         self.image = pygame.transform.scale(self.image, (SPRITE_WIDTH, SPRITE_HEIGHT)) 
         self.rect = self.image.get_rect()
-
+        self.fall_thru = False
         #set position and keep track
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -50,14 +50,17 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
                 self.x_vel += -BASE_SPEED
         if key[pygame.K_SPACE]:
             self.jump()
+        if key[pygame.K_UP]:
+            if self.is_airborn:
+                self.y_vel -= VERTICLE_SHIFT
         if key[pygame.K_DOWN]:
+            self.fall_thru = True
             if self.is_airborn:
                 self.y_vel += VERTICLE_SHIFT
             else:
                 self.is_airborn = True #drop from platform
-        if key[pygame.K_UP]:
-            if self.is_airborn:
-                self.y_vel -= VERTICLE_SHIFT
+        else:
+            self.fall_thru = False
         self.handle_gravity()
 
         self.pos_x += self.x_vel
@@ -153,3 +156,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def fall(self):
         self.is_airborn = True
+    
+    def get_fall_thru(self):
+        return self.fall_thru

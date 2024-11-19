@@ -33,7 +33,7 @@ class collisionHandler():
             # Check if the player is falling and intersecting with the top of the tile
             if player.rect.bottom <= tile[1].top and player.rect.bottom + dy >= tile[1].top and player.rect.right >= tile[1].left and player.rect.left <= tile[1].right :
                 if dy >= 0:  # Only check for collisions if the player is moving downwards
-                    if key[pygame.K_DOWN]:
+                    if player.get_fall_thru():
                         # Allow player to drop through the tile when pressing the down key
                         continue
                     # Land on the tile
