@@ -6,6 +6,7 @@ MAX_SPEED = 3
 GRAVITY = 0.2
 AIRBORN_SHIFT = 0.15
 JUMP = -6
+DRAG_SPEED = 0.5
 VERTICLE_SHIFT = 0.1 #MAybe seperate into up direction and down direction
 SPRITE_WIDTH = 50   # use a proportion calculator to change please ratio is 90/80
 SPRITE_HEIGHT = 44
@@ -142,7 +143,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def drag(self):
         if(not self.is_airborn):
-            self.pos_x += -0.2
+            self.pos_x += -DRAG_SPEED
 
     def get_dy(self):
         return self.y_vel
