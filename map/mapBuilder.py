@@ -1,5 +1,5 @@
 import pygame, sys, os, random
-from perlin_noise import PerlinNoise
+# from perlin_noise import PerlinNoise
 
 PLATFORM_WIDTH = 75 #32
 PLATFORM_HEIGHT = 12 #4
@@ -64,6 +64,7 @@ class MapBuilder():
         return tile_list_all
             
 
+    #DON'T CALL
     def generatePerlin(self):
         for i in range(self.num_of_paths):
             seedHeight = random.randint(0, 2**32 - 1)
