@@ -1,15 +1,16 @@
 import pygame, sys, os
 
 
-BASE_SPEED = 3
-MAX_SPEED = 3
-GRAVITY = 0.2
-AIRBORN_SHIFT = 0.15
-JUMP = -6
-DRAG_SPEED = 0.5
-VERTICLE_SHIFT = 0.1 #MAybe seperate into up direction and down direction
-SPRITE_WIDTH = 50   # use a proportion calculator to change please ratio is 90/80
-SPRITE_HEIGHT = 44
+BASE_SPEED = 3  #Speed on Branch
+MAX_SPEED = 3   #Max Speed in Air
+GRAVITY = 0.2   #Acceleration Speed (Downwards)
+MAX_GRAVITY = 5 #Fastest Acceleration Speed (Downwards)
+AIRBORN_SHIFT = 0.15    #Horizontal Acceleration per Frame (Bounded by Max Speed)
+JUMP = -6   #Jump Height
+DRAG_SPEED = 0.5    #Branch Drag back speed
+VERTICLE_SHIFT = 0.1 #Vertical Acceleration per Frame modifier #Maybe seperate into up direction and down direction
+SPRITE_WIDTH = 50   #Sprite character Size # use a proportion calculator to change please ratio is 90/80
+SPRITE_HEIGHT = 44  #Sprite character Size
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
     def __init__(self, pos_x, pos_y):
@@ -66,7 +67,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def handle_gravity(self):
         if self.is_airborn:
-            if self.y_vel < 5:
+            if self.y_vel < MAX_GRAVITY:
                 self.y_vel += GRAVITY
 
         
