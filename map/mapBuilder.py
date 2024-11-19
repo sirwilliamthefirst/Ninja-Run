@@ -7,6 +7,7 @@ PLATFORM_HEIGHT = 12 #4
 PLATFORM_PROBABILITY = 0.85 #Threshhold for random num generator to determine number of platforms
 
 BACKGROUND_IMAGE_DIMENSIONS = [928, 600] #Width and Height of background image file, used for moving background
+BACKGROUND_SCROLL_SPEED = 1 #Sets speed at which background moves
 GENERATIONALGO = "random"
 
 
@@ -64,14 +65,14 @@ class MapBuilder():
         #Render the background tiles
         i = 0
         while(i < self.num_background_tiles): 
-            screen.blit(self.background_img, [self.background_position+i*BACKGROUND_IMAGE_DIMENSIONS[0], 0]) 
+            screen.blit(self.background_img, [self.background_position + i * BACKGROUND_IMAGE_DIMENSIONS[0], 0]) 
             i += 1
 
         for path in self.path_list:
             for tile in path:
                 screen.blit(tile[0], tile[1])
 
-        self.background_position -= 1
+        self.background_position -= BACKGROUND_SCROLL_SPEED
 
         #Reset background counter when tile reaches end of screen
         if abs(self.background_position) >= BACKGROUND_IMAGE_DIMENSIONS[0]:
