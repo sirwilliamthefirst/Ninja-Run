@@ -7,7 +7,8 @@ GRAVITY = 0.2
 AIRBORN_SHIFT = 0.15
 JUMP = -6
 DRAG_SPEED = 0.5
-VERTICLE_SHIFT = 0.1 #MAybe seperate into up direction and down direction
+FALL_THRU_TOLERENCE = 0.5 #How much the player must move down on joystick to constitute a fall thru
+VERTICLE_SHIFT = 0.1 #Maybe seperate into up direction and down direction
 SPRITE_WIDTH = 50   # use a proportion calculator to change please ratio is 90/80
 SPRITE_HEIGHT = 44
 
@@ -65,11 +66,11 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         if y_axis < 0:
             if self.is_airborn:
                 self.y_vel += VERTICLE_SHIFT * y_axis
-        if y_axis > 0.4:
-            self.fall_thru = True
+        if y_axis > 0:
             if self.is_airborn:
                 self.y_vel += VERTICLE_SHIFT * abs(y_axis)
-            else:
+        if y_axis > FALL_THRU_TOLERENCE: #some tolerance, so player must really press on joystick
+                self.fall_thru = True
                 self.is_airborn = True #drop from platform
         else:
             self.fall_thru = False    
