@@ -69,11 +69,11 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         if y_axis > 0:
             if self.is_airborn:
                 self.y_vel += VERTICLE_SHIFT * abs(y_axis)
-        if y_axis > FALL_THRU_TOLERENCE: #some tolerance, so player must really press on joystick
-                self.fall_thru = True
-                self.is_airborn = True #drop from platform
-        else:
-            self.fall_thru = False    
+            if y_axis > FALL_THRU_TOLERENCE: #some tolerance, so player must really press on joystick
+                    self.fall_thru = True
+                    self.is_airborn = True #drop from platform
+            else:
+                self.fall_thru = False    
 
     def handle_keys(self):
         key = pygame.key.get_pressed()
