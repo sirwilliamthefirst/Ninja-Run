@@ -45,6 +45,7 @@ while run:
     current_time = pygame.time.get_ticks()
     
     screen.fill((0,0,0))
+    map.draw(screen)
     moving_sprites.draw(screen)
     if current_time - last_map_update > map_update_interval:
         map.update()
@@ -53,7 +54,7 @@ while run:
         player1.drag()
         last_map_update = current_time
     
-    map.draw(screen)
+    
     #pygame.draw.rect(screen, (255, 255, 255), player1.rect)
     #draw_grid()
         
