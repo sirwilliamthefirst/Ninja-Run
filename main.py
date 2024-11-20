@@ -7,17 +7,8 @@ import constants as c  # Import constants
 
 pygame.init()
 
-#Setup Display
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
 
-
-#Define Tiles
-TILE_SIZE = 20
-GRID_UNITS_X = int(SCREEN_WIDTH / TILE_SIZE)
-GRID_UNITS_Y = SCREEN_HEIGHT / TILE_SIZE #REPLACE Y WITH PERLIN NOISE VALUES
-print(c.ASSETS_PATH)
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
 pygame.display.set_caption('Ninja Run')
 clock = pygame.time.Clock()
 
@@ -27,12 +18,12 @@ joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_coun
 
 #create sprites and groups
 moving_sprites = pygame.sprite.Group()
-player1 = Player(SCREEN_WIDTH/2,SCREEN_HEIGHT/2, joysticks[0] if joysticks and joysticks[0] else None)
+player1 = Player(c.SCREEN_WIDTH/2, c.SCREEN_HEIGHT/2, joysticks[0] if joysticks and joysticks[0] else None)
 moving_sprites.add(player1)
 
 
 #get map
-map = MapBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, GRID_UNITS_X, 3, player1) 
+map = MapBuilder(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GRID_UNITS_X, 3, player1) 
 
 # Timing
 map_update_interval = 10  # Update every 500ms (0.5 seconds)

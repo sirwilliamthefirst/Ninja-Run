@@ -3,13 +3,7 @@ import math
 import constants as c  # Import constants
 # from perlin_noise import PerlinNoise
 
-PLATFORM_WIDTH = 75 #32
-PLATFORM_HEIGHT = 12 #4
-PLATFORM_PROBABILITY = 0.85 #Threshhold for random num generator to determine number of platforms
 
-BACKGROUND_IMAGE_DIMENSIONS = [928, 600] #Width and Height of background image file, used for moving background
-BACKGROUND_SCROLL_SPEED = 1 #Sets speed at which background moves
-GENERATIONALGO = "random"
 
 
 class MapBuilder():
@@ -31,11 +25,11 @@ class MapBuilder():
         self.background_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/background.png')))
 
         #Calculate number of background tiles needed
-        self.num_background_tiles = math.ceil(self.screen_width / BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
+        self.num_background_tiles = math.ceil(self.screen_width / c.BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
 
         #seedTile = random.randint(0, 2**32 - 1)
         self.height_functions = []
-        GENERATION[GENERATIONALGO](self, player)
+        GENERATION[c.GENERATIONALGO](self, player)
         #self.generateRandom(player)
 
     def update(self):
@@ -47,10 +41,10 @@ class MapBuilder():
                     tile_list.remove(tile)
             #add new tiles        
             if self.update_count >= self.unit_size:
-                if random.random() > PLATFORM_PROBABILITY:  # Adjust this threshold for more/less platforms
+                if random.random() > c.PLATFORM_PROBABILITY:  # Adjust this threshold for more/less platforms
                     y_pos = random.randint(50, self.screen_height - 100)
 
-                    img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
+                    img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
                     img_rect = img.get_rect()
                     img_rect.x = self.screen_width
                     img_rect.y = y_pos
@@ -66,17 +60,17 @@ class MapBuilder():
         #Render the background tiles
         i = 0
         while(i < self.num_background_tiles): 
-            screen.blit(self.background_img, [self.background_position + i * BACKGROUND_IMAGE_DIMENSIONS[0], 0]) 
+            screen.blit(self.background_img, [self.background_position + i * c.BACKGROUND_IMAGE_DIMENSIONS[0], 0]) 
             i += 1
 
         for path in self.path_list:
             for tile in path:
                 screen.blit(tile[0], tile[1])
 
-        self.background_position -= BACKGROUND_SCROLL_SPEED
+        self.background_position -= c.BACKGROUND_SCROLL_SPEED
 
         #Reset background counter when tile reaches end of screen
-        if abs(self.background_position) >= BACKGROUND_IMAGE_DIMENSIONS[0]:
+        if abs(self.background_position) >= c.BACKGROUND_IMAGE_DIMENSIONS[0]:
             self.background_position = 0
 
     def get_map(self):
@@ -108,7 +102,7 @@ class MapBuilder():
                 y_pos += random.randint(-50,50) #add more randomness
                  # Decide whether to place a platform (using noise threshold)
                 if normalized_val > random.uniform(0.2, 0.4):  # Adjust this threshold for more/less platforms
-                    img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
+                    img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
                     img_rect = img.get_rect()
                     img_rect.x = x
                     img_rect.y = y_pos
@@ -127,7 +121,7 @@ class MapBuilder():
         for p in range(self.num_of_paths):
             tile_list = []
             if not player_tile_made:
-                img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
+                img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
                 img_rect = img.get_rect()
                 img_rect.x = player.rect.centerx
                 img_rect.y = player.rect.bottom
@@ -142,7 +136,7 @@ class MapBuilder():
                 if random.random() >  0.85:  # Adjust this threshold for more/less platforms
                     y_pos = random.randint(50, self.screen_height - 100)
 
-                    img = pygame.transform.scale(self.tile_img, (PLATFORM_WIDTH, PLATFORM_HEIGHT))  # Flexible tile size
+                    img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
                     img_rect = img.get_rect()
                     img_rect.x = x
                     img_rect.y = y_pos
