@@ -1,13 +1,16 @@
-import pygame, sys, tools
+import pygame
+import tools
 from player import *
 from map import *
 from pygame.locals import *
+import constants as c  # Import constants
 
 pygame.init()
 
 #Setup Display
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
 
 #Define Tiles
 TILE_SIZE = 20
