@@ -3,6 +3,8 @@ import sys
 import os
 import constants as c  # Import constants
 
+RUN_SPRITE_FRAMES = 10
+JUMP_SPRITE_FRAMES = 10
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
     def __init__(self, pos_x, pos_y, joystick = None):
@@ -151,28 +153,16 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     def __spritify(self):
         # Set run Sprites
         self.runSprites = []
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__000.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__001.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__002.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__003.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__004.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__005.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__006.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__007.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__008.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__009.png')))
+        #NOTE: This method will cause a problem if more than 10 frames exist
+        for i in range(RUN_SPRITE_FRAMES):
+            self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Run__00{i}.png'))) 
 
         # Set jump Sprites Note: I think set airborn and jump, jump last some amount of frames and overides airborn
 
         self.jumpSprites = []
-        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__002.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__003.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__004.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__005.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__006.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__007.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__008.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__009.png')))
+        for i in range(JUMP_SPRITE_FRAMES):
+            self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Jump__00{i}.png')))
+
 
     def drag(self):
         if(not self.is_airborn):
