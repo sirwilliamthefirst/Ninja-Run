@@ -40,7 +40,7 @@ class collisionHandler():
         tiles,
         key=lambda tile: abs(tile[1].top - player.rect.bottom) if player.rect.right > tile[1].left and player.rect.left < tile[1].right else float('inf')
     )
-        print([abs(tile[1].top - player.rect.bottom) for tile in sorted_tiles])
+        #print([abs(tile[1].top - player.rect.bottom) for tile in sorted_tiles])
 
         for tile in sorted_tiles:
             # Check if the player is falling and intersecting with the top of the tile
