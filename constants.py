@@ -44,3 +44,7 @@ FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a pla
 # Player Appearance
 SPRITE_WIDTH = 50  # Adjust ratios if needed
 SPRITE_HEIGHT = 44
+
+#assets path
+ASSETS_PATH = os.path.dirname(os.path.realpath( __file__ ))
+ASSETS_PATH = os.path.join(ASSETS_PATH, "assets")

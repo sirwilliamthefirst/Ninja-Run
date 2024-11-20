@@ -1,5 +1,6 @@
 import pygame, sys, os, random
 import math
+import constants as c  # Import constants
 # from perlin_noise import PerlinNoise
 
 PLATFORM_WIDTH = 75 #32
@@ -26,8 +27,8 @@ class MapBuilder():
         #load images
         
         #initialize the world
-        self.tile_img = pygame.image.load((os.path.join(self.mypath, 'img/tile.png')))
-        self.background_img = pygame.image.load((os.path.join(self.mypath, 'img/background.png')))
+        self.tile_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tile.png')))
+        self.background_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/background.png')))
 
         #Calculate number of background tiles needed
         self.num_background_tiles = math.ceil(self.screen_width / BACKGROUND_IMAGE_DIMENSIONS[0]) + 1

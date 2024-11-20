@@ -16,7 +16,7 @@ SCREEN_HEIGHT = 600
 TILE_SIZE = 20
 GRID_UNITS_X = int(SCREEN_WIDTH / TILE_SIZE)
 GRID_UNITS_Y = SCREEN_HEIGHT / TILE_SIZE #REPLACE Y WITH PERLIN NOISE VALUES
-
+print(c.ASSETS_PATH)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Ninja Run')
 clock = pygame.time.Clock()

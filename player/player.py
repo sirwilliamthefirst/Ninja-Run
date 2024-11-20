@@ -151,28 +151,28 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     def __spritify(self):
         # Set run Sprites
         self.runSprites = []
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__000.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__001.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__002.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__003.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__004.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__005.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__006.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__007.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__008.png')))
-        self.runSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Run__009.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__000.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__001.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__002.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__003.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__004.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__005.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__006.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__007.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__008.png')))
+        self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Run__009.png')))
 
         # Set jump Sprites Note: I think set airborn and jump, jump last some amount of frames and overides airborn
 
         self.jumpSprites = []
-        self.jumpSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Jump__002.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Jump__003.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Jump__004.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Jump__005.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Jump__006.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Jump__007.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Jump__008.png')))
-        self.jumpSprites.append(pygame.image.load(os.path.join(self.mypath, 'img/ninja/Jump__009.png')))
+        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__002.png')))
+        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__003.png')))
+        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__004.png')))
+        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__005.png')))
+        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__006.png')))
+        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__007.png')))
+        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__008.png')))
+        self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, 'player/Jump__009.png')))
 
     def drag(self):
         if(not self.is_airborn):
