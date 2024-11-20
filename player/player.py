@@ -86,7 +86,10 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             elif(not self.is_airborn):
                 self.x_vel += -c.BASE_SPEED
         if key[pygame.K_SPACE]:
-            self.jump()
+            if(self.is_airborn):
+                self.y_vel += -c.VERTICLE_SHIFT
+            else:
+                self.jump()
         if key[pygame.K_UP]:
             if self.is_airborn:
                 self.y_vel += -c.VERTICLE_SHIFT
@@ -107,12 +110,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         
     # Update sprite animation
     def update(self):
-        # probably make a move function and within it handle keys
         self.handle_move()
-
         self.animate()
 
-        #add gravity
             
 
 
