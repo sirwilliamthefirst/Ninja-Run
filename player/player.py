@@ -108,7 +108,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     # Update sprite animation
     def update(self):
         # probably make a move function and within it handle keys
-        #self.handle_move()
+        self.handle_move()
 
         self.animate()
 
@@ -173,6 +173,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     
     def land(self):
         self.is_airborn = False
+        self.y_vel = 0
 
     def fall(self):
         self.is_airborn = True

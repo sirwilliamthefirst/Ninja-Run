@@ -43,8 +43,9 @@ while run:
     moving_sprites.draw(screen)
     if current_time - last_map_update > map_update_interval:
         map.update()
+        moving_sprites.update()
         tools.collisionHandler.handle_verticle_collision(player1, map.get_map())
-        player1.handle_move()
+       
         player1.drag()
         last_map_update = current_time
     
@@ -57,7 +58,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-    moving_sprites.update()
+    
     pygame.display.update()
 
 pygame.quit()
