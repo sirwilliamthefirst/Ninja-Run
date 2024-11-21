@@ -1,6 +1,6 @@
 import pygame, sys, os, random
 import math
-import constants as c  # Import constants
+import data.constants as c  # Import constants
 # from perlin_noise import PerlinNoise
 
 
