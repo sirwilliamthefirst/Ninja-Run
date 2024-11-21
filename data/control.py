@@ -1,6 +1,6 @@
 import pygame as pg
 import sys
-import data.states as states
+import data.states.states as states
   
 class Control:
     def __init__(self, **settings):
