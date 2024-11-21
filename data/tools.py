@@ -50,7 +50,6 @@ class collisionHandler():
                     player.rect.bottom = tile[1].top
                     player.land()
                     on_tile = True
-
                     return
         
         if not on_tile:

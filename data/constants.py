@@ -46,5 +46,5 @@ SPRITE_WIDTH = 50  # Adjust ratios if needed
 SPRITE_HEIGHT = 44
 
 #assets path
-ASSETS_PATH = os.path.dirname(os.path.realpath( __file__ ))
-ASSETS_PATH = os.path.join(ASSETS_PATH, "assets")
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath( __file__ )))
+ASSETS_PATH = os.path.join(BASE_PATH, "assets")

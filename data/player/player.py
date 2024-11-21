@@ -1,7 +1,7 @@
 import pygame
 import sys
 import os
-import constants as c  # Import constants
+import data.constants as c  # Import constants
 
 RUN_SPRITE_FRAMES = 10
 JUMP_SPRITE_FRAMES = 10
@@ -90,9 +90,8 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
                 self.y_vel += -c.VERTICLE_SHIFT
             else:
                 self.jump()
-        if key[pygame.K_UP]:
-            if self.is_airborn:
-                self.y_vel += -c.VERTICLE_SHIFT
+        if key[pygame.K_UP] and self.is_airborn:
+            self.y_vel += -c.VERTICLE_SHIFT
         if key[pygame.K_DOWN]:
             self.fall_thru = True
             if self.is_airborn:
@@ -180,3 +179,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     
     def get_fall_thru(self):
         return self.fall_thru
+    
+    def is_dead(self):
+        return self.pos_y > c.SCREEN_HEIGHT or self.pos_x < -30
