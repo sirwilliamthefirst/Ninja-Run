@@ -15,6 +15,8 @@ state_dict = {
     'menu': states.Menu(),
     'game': states.Game()
 }
+pg.init()
+pg.font.init()  # Initialize the font module
 app.setup_states(state_dict, 'menu')
 app.main_game_loop()
 pg.quit()
