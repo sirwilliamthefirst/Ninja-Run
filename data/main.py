@@ -17,6 +17,7 @@ state_dict = {
 }
 pg.init()
 pg.font.init()  # Initialize the font module
+pg.display.set_caption('Ninja Run')
 app.setup_states(state_dict, 'menu')
 app.main_game_loop()
 pg.quit()
