@@ -28,10 +28,11 @@ class Control:
             self.flip_state()
         self.state.update(self.screen, dt)
     def event_loop(self):
-        for event in pg.event.get():
+        events = pg.event.get()
+        for event in events:
             if event.type == pg.QUIT:
                 self.done = True
-            self.state.get_event(event)
+        self.state.get_event(events)
     def main_game_loop(self):
         while not self.done:
             delta_time = self.clock.tick(self.fps)/1000.0

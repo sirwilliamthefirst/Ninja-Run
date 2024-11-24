@@ -1,7 +1,7 @@
 import pygame, sys, os, random
 import math
 import data.constants as c  # Import constants
-# from perlin_noise import PerlinNoise
+from perlin_noise import PerlinNoise
 
 
 

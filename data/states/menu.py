@@ -105,26 +105,28 @@ class Menu(States, MenuManager):
         print('cleaning up Main Menu state stuff')
     def startup(self):
         print('starting Main Menu state stuff')
-        self.menu = pygame_menu.Menu('Welcome', 400, 300,
+        self.menu = pygame_menu.Menu('Welcome', c.SCREEN_WIDTH, c.SCREEN_HEIGHT,
                        theme=pygame_menu.themes.THEME_BLUE)
 
         self.menu.add.text_input('Name :', default='John Doe')
         #self.menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
         self.menu.add.button('Play', self.set_done)
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
-        
 
-    def get_event(self, event):
-        if event.type == pg.QUIT:
-            self.quit = True
-        self.get_event_menu(event)
+
+    def get_event(self, events):
+        for event in events:
+            if event.type == pg.QUIT:
+                self.quit = True
+        self.menu.update(events)
     def update(self, screen, dt):
-        self.menu.mainloop(screen)
-        return
-        #self.update_menu()
-        #self.draw(screen)
+        self.draw(screen)
     def draw(self, screen):
-        return
-        #screen.fill((0,0,0))
+        screen.fill((0,0,0))
+        self.menu.draw(screen)
         #self.draw_menu(screen)
 
+    def set_done(self):
+        self.done = True
+        self.menu.close()
+        print("DONE!")
