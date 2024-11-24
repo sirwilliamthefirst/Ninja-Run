@@ -2,6 +2,7 @@ import pygame as pg
 from ..map import *
 from pygame.locals import *
 from .states import States
+import pygame_menu
 
 class MenuManager:
     def __init__(self):
@@ -97,19 +98,33 @@ class Menu(States, MenuManager):
         self.next = 'game'
         self.options = ['Play', 'Quit']
         self.next_list = ['game']
-        self.pre_render_options()
+        self.pre_render_options()   
+        self.menu = None
 
     def cleanup(self):
         print('cleaning up Main Menu state stuff')
     def startup(self):
         print('starting Main Menu state stuff')
+        self.menu = pygame_menu.Menu('Welcome', 400, 300,
+                       theme=pygame_menu.themes.THEME_BLUE)
+
+        self.menu.add.text_input('Name :', default='John Doe')
+        #self.menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+        self.menu.add.button('Play', self.set_done)
+        self.menu.add.button('Quit', pygame_menu.events.EXIT)
+        
+
     def get_event(self, event):
         if event.type == pg.QUIT:
             self.quit = True
         self.get_event_menu(event)
     def update(self, screen, dt):
-        self.update_menu()
-        self.draw(screen)
+        self.menu.mainloop(screen)
+        return
+        #self.update_menu()
+        #self.draw(screen)
     def draw(self, screen):
-        screen.fill((255,0,0))
-        self.draw_menu(screen)
+        return
+        #screen.fill((0,0,0))
+        #self.draw_menu(screen)
+

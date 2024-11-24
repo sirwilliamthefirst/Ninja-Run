@@ -12,6 +12,7 @@ class Control:
         self.state_dict = state_dict
         self.state_name = start_state
         self.state = self.state_dict[self.state_name]
+        self.state.startup()
     def flip_state(self):
         self.state.done = False
         previous,self.state_name = self.state_name, self.state.next
@@ -23,6 +24,7 @@ class Control:
         if self.state.quit:
             self.done = True
         elif self.state.done:
+            print("flip!")
             self.flip_state()
         self.state.update(self.screen, dt)
     def event_loop(self):

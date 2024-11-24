@@ -4,4 +4,8 @@ class States(object):
         self.next = None
         self.quit = False
         self.previous = None
+
+    def set_done(self):
+        self.done = True
+        print("DONE!")
   
