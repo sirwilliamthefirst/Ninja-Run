@@ -105,11 +105,13 @@ class Menu(States, MenuManager):
         print('cleaning up Main Menu state stuff')
     def startup(self):
         print('starting Main Menu state stuff')
-        self.menu = pygame_menu.Menu('Welcome', c.SCREEN_WIDTH, c.SCREEN_HEIGHT,
-                       theme=pygame_menu.themes.THEME_BLUE)
+        mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0) # transparent background
 
-        self.menu.add.text_input('Name :', default='John Doe')
-        #self.menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+                )
+
+        self.menu = pygame_menu.Menu('Ninja Run', c.SCREEN_WIDTH, c.SCREEN_HEIGHT,
+                       theme=mytheme)
+
         self.menu.add.button('Play', self.set_done)
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
 
