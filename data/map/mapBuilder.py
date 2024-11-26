@@ -2,13 +2,14 @@ import pygame, sys, os, random
 import math
 import data.constants as c  # Import constants
 from perlin_noise import PerlinNoise
-
+from scipy.stats import skewnorm
 
 
 
 class MapBuilder():
     def __init__(self, screen_width, screen_height, grid_x_units, num_of_paths, player):
         self.path_list = []
+        self.tree_list = []
         self.num_of_paths = num_of_paths
         self.mypath = os.path.dirname(os.path.realpath( __file__ ))
         self.screen_width = screen_width
@@ -23,13 +24,15 @@ class MapBuilder():
         #initialize the world
         self.tile_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tile.png')))
         self.background_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/background.png')))
+        self.tree_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tree.png')))
+        self.branch_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/branch.png')))
 
         #Calculate number of background tiles needed
         self.num_background_tiles = math.ceil(self.screen_width / c.BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
 
         #seedTile = random.randint(0, 2**32 - 1)
         self.height_functions = []
-        GENERATION[c.GENERATIONALGO](self, player)
+        GENERATION[c.GENERATIONALGO](self)
         #self.generateRandom(player)
 
     def update(self):
@@ -63,9 +66,11 @@ class MapBuilder():
             screen.blit(self.background_img, [self.background_position + i * c.BACKGROUND_IMAGE_DIMENSIONS[0], 0]) 
             i += 1
 
-        for path in self.path_list:
-            for tile in path:
-                screen.blit(tile[0], tile[1])
+        for tree in self.tree_list:
+            tree.draw(screen)
+        #for path in self.path_list:
+        #    for tile in path:
+         #       screen.blit(tile[0], tile[1])
 
         self.background_position -= c.BACKGROUND_SCROLL_SPEED
 
@@ -118,7 +123,7 @@ class MapBuilder():
 
         #tileNoise = PerlinNoise(octaves=3, seed=seedTile)
         player_tile_made = False
-        for p in range(self.num_of_paths):
+        for _ in range(self.num_of_paths):
             tile_list = []
             if not player_tile_made:
                 img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
@@ -132,7 +137,7 @@ class MapBuilder():
                 player_tile_made = True
             for i in range(self.grid_x_units):
                 x = i * self.unit_size
-               
+
                 if random.random() >  0.85:  # Adjust this threshold for more/less platforms
                     y_pos = random.randint(50, self.screen_height - 100)
 
@@ -145,10 +150,69 @@ class MapBuilder():
                     # Add tile to the list
                     tile = [img, img_rect]
                     tile_list.append(tile)
-             # Append the generated path to path_list
             self.path_list.append(tile_list)
+
+    def generateForest(self):
+        for i in range(self.grid_x_units):
+            centerx = self.grid_x_units * i
+            tree = Tree(centerx, self.tree_img, self.branch_img)
+            self.tree_list.append(tree)
+            
+
+
+class Tree():
+    
+    def __init__(self, centerX, Tree_image, branch_image, width = c.TREE_WIDTH, height = c.TREE_HEIGHT, num_branches = None):
+        self.width = width
+        self.height = height
+        self.centerX = centerX
+        self.branches = []
+        self.num_branches = num_branches
+        self.img = pygame.transform.scale(Tree_image, (width, height))  # Flexible tile size
+        self.branch_img = branch_image
+        self.img_rect = self.img.get_rect()
+        self.img_rect.centerx = centerX
+        self.img_rect.bottom = c.TREE_HEIGHT
+        self.generate_branches(self.num_branches)
+
+
+    def generate_branches(self, num_branches = None):
+        #if none, generate random number branches
+        if not num_branches:
+            randomNum = random.gauss(c.BRANCH_AVRG_NUM, c.BRANCH_NUM_DEVIATION)
+            num_branches = int(randomNum)
+
+        for _ in range (num_branches):
+            randomHeight = skewnorm.rvs(a=200, loc=300, scale=200)
+            branch = Branch(c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT, self.img_rect.centerx, randomHeight, self.branch_img)
+            self.branches.append(branch)
+            print(randomHeight)
+
+        
+
+    def draw(self, screen):
+        screen.blit(self.img, self.img_rect)
+        for branch in self.branches:
+            branch.draw(screen)
+
+    def get_branches(self):
+        return self.branches
+
+
+
+class Branch():
+    def __init__(self, width, height, centerx, topy, branch_image):
+        self.centerx = centerx 
+        self.img = pygame.transform.scale(branch_image, (width, height))  # Flexible tile size
+        self.img_rect = self.img.get_rect()
+        self.img_rect.centerx = centerx
+        self.img_rect.y = topy
+
+    def draw(self, screen):
+         screen.blit(self.img, self.img_rect)
 
 GENERATION = {
     "perlin": MapBuilder.generatePerlin,
-    "random": MapBuilder.generateRandom
+    "random": MapBuilder.generateRandom,
+    "forest": MapBuilder.generateForest
 }

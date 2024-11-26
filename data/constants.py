@@ -3,6 +3,7 @@ This module initializes the display and creates dictionaries of resources.
 Also contained are various constants used throughout the program.
 """
 
+
 import os
 import pygame 
 
@@ -15,14 +16,22 @@ FPS = 60
 
 #Define Map stuff 
 GRID_SIZE = 20
-GRID_UNITS_X = int(SCREEN_WIDTH / GRID_SIZE)
+GRID_UNITS_X = SCREEN_WIDTH // GRID_SIZE
 GRID_UNITS_Y = SCREEN_HEIGHT / GRID_SIZE #REPLACE Y WITH PERLIN NOISE VALUES
 MAP_UPDATE_INTERVAL = 10
 PLAYER_START_CORD = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
-PLATFORM_WIDTH = 75 #32
-PLATFORM_HEIGHT = 12 #4
+PLATFORM_WIDTH = 30 #32
+PLATFORM_HEIGHT = 4 #4
+TREE_WIDTH = 20
+TREE_HEIGHT = SCREEN_HEIGHT
 PLATFORM_PROBABILITY = 0.85 #Threshhold for random num generator to determine number of platforms
-GENERATIONALGO = "random"
+GENERATIONALGO = "forest"
+
+BRANCH_AVRG_NUM = 15
+BRANCH_NUM_DEVIATION = 5
+
+
+
 
 BACKGROUND_IMAGE_DIMENSIONS = [928, 600] #Width and Height of background image file, used for moving background
 BACKGROUND_SCROLL_SPEED = 1 #Sets speed at which background moves
