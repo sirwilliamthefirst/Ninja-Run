@@ -204,7 +204,10 @@ class Tree():
 
         # Create and append a new branch
         for randomHeight in branch_heights:
-            branch = Branch(c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT, self.img_rect.centerx, randomHeight, self.branch_img)
+            leftBound = self.img_rect.centerx - (c.TREE_WIDTH + c.PLATFORM_WIDTH)/2
+            rightBound = self.img_rect.centerx + (c.TREE_WIDTH + c.PLATFORM_WIDTH)/2
+            centerx = random.uniform(leftBound, rightBound)
+            branch = Branch(c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT, centerx, randomHeight, self.branch_img)
             self.branches.append(branch)
             print(randomHeight)
 
