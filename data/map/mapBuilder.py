@@ -80,9 +80,12 @@ class MapBuilder():
 
     def get_map(self):
         tile_list_all = []
-        for tile_list in self.path_list:
-            for tile in tile_list:
-                tile_list_all.append(tile)
+        if self.tree_list:
+            for tree in self.tree_list:
+                tile_list_all.extend(tree.get_branches())
+        else:
+            for tile_list in self.path_list:
+                tile_list_all.extend(tile_list)
         return tile_list_all
             
 
@@ -154,7 +157,7 @@ class MapBuilder():
 
     def generateForest(self):
         for i in range(self.grid_x_units):
-            centerx = self.grid_x_units * i
+            centerx = self.unit_size * i
             tree = Tree(centerx, self.tree_img, self.branch_img)
             self.tree_list.append(tree)
             
@@ -182,8 +185,25 @@ class Tree():
             randomNum = random.gauss(c.BRANCH_AVRG_NUM, c.BRANCH_NUM_DEVIATION)
             num_branches = int(randomNum)
 
-        for _ in range (num_branches):
-            randomHeight = skewnorm.rvs(a=200, loc=300, scale=200)
+        skew = -4
+        mean = random.randint(400, 600)
+        scale = 200
+        branch_heights = []
+        for _ in range(num_branches):
+            while True:
+                # Generate a potential branch height
+                randomHeight = skewnorm.rvs(a=skew, loc=mean, scale=scale)
+
+                # Clamp the height to screen bounds
+                randomHeight = max(0, min(800, randomHeight))
+
+                # Check if this height is sufficiently spaced from existing ones
+                if all(abs(randomHeight - h) >= c.BRANCh_MIN_SPACING for h in branch_heights):
+                    branch_heights.append(randomHeight)
+                    break
+
+        # Create and append a new branch
+        for randomHeight in branch_heights:
             branch = Branch(c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT, self.img_rect.centerx, randomHeight, self.branch_img)
             self.branches.append(branch)
             print(randomHeight)
@@ -210,6 +230,9 @@ class Branch():
 
     def draw(self, screen):
          screen.blit(self.img, self.img_rect)
+    
+    def get_rect(self):
+        return self.img_rect
 
 GENERATION = {
     "perlin": MapBuilder.generatePerlin,
