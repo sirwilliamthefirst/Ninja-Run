@@ -37,6 +37,19 @@ class MapBuilder():
 
     def update(self):
         #append to end of list using 
+        for tree in self.tree_list:
+            tree.move_ip(c.PLATFORM_SPEED, 0)
+            if tree.get_rect().right < 0:
+                self.tree_list.remove(tree)
+        
+        if self.update_count >= self.unit_size:
+                centerx = c.SCREEN_WIDTH + c.TREE_WIDTH/2
+                tree = Tree(centerx, self.tree_img, self.branch_img)
+                self.tree_list.append(tree)
+                self.update_count = 0
+
+        self.update_count += 1
+
         for tile_list in self.path_list:
             for tile in tile_list:
                 tile[1].x += -1
@@ -156,7 +169,7 @@ class MapBuilder():
             self.path_list.append(tile_list)
 
     def generateForest(self):
-        for i in range(self.grid_x_units):
+        for i in range(self.grid_x_units + 1):
             centerx = self.unit_size * i
             tree = Tree(centerx, self.tree_img, self.branch_img)
             self.tree_list.append(tree)
@@ -195,10 +208,10 @@ class Tree():
                 randomHeight = skewnorm.rvs(a=skew, loc=mean, scale=scale)
 
                 # Clamp the height to screen bounds
-                randomHeight = max(0, min(800, randomHeight))
+                randomHeight = max(0, min(c.SCREEN_HEIGHT, randomHeight))
 
                 # Check if this height is sufficiently spaced from existing ones
-                if all(abs(randomHeight - h) >= c.BRANCh_MIN_SPACING for h in branch_heights):
+                if all(abs(randomHeight - h) >= c.BRANCH_MIN_SPACING for h in branch_heights):
                     branch_heights.append(randomHeight)
                     break
 
@@ -213,7 +226,12 @@ class Tree():
             self.branches.append(branch)
             print(randomHeight)
 
-        
+    def get_rect(self):
+        return self.img_rect   
+    def move_ip(self, x,y):
+        self.img_rect.move_ip(x,y)
+        for branch in self.branches:
+            branch.move_ip(x, y)
 
     def draw(self, screen):
         screen.blit(self.img, self.img_rect)
@@ -238,6 +256,9 @@ class Branch():
     
     def get_rect(self):
         return self.img_rect
+    
+    def move_ip(self, x, y):
+        self.img_rect.move_ip(x, y)
 
 GENERATION = {
     "perlin": MapBuilder.generatePerlin,
