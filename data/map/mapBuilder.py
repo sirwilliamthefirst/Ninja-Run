@@ -204,10 +204,12 @@ class Tree():
 
         # Create and append a new branch
         for randomHeight in branch_heights:
-            leftBound = self.img_rect.centerx - (c.TREE_WIDTH + c.PLATFORM_WIDTH)/2
-            rightBound = self.img_rect.centerx + (c.TREE_WIDTH + c.PLATFORM_WIDTH)/2
+            width = random.gauss(c.PLATFORM_AVRG_WIDTH, c.PLATFORM_WIDTH_DEVIATION) 
+            width = width if width > 0 else c.PLATFORM_AVRG_WIDTH 
+            leftBound = self.img_rect.centerx - (c.TREE_WIDTH + width)/2
+            rightBound = self.img_rect.centerx + (c.TREE_WIDTH + width)/2
             centerx = random.uniform(leftBound, rightBound)
-            branch = Branch(c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT, centerx, randomHeight, self.branch_img)
+            branch = Branch(width, c.PLATFORM_HEIGHT, centerx, randomHeight, self.branch_img)
             self.branches.append(branch)
             print(randomHeight)
 
