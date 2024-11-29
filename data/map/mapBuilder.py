@@ -48,7 +48,7 @@ class MapBuilder():
                 self.tree_list.append(tree)
                 self.update_count = 0
 
-        self.update_count += 1
+        self.update_count += abs(c.PLATFORM_SPEED)
 
         for tile_list in self.path_list:
             for tile in tile_list:
