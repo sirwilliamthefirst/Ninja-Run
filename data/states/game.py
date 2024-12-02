@@ -21,6 +21,7 @@ class Game(States):
         #create sprites and groups
         self.moving_sprites = pg.sprite.Group()
         self.player1 = Player(c.SCREEN_WIDTH/2, c.SCREEN_HEIGHT/2, self.joysticks[0] if self.joysticks and self.joysticks[0] else None)
+        self.doubleJumpers = []
         self.moving_sprites.add(self.player1)
 
         #get map
@@ -29,17 +30,28 @@ class Game(States):
         # Timing
         self.last_map_update = pygame.time.get_ticks()
 
-    def get_event(self, event):
-        return
+    def get_event(self, events):
+        self.doubleJumpers = []
+        #print(events)
+        #for event in events:
+            #if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE: 
+                #if self.player1.get_controller_id() == None:
+                    #self.doubleJumpers.append(self.player1)
+                
+                
+
+            
+        
     def update(self, screen, dt):
         self.draw(screen)
         current_time = pygame.time.get_ticks()
     
         if current_time - self.last_map_update > c.MAP_UPDATE_INTERVAL:
             self.stage.update()
+            #for player in self.doubleJumpers:
+                #player.doubleJump()
             self.moving_sprites.update()
             tools.collisionHandler.handle_verticle_collision(self.player1, self.stage.get_map())
-        
             self.player1.drag()
             self.last_map_update = current_time
             if self.player1.is_dead():

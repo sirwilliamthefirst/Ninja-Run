@@ -127,7 +127,7 @@ class MapBuilder():
                     img_rect = img.get_rect()
                     img_rect.x = x
                     img_rect.y = y_pos
-                    print(f"Tile height at x={x}: {noise_val}, y={img_rect.y}")
+                    #print(f"Tile height at x={x}: {noise_val}, y={img_rect.y}")
 
                     # Add tile to the list
                     tile = [img, img_rect]
@@ -137,7 +137,6 @@ class MapBuilder():
 
     def generateRandom(self, player):
 
-        #tileNoise = PerlinNoise(octaves=3, seed=seedTile)
         player_tile_made = False
         for _ in range(self.num_of_paths):
             tile_list = []
