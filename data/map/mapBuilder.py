@@ -160,7 +160,6 @@ class MapBuilder():
                     img_rect = img.get_rect()
                     img_rect.x = x
                     img_rect.y = y_pos
-                    print(f"Tile height at x={x}: y={img_rect.y}")
 
                     # Add tile to the list
                     tile = [img, img_rect]
@@ -223,7 +222,6 @@ class Tree():
             centerx = random.uniform(leftBound, rightBound)
             branch = Branch(width, c.PLATFORM_HEIGHT, centerx, randomHeight, self.branch_img)
             self.branches.append(branch)
-            print(randomHeight)
 
     def get_rect(self):
         return self.img_rect   

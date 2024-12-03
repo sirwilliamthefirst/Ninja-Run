@@ -103,7 +103,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
        self.jump()
     
     def jump_hold(self):
-        print("HOLD")
         if(self.is_airborn):
             self.y_vel += -c.VERTICLE_SHIFT
         else:
