@@ -17,6 +17,13 @@ state_dict = {
 }
 pg.init()
 pg.font.init()  # Initialize the font module
+pg.joystick.init()
+
+#I think this may be a bug with pygame but, joystick events are not tracked until they are placed in an object.. so we do that here
+for i in range(pg.joystick.get_count()):
+    joystick = pg.joystick.Joystick(i)  # Access the first joystick
+    print(f"Joystick initialized: {joystick.get_name()}")
+
 pg.display.set_caption('Ninja Run')
 app.setup_states(state_dict, 'menu')
 app.main_game_loop()
