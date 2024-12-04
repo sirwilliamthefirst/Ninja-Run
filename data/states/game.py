@@ -12,6 +12,9 @@ class Game(States):
         self.next = 'menu'
     def cleanup(self):
         print('cleaning up Game state stuff')
+        States.player_set.clear()
+        States.players.empty()
+        
     def startup(self):
         print('starting Game state stuff')
         #look for joysticks
