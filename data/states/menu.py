@@ -16,6 +16,8 @@ class Menu(States):
         self.menu = None
         self.visible_switch = 50
         self.visible_counter = 0 
+        self.player_font = pg.font.Font(None, 36)
+        self.text_dict = {}
 
     def cleanup(self):
         print('cleaning up Main Menu state stuff')
@@ -27,7 +29,9 @@ class Menu(States):
         self.menu = pygame_menu.Menu('Ninja Run', c.SCREEN_WIDTH, c.SCREEN_HEIGHT,
                        theme=mytheme)
 
+        
         self.player_enter_btn = self.menu.add.label("Press Any Button to join")
+        self.game_start_btn = self.menu.add.label("")
         #self.menu.add.button('Play', self.set_done)
         #self.menu.add.button('Quit', pygame_menu.events.EXIT)
 
@@ -37,11 +41,16 @@ class Menu(States):
         for event in events:
             if event.type == pg.QUIT:
                 self.quit = True
-            if event.type == pg.JOYBUTTONDOWN and event.button == 7:
-                States.player_set.add(event.instance_id)
-                num_players = len(States.players)
-                x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
-                States.players.add(Player(x, y, self.joysticks  if self.joysticks and self.joysticks[0] else None))
+            if event.type == pg.JOYBUTTONDOWN:
+                if not States.player_set.__contains__(event.instance_id):
+                    States.player_set.add(event.instance_id)
+                    num_players = len(States.players)
+                    x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
+                    joystick = next(stick for stick in States.joysticks if event.instance_id == stick.get_id())
+                    print(joystick)
+                    States.players.add(Player(x, y, joystick, freeze=True))
+                elif event.button == 7:
+                    self.set_done() 
             if event.type == pg.KEYDOWN:
                 if not States.player_set.__contains__("Keyboard"):
                     States.player_set.add("Keyboard")
@@ -54,11 +63,13 @@ class Menu(States):
     def update(self, screen, dt):
         if self.visible_counter >= self.visible_switch:
             if self.player_enter_btn.get_title() == "":
-                self.player_enter_btn.set_title("Press Any Button")  # Show the label
+                self.player_enter_btn.set_title("Press Any Button to Join")  # Show the label
             else:
                 self.player_enter_btn.set_title("")  # Hide the label
             self.visible_counter = 0
         self.visible_counter += 1
+        if len(States.players) > 0:
+            self.game_start_btn.set_title("Press Enter/Start to start game")
         States.players.update()
         self.draw(screen)
         #print(len(States.player_set))
@@ -66,7 +77,10 @@ class Menu(States):
         screen.fill((0,0,0))
         self.menu.draw(screen)
         States.players.draw(screen)
-        #self.draw_menu(screen)
+        for label, text in self.text_dict.items():
+            x, y = getattr(c, f"{label}_MENU_POS")
+            print(x, y)
+            screen.blit(text, (x * 0.8, y *1.1))
 
     def set_done(self):
         self.done = True
