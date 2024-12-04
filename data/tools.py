@@ -13,6 +13,13 @@ import math
 
 EPSILON = 0.1
 
+class pixelFinder():
+    
+    def get_pixel_position(row: str, column: int, screen_width: int, screen_height: int):
+        x_multiplier, y_multiplier = POSITIONS[row][column]
+        return int(x_multiplier * screen_width), int(y_multiplier * screen_height)
+
+
 class collisionHandler():
 
     def check_collision(one, two):

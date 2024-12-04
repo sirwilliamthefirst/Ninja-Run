@@ -28,8 +28,8 @@ class Menu(States):
                        theme=mytheme)
 
         self.player_enter_btn = self.menu.add.label("Press Any Button to join")
-        self.menu.add.button('Play', self.set_done)
-        self.menu.add.button('Quit', pygame_menu.events.EXIT)
+        #self.menu.add.button('Play', self.set_done)
+        #self.menu.add.button('Quit', pygame_menu.events.EXIT)
 
 
 
@@ -38,11 +38,18 @@ class Menu(States):
             if event.type == pg.QUIT:
                 self.quit = True
             if event.type == pg.JOYBUTTONDOWN and event.button == 7:
-                new_player = Player(c.SCREEN_WIDTH/2, c.SCREEN_HEIGHT/2, self.joysticks[0] if self.joysticks and self.joysticks[0] else None)
                 States.player_set.add(event.instance_id)
-            if event.type == pg.KEYDOWN and not States.player_set.__contains__("Keyboard"):
-                States.player_set.add("Keyboard")
-                States.players.add(Player(c.SCREEN_WIDTH/2, c.SCREEN_HEIGHT/2, freeze=True))
+                num_players = len(States.players)
+                x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
+                States.players.add(Player(x, y, self.joysticks  if self.joysticks and self.joysticks[0] else None))
+            if event.type == pg.KEYDOWN:
+                if not States.player_set.__contains__("Keyboard"):
+                    States.player_set.add("Keyboard")
+                    num_players = len(States.players)
+                    x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
+                    States.players.add(Player(x, y, freeze=True))
+                elif len(States.players) > 0 and event.key == pg.K_RETURN:
+                    self.set_done()
         self.menu.update(events)
     def update(self, screen, dt):
         if self.visible_counter >= self.visible_switch:

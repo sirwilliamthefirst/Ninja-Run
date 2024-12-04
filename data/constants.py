@@ -7,7 +7,7 @@ Also contained are various constants used throughout the program.
 import os
 import pygame 
 
-#Setup Display
+#Setup Display 4/3 Aspect
 SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH", 800))
 SCREEN_HEIGHT = int(os.getenv("SCREEN_HEIGHT", 600))
 
@@ -61,3 +61,69 @@ SPRITE_HEIGHT = 44
 #assets path
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath( __file__ )))
 ASSETS_PATH = os.path.join(BASE_PATH, "assets")
+
+#Screen positions, Divided into 4:3 Aspect (x, y) * (WIDTH, HEIGHT)
+SCREEN_COORDINATES = {
+    "Top": {
+        0: (0.0, 0.0),
+        1: (0.125, 0.0),
+        2: (0.25, 0.0),
+        3: (0.375, 0.0),
+        4: (0.5, 0.0),
+        5: (0.625, 0.0),
+        6: (0.75, 0.0),
+        7: (0.875, 0.0),
+        8: (1.0, 0.0),
+    },
+    "Upper_Center": {
+        0: (0.0, 0.25),
+        1: (0.125, 0.25),
+        2: (0.25, 0.25),
+        3: (0.375, 0.25),
+        4: (0.5, 0.25),
+        5: (0.625, 0.25),
+        6: (0.75, 0.25),
+        7: (0.875, 0.25),
+        8: (1.0, 0.25),
+    },
+    "Middle": {
+        0: (0.0, 0.5),
+        1: (0.125, 0.5),
+        2: (0.25, 0.5),
+        3: (0.375, 0.5),
+        4: (0.5, 0.5),
+        5: (0.625, 0.5),
+        6: (0.75, 0.5),
+        7: (0.875, 0.5),
+        8: (1.0, 0.5),
+    },
+    "Lower_Center": {
+        0: (0.0, 0.75),
+        1: (0.125, 0.75),
+        2: (0.25, 0.75),
+        3: (0.375, 0.75),
+        4: (0.5, 0.75),
+        5: (0.625, 0.75),
+        6: (0.75, 0.75),
+        7: (0.875, 0.75),
+        8: (1.0, 0.75),
+    },
+    "Bottom": {
+        0: (0.0, 1.0),
+        1: (0.125, 1.0),
+        2: (0.25, 1.0),
+        3: (0.375, 1.0),
+        4: (0.5, 1.0),
+        5: (0.625, 1.0),
+        6: (0.75, 1.0),
+        7: (0.875, 1.0),
+        8: (1.0, 1.0),
+    },
+}
+
+SCREEN_POSITIONS = {
+    key: {inner_key: (x * SCREEN_WIDTH, y * SCREEN_HEIGHT) for inner_key, (x, y) in sub_dict.items()}
+    for key, sub_dict in SCREEN_COORDINATES.items()
+}
+
+PLAYER1_MENU_POS = SCREEN_POSITIONS["Lower_Center"][1]
