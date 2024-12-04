@@ -8,6 +8,7 @@ class Control:
         self.done = False
         self.screen = pg.display.set_mode(self.size)
         self.clock = pg.time.Clock() 
+        self.fps = 60
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
         self.state_name = start_state
@@ -35,9 +36,10 @@ class Control:
         self.state.get_event(events)
     def main_game_loop(self):
         while not self.done:
-            delta_time = self.clock.tick(self.fps)/1000.0
+            delta_time = self.clock.tick(self.fps)
             self.event_loop()
             self.update(delta_time)
             pg.display.update()
+            
   
   

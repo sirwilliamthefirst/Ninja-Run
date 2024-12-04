@@ -7,7 +7,7 @@ from scipy.stats import skewnorm
 
 
 class MapBuilder():
-    def __init__(self, screen_width, screen_height, grid_x_units, num_of_paths, player):
+    def __init__(self, screen_width, screen_height, grid_x_units, num_of_paths):
         self.path_list = []
         self.tree_list = []
         self.num_of_paths = num_of_paths
@@ -20,20 +20,14 @@ class MapBuilder():
         self.freq = 0.05
         self.background_position = 0
         #load images
-        
-        #initialize the world
         self.tile_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tile.png')))
         self.background_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/background.png')))
         self.tree_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tree.png')))
         self.branch_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/branch.png')))
-
         #Calculate number of background tiles needed
         self.num_background_tiles = math.ceil(self.screen_width / c.BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
-
-        #seedTile = random.randint(0, 2**32 - 1)
         self.height_functions = []
         GENERATION[c.GENERATIONALGO](self)
-        #self.generateRandom(player)
 
     def update(self):
         #append to end of list using 

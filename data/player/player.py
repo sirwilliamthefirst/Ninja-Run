@@ -7,7 +7,7 @@ RUN_SPRITE_FRAMES = 10
 JUMP_SPRITE_FRAMES = 10
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
-    def __init__(self, pos_x, pos_y, joystick = None):
+    def __init__(self, pos_x, pos_y, joystick = None, freeze = False):
         super().__init__()
         # Find our path
         self.mypath = os.path.dirname(os.path.realpath( __file__ ))
@@ -30,6 +30,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.rect.topleft = [pos_x, pos_y]
         self.old_keys = pygame.key.get_pressed()
         self.old_joystick = dict()
+        self.freeze = freeze
         
 
     def handle_move(self):
@@ -148,7 +149,8 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         
     # Update sprite animation
     def update(self):
-        self.handle_move()
+        if self.freeze == False:
+            self.handle_move()
         self.animate()
 
         
@@ -209,6 +211,12 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     def get_dy(self):
         return self.y_vel
     
+    def freeze(self):
+        self.freeze = True
+
+    def unfreeze(self):
+        self.freeze = False
+
     def land(self):
         self.is_airborn = False
         self.can_doubleJump = True

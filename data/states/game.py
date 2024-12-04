@@ -16,14 +16,15 @@ class Game(States):
         print('starting Game state stuff')
         #look for joysticks
         self.joysticks = [pg.joystick.Joystick(x) for x in range(pg.joystick.get_count())]
-
+        for player in States.players:
+            player.unfreeze()
         #create sprites and groups
-        self.moving_sprites = pg.sprite.Group()
-        self.player1 = Player(c.SCREEN_WIDTH/2, c.SCREEN_HEIGHT/2, self.joysticks[0] if self.joysticks and self.joysticks[0] else None)
-        self.moving_sprites.add(self.player1)
+        #self.players = pg.sprite.Group()
+        #self.player1 = Player(c.SCREEN_WIDTH/2, c.SCREEN_HEIGHT/2, self.joysticks[0] if self.joysticks and self.joysticks[0] else None)
+        #self.moving_sprites.add(self.player1)
 
         #get map
-        self.stage = MapBuilder(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GRID_UNITS_X, 3, self.player1) 
+        self.stage = MapBuilder(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GRID_UNITS_X, 3) 
 
         # Timing
         self.last_map_update = pygame.time.get_ticks()
@@ -48,15 +49,16 @@ class Game(States):
             self.stage.update()
             #for player in self.doubleJumpers:
                 #player.doubleJump()
-            self.moving_sprites.update()
-            tools.collisionHandler.handle_verticle_collision(self.player1, self.stage.get_map())
-            self.player1.drag()
+            States.players.update()
+            for player in States.players:
+                tools.collisionHandler.handle_verticle_collision(player, self.stage.get_map())
+                player.drag()
             self.last_map_update = current_time
-            if self.player1.is_dead():
+            if all(player.is_dead() for player in States.players):
                 self.done = True
     
     def draw(self, screen):
         screen.fill((0,0,0))
         self.stage.draw(screen)
-        self.moving_sprites.draw(screen)
+        States.players.draw(screen)
   
