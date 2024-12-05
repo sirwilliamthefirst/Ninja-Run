@@ -1,7 +1,6 @@
 import pygame, sys, os, random
 import math
 import data.constants as c  # Import constants
-from perlin_noise import PerlinNoise
 from scipy.stats import skewnorm
 
 
@@ -37,11 +36,7 @@ class MapBuilder():
                 self.tree_list.remove(tree)
         
         if self.update_count >= self.unit_size:
-                centerx = c.SCREEN_WIDTH + c.TREE_WIDTH/2
-                tree = Tree(centerx, self.tree_img, self.branch_img)
-                self.tree_list.append(tree)
-                self.update_count = 0
-
+            self.spawn_tree()
         self.update_count += abs(c.PLATFORM_SPEED)
 
         for tile_list in self.path_list:
@@ -65,6 +60,12 @@ class MapBuilder():
                 self.update_count = 0
             self.update_count += 1
       
+    def spawn_tree(self):
+        centerx = c.SCREEN_WIDTH + c.TREE_WIDTH/2
+        tree = Tree(centerx, self.tree_img, self.branch_img)
+        self.tree_list.append(tree)
+        self.update_count = 0
+        return tree
 
     def draw(self, screen):
         #Render the background tiles
@@ -101,71 +102,6 @@ class MapBuilder():
     def get_last_tree(self):
         return self.tree_list[-1]
 
-
-    #DON'T CALL
-    def generatePerlin(self):
-        for i in range(self.num_of_paths):
-            seedHeight = random.randint(0, 2**32 - 1)
-            heightNoise = PerlinNoise(octaves=1, seed=seedHeight)
-            self.height_functions.append(heightNoise)
-
-        #tileNoise = PerlinNoise(octaves=3, seed=seedTile)
-        for p in range(len(self.height_functions)):
-            tile_list = []
-            for i in range(self.grid_x_units):
-                # is there a tile?
-                x = i * self.unit_size
-                 # Use noise to determine if there's a platform at this x-coordinate
-                noise_val = self.height_functions[p](x * self.freq)
-                normalized_val = (noise_val + 0.5)  # Normalize to range [0, 1]
-                 # Map the normalized noise value to screen height
-                y_pos = int(normalized_val * (self.screen_height - 100)) + 50  # Adding padding
-                y_pos += random.randint(-50,50) #add more randomness
-                 # Decide whether to place a platform (using noise threshold)
-                if normalized_val > random.uniform(0.2, 0.4):  # Adjust this threshold for more/less platforms
-                    img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
-                    img_rect = img.get_rect()
-                    img_rect.x = x
-                    img_rect.y = y_pos
-                    #print(f"Tile height at x={x}: {noise_val}, y={img_rect.y}")
-
-                    # Add tile to the list
-                    tile = [img, img_rect]
-                    tile_list.append(tile)
-             # Append the generated path to path_list
-            self.path_list.append(tile_list)
-
-    def generateRandom(self, player):
-
-        player_tile_made = False
-        for _ in range(self.num_of_paths):
-            tile_list = []
-            if not player_tile_made:
-                img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
-                img_rect = img.get_rect()
-                img_rect.x = player.rect.centerx
-                img_rect.y = player.rect.bottom
-
-                # Add tile to the list
-                tile = [img, img_rect]
-                tile_list.append(tile)
-                player_tile_made = True
-            for i in range(self.grid_x_units):
-                x = i * self.unit_size
-
-                if random.random() >  0.85:  # Adjust this threshold for more/less platforms
-                    y_pos = random.randint(50, self.screen_height - 100)
-
-                    img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
-                    img_rect = img.get_rect()
-                    img_rect.x = x
-                    img_rect.y = y_pos
-
-                    # Add tile to the list
-                    tile = [img, img_rect]
-                    tile_list.append(tile)
-            self.path_list.append(tile_list)
-
     def generateForest(self):
         for i in range(self.grid_x_units + 1):
             centerx = self.unit_size * i
@@ -195,7 +131,9 @@ class Tree():
         if not num_branches:
             randomNum = random.gauss(c.BRANCH_AVRG_NUM, c.BRANCH_NUM_DEVIATION)
             num_branches = int(randomNum)
+            num_branches = num_branches if num_branches > 0 else 1
 
+        #TODO: Make these constants
         skew = -4
         mean = random.randint(400, 600)
         scale = 200
@@ -272,7 +210,5 @@ class Branch():
         self.img_rect.move_ip(x, y)
 
 GENERATION = {
-    "perlin": MapBuilder.generatePerlin,
-    "random": MapBuilder.generateRandom,
     "forest": MapBuilder.generateForest
 }
