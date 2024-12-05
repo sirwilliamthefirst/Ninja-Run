@@ -19,8 +19,7 @@ class Game(States):
         print('starting Game state stuff')
         #look for joysticks
         self.joysticks = [pg.joystick.Joystick(x) for x in range(pg.joystick.get_count())]
-        for player in States.players:
-            player.unfreeze()
+        
         #create sprites and groups
         #self.players = pg.sprite.Group()
         #self.player1 = Player(c.SCREEN_WIDTH/2, c.SCREEN_HEIGHT/2, self.joysticks[0] if self.joysticks and self.joysticks[0] else None)
@@ -28,6 +27,17 @@ class Game(States):
 
         #get map
         self.stage = MapBuilder(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GRID_UNITS_X, 3) 
+
+        for player in States.players:
+            spawn_tree = self.stage.get_tree(c.SPAWN_TREE)
+            spawn_branch = spawn_tree.get_middle_branch()
+            x, y = spawn_branch.get_top_center()
+            print(player.rect.bottom, spawn_branch.get_top_center())
+            player.unfreeze()
+            player.move(x, y)
+            print(player.rect.x, player.rect.bottom)
+
+            
 
         # Timing
         self.last_map_update = pygame.time.get_ticks()

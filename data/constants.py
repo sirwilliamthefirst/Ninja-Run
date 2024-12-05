@@ -50,6 +50,7 @@ AIRBORN_SHIFT = 0.7
 VERTICLE_SHIFT = 0.4
 JUMP = -10
 DRAG_SPEED = 0.7
+SPAWN_TREE = 1
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform

@@ -46,8 +46,14 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
         self.pos_x += self.x_vel
         self.pos_y += self.y_vel
-        self.rect.topleft = [self.pos_x, self.pos_y]
+        self.rect.bottom = self.pos_y
+        self.rect.x = self.pos_x
 
+    def move(self, x, y):
+        self.pos_x = x
+        self.pos_y = y
+        self.rect.bottom = x
+        self.rect.x = y
     def handle_joystick(self):
         x_axis = self.joystick.get_axis(0) #left negative right pos
         y_axis = self.joystick.get_axis(1)
@@ -168,9 +174,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             self.image = self.jumpSprites[self.current_sprite]
             self.can_doubleJump = False 
 
-        
-    def move_ip(self, x, y):
-        self.pos
 
     def animate(self):
         if(self.is_airborn):

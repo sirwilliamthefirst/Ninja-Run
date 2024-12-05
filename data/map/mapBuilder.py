@@ -94,7 +94,9 @@ class MapBuilder():
             for tile_list in self.path_list:
                 tile_list_all.extend(tile_list)
         return tile_list_all
-            
+
+    def get_tree(self, i : int):
+        return self.tree_list[i]
 
     #DON'T CALL
     def generatePerlin(self):
@@ -224,6 +226,17 @@ class Tree():
         for branch in self.branches:
             branch.move_ip(x, y)
 
+    def get_random_branch(self, num_branches=1):
+        random.choice(self.branches, k=num_branches)
+
+    def get_middle_branch(self):
+        sorted_branches = sorted(self.branches, key = lambda branch: branch.get_top_center()[1])
+        print(sorted_branches)
+        if sorted_branches:
+            middle_index = len(sorted_branches) // 2
+            return sorted_branches[middle_index]
+        return None  # In case there are no branches
+    
     def draw(self, screen):
         screen.blit(self.img, self.img_rect)
         for branch in self.branches:
@@ -248,6 +261,9 @@ class Branch():
     def get_rect(self):
         return self.img_rect
     
+    def get_top_center(self):
+        return (self.img_rect.centerx, self.img_rect.top)
+
     def move_ip(self, x, y):
         self.img_rect.move_ip(x, y)
 
