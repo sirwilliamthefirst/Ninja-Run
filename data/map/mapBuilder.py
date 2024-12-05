@@ -97,6 +97,10 @@ class MapBuilder():
 
     def get_tree(self, i : int):
         return self.tree_list[i]
+    
+    def get_last_tree(self):
+        return self.tree_list[-1]
+
 
     #DON'T CALL
     def generatePerlin(self):
