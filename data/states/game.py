@@ -10,10 +10,14 @@ class Game(States):
     def __init__(self):
         States.__init__(self)
         self.next = 'menu'
+        self.map_spawn_counter = 0
+        self.unit_size = c.SCREEN_WIDTH/c.GRID_UNITS_X
     def cleanup(self):
         print('cleaning up Game state stuff')
         States.player_set.clear()
         States.players.empty()
+        self.map_spawn_counter = 0
+
         
     def startup(self):
         print('starting Game state stuff')
@@ -26,7 +30,7 @@ class Game(States):
         #self.moving_sprites.add(self.player1)
 
         #get map
-        self.stage = MapBuilder(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GRID_UNITS_X, 3) 
+        self.stage = MapBuilder(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GRID_UNITS_X) 
 
         for player in States.players:
             spawn_tree = self.stage.get_tree(c.SPAWN_TREE)
@@ -60,8 +64,14 @@ class Game(States):
     
         if current_time - self.last_map_update > c.MAP_UPDATE_INTERVAL:
             self.stage.update()
-            #for player in self.doubleJumpers:
-                #player.doubleJump()
+
+            if self.map_spawn_counter >= self.unit_size:
+                tree = self.stage.spawn_tree()
+                self.map_spawn_counter = 0
+                # TODO: SPAWN ENEMIES
+            self.map_spawn_counter += abs(c.PLATFORM_SPEED)
+
+
             States.players.update()
             for player in States.players:
                 tools.collisionHandler.handle_verticle_collision(player, self.stage.get_map())

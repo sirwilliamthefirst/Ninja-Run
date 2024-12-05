@@ -6,10 +6,9 @@ from scipy.stats import skewnorm
 
 
 class MapBuilder():
-    def __init__(self, screen_width, screen_height, grid_x_units, num_of_paths):
+    def __init__(self, screen_width, screen_height, grid_x_units):
         self.path_list = []
         self.tree_list = []
-        self.num_of_paths = num_of_paths
         self.mypath = os.path.dirname(os.path.realpath( __file__ ))
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -34,32 +33,7 @@ class MapBuilder():
             tree.move_ip(c.PLATFORM_SPEED, 0)
             if tree.get_rect().right < 0:
                 self.tree_list.remove(tree)
-        
-        if self.update_count >= self.unit_size:
-            self.spawn_tree()
-        self.update_count += abs(c.PLATFORM_SPEED)
-
-        for tile_list in self.path_list:
-            for tile in tile_list:
-                tile[1].x += -1
-                if tile[1].x < 0:
-                    tile_list.remove(tile)
-            #add new tiles        
-            if self.update_count >= self.unit_size:
-                if random.random() > c.PLATFORM_PROBABILITY:  # Adjust this threshold for more/less platforms
-                    y_pos = random.randint(50, self.screen_height - 100)
-
-                    img = pygame.transform.scale(self.tile_img, (c.PLATFORM_WIDTH, c.PLATFORM_HEIGHT))  # Flexible tile size
-                    img_rect = img.get_rect()
-                    img_rect.x = self.screen_width
-                    img_rect.y = y_pos
-
-                    # Add tile to the list
-                    tile = [img, img_rect]
-                    tile_list.append(tile)
-                self.update_count = 0
-            self.update_count += 1
-      
+             
     def spawn_tree(self):
         centerx = c.SCREEN_WIDTH + c.TREE_WIDTH/2
         tree = Tree(centerx, self.tree_img, self.branch_img)
