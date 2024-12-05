@@ -198,13 +198,13 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.runSprites = []
         #NOTE: This method will cause a problem if more than 10 frames exist
         for i in range(RUN_SPRITE_FRAMES):
-            self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Run__00{i}.png'))) 
+            self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Run__00{i}.png')).convert_alpha())
 
         # Set jump Sprites Note: I think set airborn and jump, jump last some amount of frames and overides airborn
 
         self.jumpSprites = []
         for i in range(JUMP_SPRITE_FRAMES):
-            self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Jump__00{i}.png')))
+            self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Jump__00{i}.png')).convert_alpha())
 
 
     def drag(self):

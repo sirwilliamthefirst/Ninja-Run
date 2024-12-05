@@ -18,10 +18,10 @@ class MapBuilder():
         self.freq = 0.05
         self.background_position = 0
         #load images
-        self.tile_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tile.png')))
-        self.background_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/background.png')))
-        self.tree_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tree.png')))
-        self.branch_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/branch.png')))
+        self.tile_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tile.png'))).convert_alpha()
+        self.background_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/background.png'))).convert_alpha()
+        self.tree_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tree.png'))).convert_alpha()
+        self.branch_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/branch.png'))).convert_alpha()
         #Calculate number of background tiles needed
         self.num_background_tiles = math.ceil(self.screen_width / c.BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
         self.height_functions = []
