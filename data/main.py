@@ -10,13 +10,21 @@ settings = {
     'fps' :c.FPS
 }
   
+pg.init()
+pg.font.init()  # Initialize the font module
+pg.joystick.init()
+
 app = control.Control(**settings)
 state_dict = {
     'menu': states.Menu(),
     'game': states.Game()
 }
-pg.init()
-pg.font.init()  # Initialize the font module
+
+#I think this may be a bug with pygame but, joystick events are not tracked until they are placed in an object.. so we do that here
+for i in range(pg.joystick.get_count()):
+    joystick = pg.joystick.Joystick(i)  # Access the first joystick
+    print(f"Joystick initialized: {joystick.get_name()}")
+
 pg.display.set_caption('Ninja Run')
 app.setup_states(state_dict, 'menu')
 app.main_game_loop()

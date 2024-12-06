@@ -8,7 +8,7 @@ A very basic base class that contains some commonly used functionality.
 """
 
 import os
-import pygame 
+import pygame as pg
 import math
 
 EPSILON = 0.1
@@ -38,16 +38,19 @@ class collisionHandler():
 
         sorted_tiles = sorted(
         tiles,
-        key=lambda tile: abs(tile[1].top - player.rect.bottom) if player.rect.right > tile[1].left and player.rect.left < tile[1].right else float('inf')
+        key=lambda tile: abs(tile.get_rect().top - player.rect.bottom) if player.rect.right > tile.get_rect().left and player.rect.left < tile.get_rect().right else float('inf')
     )
         #print([abs(tile[1].top - player.rect.bottom) for tile in sorted_tiles])
 
+        collision_left_bound = (player.rect.centerx + player.rect.left)/2
+        collision_right_bound = (player.rect.centerx + player.rect.right)/2 
         for tile in sorted_tiles:
+            tile_rect = tile.get_rect()
             # Check if the player is falling and intersecting with the top of the tile
-            if (player.rect.bottom) <= tile[1].top <= player.rect.bottom + dy and player.rect.right >= tile[1].left and player.rect.left <= tile[1].right:
+            if (player.rect.bottom) <= tile_rect.top <= player.rect.bottom + dy and collision_right_bound >= tile_rect.left and collision_left_bound <= tile_rect.right:
                 if dy >= 0:  # Only check for collisions if the player is moving downwards
                     # Land on the tile
-                    player.rect.bottom = tile[1].top
+                    player.rect.bottom = tile_rect.top
                     player.land()
                     on_tile = True
                     return
