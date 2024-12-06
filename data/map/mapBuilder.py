@@ -17,6 +17,7 @@ class MapBuilder():
         #load images
         self.tile_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tile.png'))).convert_alpha()
         self.background_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/background.png'))).convert_alpha()
+        self.background_img= pygame.transform.scale(self.background_img, c.BACKGROUND_IMAGE_DIMENSIONS)
         self.tree_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tree.png'))).convert_alpha()
         self.branch_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/branch.png'))).convert_alpha()
         #Calculate number of background tiles needed
@@ -28,7 +29,7 @@ class MapBuilder():
         #append to end of list using 
         for tree in self.tree_list:
             tree.move_ip(c.PLATFORM_SPEED, 0)
-            if tree.get_rect().right < 0:
+            if tree.get_rect().right < -(c.PLATFORM_AVRG_WIDTH * 2):
                 self.tree_list.remove(tree)
              
     def create_tree(self):
@@ -103,14 +104,15 @@ class Tree():
     def generate_branches(self, num_branches = None):
         #if none, generate random number branches
         if not num_branches:
-            randomNum = random.gauss(c.BRANCH_AVRG_NUM, c.BRANCH_NUM_DEVIATION)
+            #randomNum = random.gauss(c.BRANCH_AVRG_NUM, c.BRANCH_NUM_DEVIATION)
+            randomNum = random.uniform(c.BRANCH_NUM_LOWER, c.BRANCH_NUM_HIGHER)
             num_branches = int(randomNum)
             num_branches = num_branches if num_branches > 0 else 1
 
         #TODO: Make these constants
-        skew = -4
-        mean = random.randint(400, 600)
-        scale = 200
+        skew = c.BRANCH_HEIGHT_SKEW 
+        mean =  random.randint(c.BRANCH_HEIGHT_MEAN - c.BRANCH_HEIGHT_BOUND, c.BRANCH_HEIGHT_MEAN + c.BRANCH_HEIGHT_BOUND)
+        scale = c.BRANCH_HEIGHT_SCALE 
         branch_heights = []
         for _ in range(num_branches):
             while True:
@@ -128,7 +130,7 @@ class Tree():
         # Create and append a new branch
         for randomHeight in branch_heights:
             width = random.gauss(c.PLATFORM_AVRG_WIDTH, c.PLATFORM_WIDTH_DEVIATION) 
-            width = width if width > 0 else c.PLATFORM_AVRG_WIDTH 
+            width = max(c.PLATFORM_MIN_WIDTH, width)
             leftBound = self.img_rect.centerx - (c.TREE_WIDTH + width)/2
             rightBound = self.img_rect.centerx + (c.TREE_WIDTH + width)/2
             centerx = random.uniform(leftBound, rightBound)
