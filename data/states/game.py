@@ -13,24 +13,22 @@ class Game(States):
         self.map_spawn_counter = 0
         self.unit_size = c.SCREEN_WIDTH/c.GRID_UNITS_X
     def cleanup(self):
-        print('cleaning up Game state stuff')
+        print('cleaning Game state')
         States.player_set.clear()
         States.players.empty()
         self.map_spawn_counter = 0
 
         
     def startup(self):
-        print('starting Game state stuff')
+        print('starting Game state')
         #look for joysticks
         self.joysticks = [pg.joystick.Joystick(x) for x in range(pg.joystick.get_count())]
-        
-        #create sprites and groups
-        #self.players = pg.sprite.Group()
-        #self.player1 = Player(c.SCREEN_WIDTH/2, c.SCREEN_HEIGHT/2, self.joysticks[0] if self.joysticks and self.joysticks[0] else None)
-        #self.moving_sprites.add(self.player1)
-
+    
         #get map
         self.stage = MapBuilder(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GRID_UNITS_X) 
+        self.stage.generate(c.GENERATIONALGO)
+        #self.stage.generate() #USe this for random stage select... at some point, make a stage select screen and build there
+
 
         for player in States.players:
             spawn_tree = self.stage.get_tree(c.SPAWN_TREE)
@@ -41,23 +39,12 @@ class Game(States):
             player.move(x, y)
             print(player.rect.x, player.rect.bottom)
 
-            
-
         # Timing
         self.last_map_update = pygame.time.get_ticks()
 
     def get_event(self, events):
         return
-        #print(events)
-        #for event in events:
-            #if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE: 
-                #if self.player1.get_controller_id() == None:
-                    #self.doubleJumpers.append(self.player1)
-                
-                
-
-            
-        
+          
     def update(self, screen, dt):
         self.draw(screen)
         current_time = pygame.time.get_ticks()
@@ -66,7 +53,7 @@ class Game(States):
             self.stage.update()
 
             if self.map_spawn_counter >= self.unit_size:
-                tree = self.stage.spawn_tree()
+                tree = self.stage.create_tree()
                 self.map_spawn_counter = 0
                 # TODO: SPAWN ENEMIES
             self.map_spawn_counter += abs(c.PLATFORM_SPEED)

@@ -7,16 +7,13 @@ from scipy.stats import skewnorm
 
 class MapBuilder():
     def __init__(self, screen_width, screen_height, grid_x_units):
-        self.path_list = []
         self.tree_list = []
-        self.mypath = os.path.dirname(os.path.realpath( __file__ ))
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.grid_x_units = grid_x_units
         self.unit_size = screen_width/grid_x_units
-        self.update_count = 0
-        self.freq = 0.05
         self.background_position = 0
+
         #load images
         self.tile_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/tile.png'))).convert_alpha()
         self.background_img = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/background.png'))).convert_alpha()
@@ -34,11 +31,10 @@ class MapBuilder():
             if tree.get_rect().right < 0:
                 self.tree_list.remove(tree)
              
-    def spawn_tree(self):
+    def create_tree(self):
         centerx = c.SCREEN_WIDTH + c.TREE_WIDTH/2
         tree = Tree(centerx, self.tree_img, self.branch_img)
         self.tree_list.append(tree)
-        self.update_count = 0
         return tree
 
     def draw(self, screen):
@@ -50,9 +46,6 @@ class MapBuilder():
 
         for tree in self.tree_list:
             tree.draw(screen)
-        #for path in self.path_list:
-        #    for tile in path:
-         #       screen.blit(tile[0], tile[1])
 
         self.background_position -= c.BACKGROUND_SCROLL_SPEED
 
@@ -75,6 +68,13 @@ class MapBuilder():
     
     def get_last_tree(self):
         return self.tree_list[-1]
+
+    def generate(self, stage = None):
+        if stage:
+            GENERATION[stage](self)
+        else:
+            generate = random.choice(list(GENERATION.values()))
+            generate(self)
 
     def generateForest(self):
         for i in range(self.grid_x_units + 1):
@@ -183,6 +183,7 @@ class Branch():
     def move_ip(self, x, y):
         self.img_rect.move_ip(x, y)
 
+#List of Stages
 GENERATION = {
     "forest": MapBuilder.generateForest
 }

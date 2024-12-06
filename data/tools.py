@@ -8,17 +8,10 @@ A very basic base class that contains some commonly used functionality.
 """
 
 import os
-import pygame 
+import pygame as pg
 import math
 
 EPSILON = 0.1
-
-class pixelFinder():
-    
-    def get_pixel_position(row: str, column: int, screen_width: int, screen_height: int):
-        x_multiplier, y_multiplier = POSITIONS[row][column]
-        return int(x_multiplier * screen_width), int(y_multiplier * screen_height)
-
 
 class collisionHandler():
 
@@ -49,10 +42,12 @@ class collisionHandler():
     )
         #print([abs(tile[1].top - player.rect.bottom) for tile in sorted_tiles])
 
+        collision_left_bound = (player.rect.centerx + player.rect.left)/2
+        collision_right_bound = (player.rect.centerx + player.rect.right)/2 
         for tile in sorted_tiles:
             tile_rect = tile.get_rect()
             # Check if the player is falling and intersecting with the top of the tile
-            if (player.rect.bottom) <= tile_rect.top <= player.rect.bottom + dy and player.rect.right >= tile_rect.left and player.rect.left <= tile_rect.right:
+            if (player.rect.bottom) <= tile_rect.top <= player.rect.bottom + dy and collision_right_bound >= tile_rect.left and collision_left_bound <= tile_rect.right:
                 if dy >= 0:  # Only check for collisions if the player is moving downwards
                     # Land on the tile
                     player.rect.bottom = tile_rect.top

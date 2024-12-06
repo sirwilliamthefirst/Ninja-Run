@@ -20,7 +20,6 @@ state_dict = {
     'game': states.Game()
 }
 
-
 #I think this may be a bug with pygame but, joystick events are not tracked until they are placed in an object.. so we do that here
 for i in range(pg.joystick.get_count()):
     joystick = pg.joystick.Joystick(i)  # Access the first joystick

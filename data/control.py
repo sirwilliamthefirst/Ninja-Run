@@ -25,7 +25,6 @@ class Control:
         if self.state.quit:
             self.done = True
         elif self.state.done:
-            print("flip!")
             self.flip_state()
         self.state.update(self.screen, dt)
     def event_loop(self):

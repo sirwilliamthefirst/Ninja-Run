@@ -22,9 +22,9 @@ MAP_UPDATE_INTERVAL = 10
 PLAYER_START_CORD = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
 PLATFORM_WIDTH = 50 #32
 PLATFORM_AVRG_WIDTH = 50 #32
-PLATFORM_SPEED = -5 #Negative because they move to the left
+PLATFORM_SPEED = -5 #Negative because they move to the left -1 is good for tesing -5 is good tho i think
 PLATFORM_WIDTH_DEVIATION = 20
-PLATFORM_HEIGHT = 8 #4
+PLATFORM_HEIGHT = 20 #4
 TREE_WIDTH = 50
 TREE_HEIGHT = SCREEN_HEIGHT
 PLATFORM_PROBABILITY = 0.85 #Threshhold for random num generator to determine number of platforms
@@ -50,7 +50,7 @@ AIRBORN_SHIFT = 0.7
 VERTICLE_SHIFT = 0.4
 JUMP = -10
 DRAG_SPEED = 0.7
-SPAWN_TREE = 1
+SPAWN_TREE = 3
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform
