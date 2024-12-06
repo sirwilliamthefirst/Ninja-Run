@@ -23,7 +23,6 @@ class MapBuilder():
         #Calculate number of background tiles needed
         self.num_background_tiles = math.ceil(self.screen_width / c.BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
         self.height_functions = []
-        GENERATION[c.GENERATIONALGO](self)
 
     def update(self):
         #append to end of list using 
