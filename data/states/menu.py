@@ -43,20 +43,12 @@ class Menu(States):
                 self.quit = True
             if event.type == pg.JOYBUTTONDOWN:
                 if not States.player_set.__contains__(event.instance_id):
-                    States.player_set.add(event.instance_id)
-                    num_players = len(States.players)
-                    x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
-                    joystick = next(stick for stick in States.joysticks if event.instance_id == stick.get_id())
-                    print(joystick)
-                    States.players.add(Player(x, y, joystick, freeze=True))
+                    self.add_player(event.instance_id)
                 elif event.button == 7:
                     self.set_done() 
             if event.type == pg.KEYDOWN:
                 if not States.player_set.__contains__("Keyboard"):
-                    States.player_set.add("Keyboard")
-                    num_players = len(States.players)
-                    x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
-                    States.players.add(Player(x, y, freeze=True))
+                    self.add_player()
                 elif len(States.players) > 0 and event.key == pg.K_RETURN:
                     self.set_done()
         self.menu.update(events)
@@ -86,3 +78,14 @@ class Menu(States):
         self.done = True
         self.menu.close()
         print("DONE!")
+
+    def add_player(self, joystick_id = None):
+        joystick = None
+        if not joystick_id == None:
+            States.player_set.add(joystick_id)
+            joystick = next(stick for stick in States.joysticks if joystick_id == stick.get_id())
+        else:
+            States.player_set.add("Keyboard")
+        num_players = len(States.players)
+        x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
+        States.players.add(Player(x, y, joystick, freeze=True))
