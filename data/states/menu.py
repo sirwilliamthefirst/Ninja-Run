@@ -79,6 +79,8 @@ class Menu(States):
         self.menu.close()
         print("DONE!")
 
+
+    #CAUTION: Does not check if player is already added
     def add_player(self, joystick_id = None):
         joystick = None
         if not joystick_id == None:
