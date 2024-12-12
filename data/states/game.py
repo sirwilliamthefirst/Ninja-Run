@@ -73,6 +73,9 @@ class Game(States):
             States.players.update()
             for player in States.players:
                 tools.collisionHandler.handle_verticle_collision(player, self.stage.get_map())
+                for enemy in self.enemies:
+                    if enemy.is_collidable() and tools.collisionHandler.check_collision(player, enemy):
+                        player.kill()
                 player.drag()
             self.last_map_update = current_time
             if all(player.is_dead() for player in States.players):

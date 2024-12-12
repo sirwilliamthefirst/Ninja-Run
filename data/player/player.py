@@ -31,6 +31,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.old_keys = pygame.key.get_pressed()
         self.old_joystick = dict()
         self.freeze = freeze
+        self.dead = False
         
 
     def handle_move(self):
@@ -157,6 +158,8 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     def update(self):
         if self.freeze == False:
             self.handle_move()
+            if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < -30:
+                self.dead = True
         self.animate()
 
         
@@ -230,7 +233,10 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         return self.fall_thru
     
     def is_dead(self):
-        return self.pos_y > c.SCREEN_HEIGHT or self.pos_x < -30
+        return self.dead
     
+    def kill(self):
+        self.dead = True
+
     def get_controller_id(self):
         return self.joystick.get_guid() if self.joystick else None

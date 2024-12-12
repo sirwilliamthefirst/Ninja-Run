@@ -22,7 +22,7 @@ class collisionHandler():
         True, it will check if their masks collide and return the result.  If the
         rectangles were not colliding, the mask check is not performed.
         """
-        return pygame.sprite.collide_rect(one,two) and pg.sprite.collide_mask(one,two)
+        return pg.sprite.collide_rect(one,two) #and pg.sprite.collide_mask(one,two)
     
 
     """
