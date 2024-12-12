@@ -143,8 +143,8 @@ class Tree():
         for branch in self.branches:
             branch.move_ip(x, y)
 
-    def get_random_branch(self, num_branches=1):
-        random.choice(self.branches, k=num_branches)
+    def get_random_branch(self):
+        return random.choice(self.branches)
 
     def get_middle_branch(self):
         sorted_branches = sorted(self.branches, key = lambda branch: branch.get_top_center()[1])

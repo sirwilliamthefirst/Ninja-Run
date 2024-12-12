@@ -1,6 +1,8 @@
 import pygame as pg
+
 from .states import States
-from ..player import Player
+from ..player import *
+from ..enemy import *
 import data.tools as tools
 from ..map import *
 from pygame.locals import *
@@ -12,10 +14,12 @@ class Game(States):
         self.next = 'menu'
         self.map_spawn_counter = 0
         self.unit_size = c.SCREEN_WIDTH/c.GRID_UNITS_X
+        self.enemies = pg.sprite.Group()
     def cleanup(self):
         print('cleaning Game state')
         States.player_set.clear()
         States.players.empty()
+        self.enemies.empty()
         self.map_spawn_counter = 0
 
         
@@ -29,7 +33,8 @@ class Game(States):
         self.stage.generate(c.GENERATIONALGO)
         #self.stage.generate() #USe this for random stage select... at some point, make a stage select screen and build there
 
-
+        #make enemy stuff
+        self.enemy_factory = EnemyFactory()
         for player in States.players:
             spawn_tree = self.stage.get_tree(c.SPAWN_TREE)
             spawn_branch = spawn_tree.get_middle_branch()
@@ -51,12 +56,18 @@ class Game(States):
     
         if current_time - self.last_map_update > c.MAP_UPDATE_INTERVAL:
             self.stage.update()
+            self.enemies.update()
 
             if self.map_spawn_counter >= self.unit_size:
                 tree = self.stage.create_tree()
                 self.map_spawn_counter = 0
-                # TODO: SPAWN ENEMIES
+                if(random.random() > .50):
+                    print("making babies")
+                    branch_rect = tree.get_random_branch().get_rect()
+                    self.enemies.add(self.enemy_factory.spawn_enemy(branch_rect.x, branch_rect.y))
             self.map_spawn_counter += abs(c.PLATFORM_SPEED)
+
+
 
 
             States.players.update()
@@ -71,4 +82,5 @@ class Game(States):
         screen.fill((0,0,0))
         self.stage.draw(screen)
         States.players.draw(screen)
+        self.enemies.draw(screen)
   

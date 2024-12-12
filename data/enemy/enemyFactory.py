@@ -1,6 +1,8 @@
+import random 
+from .samurai import *
 class EnemyFactory():
 
-    enemiesTypes = {
+    enemyTypes = {
         "samurai": Samurai
     }
 
@@ -8,4 +10,9 @@ class EnemyFactory():
         pass
 
 
-    def spawnEnemy(self):
+    def spawn_enemy(self, x, y, enemy = None):
+        if enemy: 
+            return self.enemyTypes[enemy](x,y)
+        else:
+            return random.choice(list(self.enemyTypes.values()))(x,y)
+        
