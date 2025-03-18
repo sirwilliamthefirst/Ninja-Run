@@ -158,7 +158,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     def update(self):
         if self.freeze == False:
             self.handle_move()
-            if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < -30:
+            if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
                 self.dead = True
         self.animate()
 

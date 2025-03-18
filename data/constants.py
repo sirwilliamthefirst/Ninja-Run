@@ -66,7 +66,7 @@ SPAWN_TREE = 3
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform
-
+DEADZONE = -100 #where the player dies if off the map
 
 
 #assets path
