@@ -167,11 +167,11 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         
     # Update sprite animation
     def update(self, dt):
-        if self.freeze == False:
-            self.handle_move()
-            if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
-                self.kill(c.DeathType.FALL)
         if(not self.dead):
+            if self.freeze == False:
+                self.handle_move()
+                if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
+                    self.kill(c.DeathType.FALL)
             self.animate()
         self.particle_group.update(1)
         if(self.dead and len(self.particle_group) == 0):
@@ -257,6 +257,8 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         return self.done_dying
     
     def kill(self, death_type: DeathType):
+        if(self.dead):
+            return
         match death_type:
             case c.DeathType.FALL:
                 print("Fell off a cliff.")
