@@ -59,12 +59,7 @@ class Game(States):
             self.enemies.update()
 
             if self.map_spawn_counter >= self.unit_size:
-                tree = self.stage.create_tree()
-                self.map_spawn_counter = 0
-                if(random.random() > .50):
-                    print("making babies")
-                    branch_rect = tree.get_random_branch().get_rect()
-                    self.enemies.add(self.enemy_factory.spawn_enemy(branch_rect.x, branch_rect.y))
+                self.update_forest()
             self.map_spawn_counter += abs(c.PLATFORM_SPEED)
 
 
@@ -86,4 +81,11 @@ class Game(States):
         self.stage.draw(screen)
         States.players.draw(screen)
         self.enemies.draw(screen)
+
+    def update_forest(self):
+        tree = self.stage.create_tree()
+        if(random.random() > .50): #Makes enemies
+            branch_rect = tree.get_random_branch().get_rect()
+            self.enemies.add(self.enemy_factory.spawn_enemy(branch_rect.x, branch_rect.y))
+        self.map_spawn_counter = 0
   
