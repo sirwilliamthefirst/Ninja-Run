@@ -28,7 +28,7 @@ class MapBuilder():
         #append to end of list using 
         for tree in self.tree_list:
             tree.move_ip(c.PLATFORM_SPEED, 0)
-            if tree.get_rect().right < -(c.PLATFORM_AVRG_WIDTH * 2):
+            if tree.get_rect().right < c.DEADZONE: #-(c.PLATFORM_AVRG_WIDTH * 2):
                 self.tree_list.remove(tree)
              
     def create_tree(self):
@@ -143,8 +143,8 @@ class Tree():
         for branch in self.branches:
             branch.move_ip(x, y)
 
-    def get_random_branch(self, num_branches=1):
-        random.choice(self.branches, k=num_branches)
+    def get_random_branch(self):
+        return random.choice(self.branches)
 
     def get_middle_branch(self):
         sorted_branches = sorted(self.branches, key = lambda branch: branch.get_top_center()[1])

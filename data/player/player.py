@@ -1,10 +1,19 @@
+import random
 import pygame
 import sys
 import os
 import data.constants as c  # Import constants
+import data.particles as particles
+from enum import Enum
 
 RUN_SPRITE_FRAMES = 10
 JUMP_SPRITE_FRAMES = 10
+
+
+
+class DeathType(Enum):
+    FALL = "fall"
+    ENEMY = "enemy"
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
     def __init__(self, pos_x, pos_y, joystick = None, freeze = False):
@@ -31,6 +40,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.old_keys = pygame.key.get_pressed()
         self.old_joystick = dict()
         self.freeze = freeze
+        self.dead = False
+        self.done_dying = False
+        self.particle_group = pygame.sprite.Group()
         
 
     def handle_move(self):
@@ -154,10 +166,16 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
         
     # Update sprite animation
-    def update(self):
+    def update(self, dt):
         if self.freeze == False:
             self.handle_move()
-        self.animate()
+            if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
+                self.kill(c.DeathType.FALL)
+        if(not self.dead):
+            self.animate()
+        self.particle_group.update(1)
+        if(self.dead and len(self.particle_group) == 0):
+            self.done_dying = True
 
         
     def jump(self):
@@ -209,6 +227,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         if(not self.is_airborn):
             self.pos_x += -c.DRAG_SPEED
 
+    def draw_particles(self, screen):
+        self.particle_group.draw(screen)
+
     def get_dy(self):
         return self.y_vel
     
@@ -230,7 +251,45 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         return self.fall_thru
     
     def is_dead(self):
-        return self.pos_y > c.SCREEN_HEIGHT or self.pos_x < -30
+        return self.dead
     
+    def is_done_dying(self):
+        return self.done_dying
+    
+    def kill(self, death_type: DeathType):
+        match death_type:
+            case c.DeathType.FALL:
+                print("Fell off a cliff.")
+            case c.DeathType.ENEMY:
+                print("Explode.")
+                for _ in range(50):
+                    pos = self.get_random_position_within()
+                    pixel = self.get_random_pixel()
+                    color = self.image.get_at(pixel)
+                    direction = pygame.math.Vector2(random.uniform(-0.2, 0.2), random.uniform(-1, 0))
+                    direction = direction.normalize()
+                    speed = random.randint(2, 5)
+                    particles.Particle(self.particle_group, pos, color, direction, speed)
+                    print(len(self.particle_group))
+                self.image.set_alpha(0)
+            case _:
+                print("Unknown death.")
+        self.dead = True
+
+    #Get a random position within the player rect
+    def get_random_position_within(self):
+        random_x = random.randint(self.rect.left, self.rect.right)
+        random_y = random.randint(self.rect.top, self.rect.bottom)
+        return random_x, random_y
+    
+    def get_random_pixel(self):
+        size = self.image.get_size()
+        random_x = random.randint(0, size[0]-1)
+        random_y = random.randint(0, size[1]-1)
+        return random_x, random_y
+    
+
     def get_controller_id(self):
         return self.joystick.get_guid() if self.joystick else None
+    
+    
