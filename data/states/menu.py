@@ -62,7 +62,7 @@ class Menu(States):
         self.visible_counter += 1
         if len(States.players) > 0:
             self.game_start_btn.set_title("Press Enter/Start to start game")
-        States.players.update()
+        States.players.update(dt)
         self.draw(screen)
         #print(len(States.player_set))
     def draw(self, screen):

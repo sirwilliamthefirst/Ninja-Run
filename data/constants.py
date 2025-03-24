@@ -4,6 +4,7 @@ Also contained are various constants used throughout the program.
 """
 
 
+from enum import Enum
 import os
 import pygame 
 
@@ -27,8 +28,8 @@ GRID_UNITS_X = int(SCREEN_WIDTH // GRID_SIZE)
 GRID_UNITS_Y = int(SCREEN_HEIGHT / GRID_SIZE) #REPLACE Y WITH PERLIN NOISE VALUES
 MAP_UPDATE_INTERVAL = 10
 PLATFORM_WIDTH = 50 * WIDTH_SCALE #32
-PLATFORM_AVRG_WIDTH = 50 * WIDTH_SCALE#32
-PLATFORM_SPEED = -3 * WIDTH_SCALE #Negative because they move to the left -1 is good for tesing -5 is good tho i think
+PLATFORM_AVRG_WIDTH = 80 * WIDTH_SCALE#32
+PLATFORM_SPEED = -5 * WIDTH_SCALE #Negative because they move to the left -1 is good for tesing -5 is good tho i think
 PLATFORM_WIDTH_DEVIATION = 20 * WIDTH_SCALE
 PLATFORM_MIN_WIDTH = 45 * WIDTH_SCALE 
 PLATFORM_HEIGHT = 20 * HEIGHT_SCALE  #4
@@ -140,3 +141,8 @@ SCREEN_POSITIONS = {
 PLAYER1_MENU_POS = SCREEN_POSITIONS["Lower_Center"][1]
 PLAYER2_MENU_POS = SCREEN_POSITIONS["Lower_Center"][7]
 MAX_PLAYERS = 2
+
+
+class DeathType(Enum):
+    FALL = "fall"
+    ENEMY = "enemy"

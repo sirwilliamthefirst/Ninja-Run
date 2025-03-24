@@ -65,21 +65,23 @@ class Game(States):
 
 
 
-            States.players.update()
+            States.players.update(dt)
             for player in States.players:
                 tools.collisionHandler.handle_verticle_collision(player, self.stage.get_map())
                 for enemy in self.enemies:
                     if enemy.is_collidable() and tools.collisionHandler.check_collision(player, enemy):
-                        player.kill()
+                        player.kill(c.DeathType.ENEMY)
                 player.drag()
             self.last_map_update = current_time
-            if all(player.is_dead() for player in States.players):
+            if all(player.is_dead() and player.is_done_dying() for player in States.players):
                 self.done = True
     
     def draw(self, screen):
         screen.fill((0,0,0))
         self.stage.draw(screen)
         States.players.draw(screen)
+        for player in States.players:
+            player.draw_particles(screen)
         self.enemies.draw(screen)
 
     def update_forest(self):
