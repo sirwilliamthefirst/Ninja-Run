@@ -1,3 +1,4 @@
+import random
 import pygame as pg
 import data.constants as c  # Import constants
 import os
@@ -33,14 +34,14 @@ class Samurai(Enemy):
         self.image = self.idle_images[0]  # Default to first idle image
 
         # State timing control
-        self.state_time = 0
+        self.state_time = random.randint(0,40)
         self.state_duration = {"idle": 50, "preparing": 30, "attacking": 10}  # frames for each state
 
 
     def update(self):
         """ Update the enemy state and animation. """
         self.state_time += 1
-        print(self.state_time)
+        #print(self.state_time)
         # Handle state transitions
         if self.state == "idle":
             self.handle_idle_state()
