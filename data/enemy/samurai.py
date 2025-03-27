@@ -97,9 +97,3 @@ class Samurai(Enemy):
         for i in range(ATTACK_FRAMES):
             self.attacking_images.append(pg.image.load(os.path.join(c.ASSETS_PATH, f'enemy/samurai/Attack__{i}.png')).convert_alpha())
 
-    def shift(self, x, y):
-        self.pos_x += x
-        self.pos_y += y
-
-        self.rect.bottom = self.pos_y
-        self.rect.x = self.pos_x
