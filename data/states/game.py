@@ -67,8 +67,6 @@ class Game(States):
             self.map_spawn_counter += abs(c.PLATFORM_SPEED)
 
 
-
-
             States.players.update(dt)
             for player in States.players:
                 tools.collisionHandler.handle_verticle_collision(player, self.stage.get_map())

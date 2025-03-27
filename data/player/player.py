@@ -8,7 +8,7 @@ from enum import Enum
 
 RUN_SPRITE_FRAMES = 10
 JUMP_SPRITE_FRAMES = 10
-
+ATTACK_SPRITE_FRAMES = 10
 
 
 class DeathType(Enum):
@@ -25,6 +25,8 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.__spritify()
         self.is_airborn = False
         self.is_jumping = False
+        self.is_attacking = False
+        self.attack_cooldown = c.ATTACK_RATE
         self.can_doubleJump = True
         self.current_sprite = 0
         self.image = self.runSprites[self.current_sprite] #init as running
@@ -44,6 +46,14 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.done_dying = False
         self.particle_group = pygame.sprite.Group()
         
+
+    def attack(self):
+        if(not self.is_attacking and self.attack_cooldown >= c.ATTACK_RATE):
+            self.attack_cooldown = 0
+            self.current_sprite = 0
+            self.image = self.attackSprites[0]
+            self.is_attacking = True
+
 
     def handle_move(self):
         if not self.is_airborn:
@@ -66,6 +76,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.pos_y = y
         self.rect.bottom = x
         self.rect.x = y
+
     def handle_joystick(self):
         x_axis = self.joystick.get_axis(0) #left negative right pos
         y_axis = self.joystick.get_axis(1)
@@ -157,7 +168,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             else:
                 self.is_airborn = True #drop from platform
         else:
-            self.fall_thru = False    
+            self.fall_thru = False  
+        if key[pygame.K_a]:
+            self.attack()  
 
     def handle_gravity(self):
         if self.is_airborn:
@@ -172,6 +185,8 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
                 self.handle_move()
                 if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
                     self.kill(c.DeathType.FALL)
+            if self.attack_cooldown < c.ATTACK_RATE:
+                self.attack_cooldown += 1
             self.animate()
         self.particle_group.update(1)
         if(self.dead and len(self.particle_group) == 0):
@@ -194,7 +209,12 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
 
     def animate(self):
-        if(self.is_airborn):
+        if(self.is_attacking):
+            self.current_sprite += 1
+            self.image = self.attackSprites[self.current_sprite]
+            if(self.current_sprite == ATTACK_SPRITE_FRAMES - 1):
+                self.is_attacking = False
+        elif(self.is_airborn):
             if(self.is_jumping and self.current_sprite >= 5):
                 self.is_jumping = False
                 self.current_sprite = 5
@@ -216,11 +236,15 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.runSprites = []
         #NOTE: This method will cause a problem if more than 10 frames exist
         for i in range(RUN_SPRITE_FRAMES):
-            self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Run__00{i}.png')).convert_alpha())
+            self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Run__{i}.png')).convert_alpha())
 
         self.jumpSprites = []
         for i in range(JUMP_SPRITE_FRAMES):
-            self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Jump__00{i}.png')).convert_alpha())
+            self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Jump__{i}.png')).convert_alpha())
+
+        self.attackSprites = []
+        for i in range(ATTACK_SPRITE_FRAMES):
+            self.attackSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Attack__{i}.png')).convert_alpha())
 
 
     def drag(self):
