@@ -71,8 +71,13 @@ class Game(States):
             for player in States.players:
                 tools.collisionHandler.handle_verticle_collision(player, self.stage.get_map())
                 for enemy in self.enemies:
-                    if enemy.is_collidable() and tools.collisionHandler.check_collision(player, enemy):
-                        player.kill(c.DeathType.ENEMY)
+                    if tools.collisionHandler.check_collision(player, enemy):
+                        #TODO ADD RICOCHET IF PLAYER AND ENEMY ATTACK COLLIDES
+                        if player.is_attacking():
+                            enemy.die()
+                            self.score += 20
+                        elif enemy.is_collidable():
+                            player.kill(c.DeathType.ENEMY)
                 player.drag()
             self.last_map_update = current_time
             #Check if all players are dead, if not, update score
@@ -94,6 +99,8 @@ class Game(States):
         for player in States.players:
             player.draw_particles(screen)
         self.enemies.draw(screen)
+        for enemy in self.enemies:
+            enemy.draw_particles(screen)
 
     def update_forest(self):
         tree = self.stage.create_tree()

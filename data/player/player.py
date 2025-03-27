@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.__spritify()
         self.is_airborn = False
         self.is_jumping = False
-        self.is_attacking = False
+        self.attacking = False
         self.attack_cooldown = c.ATTACK_RATE
         self.can_doubleJump = True
         self.current_sprite = 0
@@ -48,11 +48,11 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         
 
     def attack(self):
-        if(not self.is_attacking and self.attack_cooldown >= c.ATTACK_RATE):
+        if(not self.attacking and self.attack_cooldown >= c.ATTACK_RATE):
             self.attack_cooldown = 0
             self.current_sprite = 0
             self.image = self.attackSprites[0]
-            self.is_attacking = True
+            self.attacking = True
 
 
     def handle_move(self):
@@ -209,11 +209,11 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
 
     def animate(self):
-        if(self.is_attacking):
+        if(self.attacking):
             self.current_sprite += 1
             self.image = self.attackSprites[self.current_sprite]
             if(self.current_sprite == ATTACK_SPRITE_FRAMES - 1):
-                self.is_attacking = False
+                self.attacking = False
         elif(self.is_airborn):
             if(self.is_jumping and self.current_sprite >= 5):
                 self.is_jumping = False
@@ -277,6 +277,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
     def is_dead(self):
         return self.dead
     
+    def is_attacking(self):
+        return self.attacking
+
     def is_done_dying(self):
         return self.done_dying
     

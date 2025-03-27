@@ -40,16 +40,20 @@ class Samurai(Enemy):
 
     def update(self):
         """ Update the enemy state and animation. """
-        self.state_time += 1
-        #print(self.state_time)
-        # Handle state transitions
-        if self.state == "idle":
-            self.handle_idle_state()
-        elif self.state == "preparing":
-            self.handle_preparing_state()
-        elif self.state == "attacking":
-            self.handle_attacking_state()
-        self.shift(c.PLATFORM_SPEED, 0)
+        if(not self.dead):
+            self.state_time += 1
+            #print(self.state_time)
+            # Handle state transitions
+            if self.state == "idle":
+                self.handle_idle_state()
+            elif self.state == "preparing":
+                self.handle_preparing_state()
+            elif self.state == "attacking":
+                self.handle_attacking_state()
+            self.shift(c.PLATFORM_SPEED, 0)
+        elif(len(self.particle_group) == 0):
+            self.kill()
+        self.particle_group.update(1)
 
     def handle_idle_state(self):
         if self.state_time >= self.state_duration["idle"]:
