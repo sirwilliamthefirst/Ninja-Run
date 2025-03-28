@@ -4,6 +4,7 @@ import sys
 import os
 import data.constants as c  # Import constants
 import data.particles as particles
+from data.tools import sprite_loader
 from enum import Enum
 
 RUN_SPRITE_FRAMES = 10
@@ -22,7 +23,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.mypath = os.path.dirname(os.path.realpath( __file__ ))
         self.joystick = joystick
         # Get the sprites
-        self.__spritify()
+        self.load_sprites()
         self.is_airborn = False
         self.is_jumping = False
         self.attacking = False
@@ -231,20 +232,12 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             
         self.image = pygame.transform.scale(self.image, (c.SPRITE_WIDTH, c.SPRITE_HEIGHT))  
 
-    def __spritify(self):
+    def load_sprites(self):
         # Set run Sprites
-        self.runSprites = []
-        #NOTE: This method will cause a problem if more than 10 frames exist
-        for i in range(RUN_SPRITE_FRAMES):
-            self.runSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Run__{i}.png')).convert_alpha())
+        self.runSprites = sprite_loader.load_sprites(os.path.join(c.ASSETS_PATH, "player"), "Run", RUN_SPRITE_FRAMES)
+        self.jumpSprites = sprite_loader.load_sprites(os.path.join(c.ASSETS_PATH, "player"), "Jump", JUMP_SPRITE_FRAMES)
+        self.attackSprites = sprite_loader.load_sprites(os.path.join(c.ASSETS_PATH, "player"), "Attack", ATTACK_SPRITE_FRAMES)
 
-        self.jumpSprites = []
-        for i in range(JUMP_SPRITE_FRAMES):
-            self.jumpSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Jump__{i}.png')).convert_alpha())
-
-        self.attackSprites = []
-        for i in range(ATTACK_SPRITE_FRAMES):
-            self.attackSprites.append(pygame.image.load(os.path.join(c.ASSETS_PATH, f'player/Attack__{i}.png')).convert_alpha())
 
 
     def drag(self):
