@@ -1,3 +1,4 @@
+import random
 import pygame as pg
 import data.constants as c  # Import constants
 import os
@@ -33,22 +34,26 @@ class Samurai(Enemy):
         self.image = self.idle_images[0]  # Default to first idle image
 
         # State timing control
-        self.state_time = 0
+        self.state_time = random.randint(0,40)
         self.state_duration = {"idle": 50, "preparing": 30, "attacking": 10}  # frames for each state
 
 
     def update(self):
         """ Update the enemy state and animation. """
-        self.state_time += 1
-        print(self.state_time)
-        # Handle state transitions
-        if self.state == "idle":
-            self.handle_idle_state()
-        elif self.state == "preparing":
-            self.handle_preparing_state()
-        elif self.state == "attacking":
-            self.handle_attacking_state()
-        self.shift(c.PLATFORM_SPEED, 0)
+        if(not self.dead):
+            self.state_time += 1
+            #print(self.state_time)
+            # Handle state transitions
+            if self.state == "idle":
+                self.handle_idle_state()
+            elif self.state == "preparing":
+                self.handle_preparing_state()
+            elif self.state == "attacking":
+                self.handle_attacking_state()
+            self.shift(c.PLATFORM_SPEED, 0)
+        elif(len(self.particle_group) == 0):
+            self.kill()
+        self.particle_group.update(1)
 
     def handle_idle_state(self):
         if self.state_time >= self.state_duration["idle"]:
@@ -96,9 +101,3 @@ class Samurai(Enemy):
         for i in range(ATTACK_FRAMES):
             self.attacking_images.append(pg.image.load(os.path.join(c.ASSETS_PATH, f'enemy/samurai/Attack__{i}.png')).convert_alpha())
 
-    def shift(self, x, y):
-        self.pos_x += x
-        self.pos_y += y
-
-        self.rect.bottom = self.pos_y
-        self.rect.x = self.pos_x

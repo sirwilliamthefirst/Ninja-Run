@@ -57,3 +57,11 @@ class collisionHandler():
         
         if not on_tile:
             player.fall()
+
+class sprite_loader():
+
+    def load_sprites(folder_path, file_prefix, frames):
+        sprites_sequence = []
+        for i in range(frames):
+            sprites_sequence.append(pg.image.load(os.path.join(folder_path, f'{file_prefix}__{i}.png')).convert_alpha())
+        return sprites_sequence

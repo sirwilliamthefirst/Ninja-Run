@@ -63,6 +63,8 @@ AIRBORN_SHIFT = 0.7 * WIDTH_SCALE
 VERTICLE_SHIFT = 0.4 * HEIGHT_SCALE
 JUMP = -10 * HEIGHT_SCALE
 DRAG_SPEED = 0.7 * WIDTH_SCALE
+ATTACK_RATE = 25
+
 SPAWN_TREE = 3
 
 # Tolerances and thresholds
@@ -143,6 +145,32 @@ PLAYER2_MENU_POS = SCREEN_POSITIONS["Lower_Center"][7]
 MAX_PLAYERS = 2
 
 
+
+
 class DeathType(Enum):
     FALL = "fall"
     ENEMY = "enemy"
+
+class Actions(Enum):
+    MOVE_X = "x_axis"
+    MOVE_Y = "y_axis"
+    JUMP_PRESS = "jump_press"
+    JUMP_HOLD = "jump_hold"
+    DASH = "dash"
+    ATTACK = "attack"
+
+DEFAULT_KEY_MAP = {
+    Actions.JUMP_PRESS: pygame.K_SPACE,
+    Actions.MOVE_X: [pygame.K_LEFT, pygame.K_RIGHT],
+    Actions.MOVE_Y: [pygame.K_UP, pygame.K_DOWN],
+    Actions.ATTACK: pygame.K_a,
+    Actions.DASH: pygame.K_s
+}
+
+DEFAULT_JOY_MAP = {
+    Actions.JUMP_PRESS: 0,
+    Actions.MOVE_X: 0,
+    Actions.MOVE_Y: 1,
+    Actions.ATTACK: 2,
+    Actions.DASH: 1
+}
