@@ -171,6 +171,6 @@ DEFAULT_JOY_MAP = {
     Actions.JUMP_PRESS: 0,
     Actions.MOVE_X: 0,
     Actions.MOVE_Y: 1,
-    Actions.ATTACK: 1,
-    Actions.DASH: 2
+    Actions.ATTACK: 2,
+    Actions.DASH: 1
 }

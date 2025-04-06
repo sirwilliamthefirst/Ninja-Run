@@ -1,8 +1,9 @@
+from typing import Union
 import pygame as pg
 from data.constants import Actions, DEFAULT_KEY_MAP, DEFAULT_JOY_MAP # Import constants
 
-class input_handler():
-    def __init__(self, joystick : pg.Joystick | None = None, 
+class Input_handler():
+    def __init__(self, joystick : Union[pg.joystick.Joystick, None] = None, 
                  keyboard_mapping : dict[Actions, int] = DEFAULT_KEY_MAP,
                  joystick_mapping : dict[Actions, int] = DEFAULT_JOY_MAP):
         self.joystick = joystick
@@ -21,23 +22,35 @@ class input_handler():
         if not self.joystick:
             self.old_keys = self.keys
             self.keys = pg.key.get_pressed()
-            self.pressed_keys = [key for key in self.keys if self.old_keys[key]] 
+            self.pressed_keys = {i for i, key in enumerate(self.keys) if self.old_keys and self.old_keys[i]} 
+
             button_state = self.keys
+            print(len(self.pressed_keys))
             pressed_state = self.pressed_keys
 
         else:
             self.old_j_state = self.j_state
             self.j_state = {i: self.joystick.get_button(i) for i in range(self.joystick.get_numbuttons())}
-            self.j_pressed = [key for key, value in self.j_state.items() if value and key in self.old_j_state]
+            self.j_pressed = {i for i, key in enumerate(self.j_state) if self.old_j_state and self.old_j_state[i]}
+            #self.j_pressed = {key: value for key, value in self.j_state.items() if self.old_j_state and value}
             button_state = self.j_state
+            print(len(self.j_pressed))
             pressed_state = self.j_pressed
         
         axis = self.get_axis()
         action_dict[Actions.MOVE_X] = axis[0]
         action_dict[Actions.MOVE_Y] = axis[1]
-        action_dict[Actions.JUMP_HOLD] = pressed_state[self.control_map[Actions.JUMP_HOLD]]
-        action_dict[Actions.ATTACK] = button_state[self.control_map[Actions.ATTACK]] 
-        action_dict[Actions.DASH] = button_state[self.control_map[Actions.DASH]] 
+        if Actions.JUMP_PRESS in self.control_map and self.control_map[Actions.JUMP_PRESS] in pressed_state:
+            action_dict[Actions.JUMP_HOLD] = 1
+            action_dict[Actions.JUMP_PRESS] = 0
+        elif button_state[self.control_map[Actions.JUMP_PRESS]]:
+            action_dict[Actions.JUMP_HOLD] = 0
+            action_dict[Actions.JUMP_PRESS] = 1
+        else:
+            action_dict[Actions.JUMP_HOLD] = 0
+            action_dict[Actions.JUMP_PRESS] = 0
+        action_dict[Actions.ATTACK] = 1 if button_state[self.control_map[Actions.ATTACK]] else 0
+        action_dict[Actions.DASH] = 1 if button_state[self.control_map[Actions.DASH]] else 0
 
         return action_dict
 
@@ -45,7 +58,7 @@ class input_handler():
         if self.joystick:
             return (self.joystick.get_axis(0), self.joystick.get_axis(1))
         else:
-           return self.keys[pg.K_RIGHT] - self.keys[pg.K_LEFT]
+           return (self.keys[pg.K_RIGHT] - self.keys[pg.K_LEFT], self.keys[pg.K_DOWN] - self.keys[pg.K_UP]) 
 
 
     
