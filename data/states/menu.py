@@ -7,7 +7,6 @@ from pygame.locals import *
 from .states import States
 import pygame_menu
 
-
 class Menu(States):
     def __init__(self):
         States.__init__(self)
@@ -27,17 +26,13 @@ class Menu(States):
                 )
         self.menu = pygame_menu.Menu('Ninja Run', c.SCREEN_WIDTH, c.SCREEN_HEIGHT,
                        theme=mytheme)
-        
-        pygame_menu.controls.KEY_APPLY = pygame.K_a
-        
+
         self.player_enter_btn = self.menu.add.label("Press Enter/Start to join")
         self.game_start_btn = self.menu.add.label("")
         self.menu.add.button('Play', lambda: self.move_state("game"))
         self.menu.add.button('Leaderboard') #placeholder
         self.menu.add.button('Settings') #placeholder
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
-        
-
 
     def get_event(self, events):
         self.menu.update(events)
@@ -69,11 +64,6 @@ class Menu(States):
         for label, text in self.text_dict.items():
             x, y = getattr(c, f"{label}_MENU_POS")
             screen.blit(text, (x * 0.8, y *1.1))
-
-
-
-
-
 
     #CAUTION: Does not check if player is already added
     def add_player(self, joystick_id = None):

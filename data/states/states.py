@@ -1,8 +1,10 @@
-import pygame as pg
+import pygame 
+import pygame_menu
+
 
 class States(object):
     player_set = set()
-    players = pg.sprite.Group()
+    players = pygame.sprite.Group()
     joysticks = None
 
     def __init__(self):
@@ -10,9 +12,9 @@ class States(object):
         self.next = None
         self.quit = False
         self.previous = None
-        States.joysticks = [pg.joystick.Joystick(x) for x in range(pg.joystick.get_count())]
+        States.joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
-    def move_state(self, next_state = None):
+    def move_state(self, next_state : str = None):
         if not next_state: return
         if next_state == "game": 
             if len(States.players) > 0:
