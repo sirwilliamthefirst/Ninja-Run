@@ -12,8 +12,6 @@ class Menu(States):
     def __init__(self):
         States.__init__(self)
         self.next = 'game'
-        self.options = ['Play', 'Quit']
-        self.next_list = ['game']
         self.menu = None
         self.visible_switch = 50
         self.visible_counter = 0 
@@ -34,8 +32,8 @@ class Menu(States):
         
         self.player_enter_btn = self.menu.add.label("Press Enter/Start to join")
         self.game_start_btn = self.menu.add.label("")
-        self.menu.add.button('Play', self.set_done)
-        self.menu.add.button('Leaderboards') #placeholder
+        self.menu.add.button('Play', lambda: self.move_state("game"))
+        self.menu.add.button('Leaderboard') #placeholder
         self.menu.add.button('Settings') #placeholder
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
         
@@ -72,10 +70,9 @@ class Menu(States):
             x, y = getattr(c, f"{label}_MENU_POS")
             screen.blit(text, (x * 0.8, y *1.1))
 
-    def set_done(self):
-        if len(States.players) > 0:
-            self.done = True
-            self.menu.close()
+
+
+
 
 
     #CAUTION: Does not check if player is already added
