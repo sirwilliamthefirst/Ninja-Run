@@ -14,7 +14,6 @@ class Menu(States):
         self.menu = None
         self.visible_switch = 50
         self.visible_counter = 0 
-        self.player_font = pg.font.Font(None, 36)
         self.text_dict = {}
 
     def cleanup(self):
@@ -40,7 +39,7 @@ class Menu(States):
             if event.type == pg.QUIT:
                 self.quit = True
             if event.type == pg.JOYBUTTONDOWN:
-                if event.button == 7:
+                if event.button == 7 and not States.player_set.__contains__(event.instance_id):
                     self.add_player(event.instance_id)
 
             if event.type == pg.KEYDOWN:
@@ -68,7 +67,7 @@ class Menu(States):
     #CAUTION: Does not check if player is already added
     def add_player(self, joystick_id = None):
         joystick = None
-        if not joystick_id == None:
+        if joystick_id != None:
             States.player_set.add(joystick_id)
             joystick = next(stick for stick in States.joysticks if joystick_id == stick.get_id())
         else:
