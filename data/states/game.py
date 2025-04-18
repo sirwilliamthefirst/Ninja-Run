@@ -41,10 +41,8 @@ class Game(States):
             spawn_tree = self.stage.get_tree(c.SPAWN_TREE)
             spawn_branch = spawn_tree.get_middle_branch()
             x, y = spawn_branch.get_top_center()
-            print(player.rect.bottom, spawn_branch.get_top_center())
             player.unfreeze()
             player.move(x, y)
-            print(player.rect.x, player.rect.bottom)
 
         # Timing
         self.last_map_update = pygame.time.get_ticks()

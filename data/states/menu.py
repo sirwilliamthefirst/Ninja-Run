@@ -1,4 +1,5 @@
 import pygame as pg
+import pygame_menu.controls
 
 from data.player.player import Player
 from ..map import *
@@ -28,56 +29,53 @@ class Menu(States):
                 )
         self.menu = pygame_menu.Menu('Ninja Run', c.SCREEN_WIDTH, c.SCREEN_HEIGHT,
                        theme=mytheme)
-
         
-        self.player_enter_btn = self.menu.add.label("Press Any Button to join")
+        pygame_menu.controls.KEY_APPLY = pygame.K_a
+        
+        self.player_enter_btn = self.menu.add.label("Press Enter/Start to join")
         self.game_start_btn = self.menu.add.label("")
-        #self.menu.add.button('Play', self.set_done)
-        #self.menu.add.button('Quit', pygame_menu.events.EXIT)
-
+        self.menu.add.button('Play', self.set_done)
+        self.menu.add.button('Leaderboards') #placeholder
+        self.menu.add.button('Settings') #placeholder
+        self.menu.add.button('Quit', pygame_menu.events.EXIT)
+        
 
 
     def get_event(self, events):
+        self.menu.update(events)
         for event in events:
             if event.type == pg.QUIT:
                 self.quit = True
             if event.type == pg.JOYBUTTONDOWN:
-                if not States.player_set.__contains__(event.instance_id):
+                if event.button == 7:
                     self.add_player(event.instance_id)
-                elif event.button == 7:
-                    self.set_done() 
+
             if event.type == pg.KEYDOWN:
-                if not States.player_set.__contains__("Keyboard"):
+                if not States.player_set.__contains__("Keyboard") and event.key == pg.K_RETURN:
                     self.add_player()
-                elif len(States.players) > 0 and event.key == pg.K_RETURN:
-                    self.set_done()
-        self.menu.update(events)
+
     def update(self, screen, dt):
         if self.visible_counter >= self.visible_switch:
             if self.player_enter_btn.get_title() == "":
-                self.player_enter_btn.set_title("Press Any Button to Join")  # Show the label
+                self.player_enter_btn.set_title("Press Enter/Start to join")  # Show the label
             else:
                 self.player_enter_btn.set_title("")  # Hide the label
             self.visible_counter = 0
         self.visible_counter += 1
-        if len(States.players) > 0:
-            self.game_start_btn.set_title("Press Enter/Start to start game")
         States.players.update(dt)
         self.draw(screen)
-        #print(len(States.player_set))
     def draw(self, screen):
         screen.fill((0,0,0))
         self.menu.draw(screen)
         States.players.draw(screen)
         for label, text in self.text_dict.items():
             x, y = getattr(c, f"{label}_MENU_POS")
-            print(x, y)
             screen.blit(text, (x * 0.8, y *1.1))
 
     def set_done(self):
-        self.done = True
-        self.menu.close()
-        print("DONE!")
+        if len(States.players) > 0:
+            self.done = True
+            self.menu.close()
 
 
     #CAUTION: Does not check if player is already added
