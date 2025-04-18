@@ -27,7 +27,6 @@ class Enemy(pygame.sprite.Sprite):
             direction = direction.normalize()
             speed = random.randint(2, 5)
             particles.Particle(self.particle_group, pos, color, direction, speed)
-            print(len(self.particle_group))
         self.dead = True
         self.image = self.image.copy()
         self.image.set_alpha(0)

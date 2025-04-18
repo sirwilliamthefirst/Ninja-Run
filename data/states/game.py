@@ -59,7 +59,6 @@ class Game(States):
             screen.blit(score_text, (10, 10))
             self.stage.update()
             self.enemies.update()
-
             if self.map_spawn_counter >= self.unit_size:
                 self.update_forest()
             self.map_spawn_counter += abs(c.PLATFORM_SPEED)

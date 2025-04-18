@@ -42,7 +42,6 @@ class Samurai(Enemy):
         """ Update the enemy state and animation. """
         if(not self.dead):
             self.state_time += 1
-            #print(self.state_time)
             # Handle state transitions
             if self.state == "idle":
                 self.handle_idle_state()

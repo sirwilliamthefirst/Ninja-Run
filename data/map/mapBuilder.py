@@ -148,7 +148,6 @@ class Tree():
 
     def get_middle_branch(self):
         sorted_branches = sorted(self.branches, key = lambda branch: branch.get_top_center()[1])
-        print(sorted_branches)
         if sorted_branches:
             middle_index = len(sorted_branches) // 2
             return sorted_branches[middle_index]

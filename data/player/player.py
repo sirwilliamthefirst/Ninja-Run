@@ -70,8 +70,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             if delta_y > c.FALL_THRU_TOLERENCE: #some tolerance, so player must really press on joystick
                     self.fall_thru = True
                     self.is_airborn = True #drop from platform
-            else:
-                self.fall_thru = False 
+        else:
+            self.fall_thru = False 
+        
         if intent_dict[c.Actions.ATTACK]: self.attack()
         if intent_dict[c.Actions.JUMP_PRESS]: self.jump_press()
         if intent_dict[c.Actions.JUMP_HOLD]: self.jump_hold()
