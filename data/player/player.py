@@ -138,7 +138,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             self.image = self.jumpSprites[self.current_sprite]
             self.can_doubleJump = False 
 
-
     def animate(self):
         if(self.attacking):
             self.current_sprite += 1
@@ -146,10 +145,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             if(self.current_sprite == ATTACK_SPRITE_FRAMES - 1):
                 self.attacking = False
         elif(self.is_airborn):
-            if(self.is_jumping and self.current_sprite >= 5):
-                self.is_jumping = False
-                self.current_sprite = 5
-            elif(self.current_sprite >= 7):
+            if(self.current_sprite >= 7):
                 self.current_sprite = 5
             else:
                 self.current_sprite += 1
@@ -188,6 +184,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def land(self):
         self.is_airborn = False
+        self.is_jumping = False
         self.can_doubleJump = True
         self.y_vel = 0
 
