@@ -7,11 +7,9 @@ import data.particles as particles
 from data.player.input_handler import Input_handler
 from data.tools import sprite_loader
 
-RUN_SPRITE_FRAMES = 10
-  
+RUN_SPRITE_FRAMES = 10  
 JUMP_SPRITE_FRAMES = 10
 ATTACK_SPRITE_FRAMES = 10
-
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
     def __init__(self, pos_x, pos_y, joystick = None, freeze = False):
@@ -40,6 +38,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.rect.topleft = [pos_x, pos_y]
         self.freeze = freeze
         self.dead = False
+        self.coyote_timer = 0
         self.done_dying = False
         self.particle_group = pygame.sprite.Group()
         
@@ -118,14 +117,19 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.particle_group.update(1)
         if(self.dead and len(self.particle_group) == 0):
             self.done_dying = True
+        if(self.is_airborn):
+            self.coyote_timer += 1
+        else:
+            self.coyote_timer = 0
 
         
     def jump(self):
-        if(not self.is_jumping and not self.is_airborn):
+        if(not self.is_jumping and (not self.is_airborn or self.coyote_timer < c.COYOTE_TIME)):
             self.is_jumping = True
             self.y_vel = c.JUMP
             self.is_airborn = True
             #reset current sprite and make it the fist jump
+            self.coyote_timer = c.COYOTE_TIME
             self.current_sprite = 0
             self.image = self.jumpSprites[self.current_sprite]
         elif(self.can_doubleJump and self.is_airborn):
@@ -218,10 +222,11 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
                     direction = direction.normalize()
                     speed = random.randint(2, 5)
                     particles.Particle(self.particle_group, pos, color, direction, speed)
-                self.image.set_alpha(0)
             case _:
                 print("Unknown death.")
         self.dead = True
+        self.image.set_alpha(0)
+
 
     #Get a random position within the player rect
     def get_random_position_within(self):
