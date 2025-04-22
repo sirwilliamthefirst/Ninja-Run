@@ -75,6 +75,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         if intent_dict[c.Actions.ATTACK]: self.attack()
         if intent_dict[c.Actions.JUMP_PRESS]: self.jump_press()
         if intent_dict[c.Actions.JUMP_HOLD]: self.jump_hold()
+        if not intent_dict[c.Actions.JUMP_HOLD] and not intent_dict[c.Actions.JUMP_PRESS] and self.y_vel < 0:
+            self.is_jumping = False
+            self.y_vel *= c.JUMP_CUT_MULT
         self.handle_gravity()
         self.pos_x += self.x_vel
         self.pos_y += self.y_vel
@@ -93,10 +96,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
        self.jump()
     
     def jump_hold(self):
-        if(self.is_airborn):
-            self.y_vel += -c.VERTICLE_SHIFT
-        else:
-            self.jump()
+        if(self.is_airborn and self.is_jumping and self.jump_timer < c.JUMP_TIME):
+            self.y_vel = c.JUMP
+            self.jump_timer += 1
 
     def handle_gravity(self):
         if self.is_airborn:
@@ -125,6 +127,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         
     def jump(self):
         if(not self.is_jumping and (not self.is_airborn or self.coyote_timer < c.COYOTE_TIME)):
+            self.jump_timer = 0 
             self.is_jumping = True
             self.y_vel = c.JUMP
             self.is_airborn = True
@@ -133,6 +136,8 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             self.current_sprite = 0
             self.image = self.jumpSprites[self.current_sprite]
         elif(self.can_doubleJump and self.is_airborn):
+            self.jump_timer = c.JUMP_TIME/2
+            self.is_jumping = True
             self.y_vel = c.JUMP
             self.current_sprite = 0
             self.image = self.jumpSprites[self.current_sprite]
