@@ -18,7 +18,8 @@ pg.joystick.init()
 app = control.Control(**settings)
 state_dict = {
     'menu': states.Menu(),
-    'game': states.Game()
+    'game': states.Game(),
+    "leaderboard": states.Leaderboard()
 }
 
 #I think this may be a bug with pygame but, joystick events are not tracked until they are placed in an object.. so we do that here

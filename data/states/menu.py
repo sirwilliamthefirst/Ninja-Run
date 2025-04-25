@@ -1,5 +1,7 @@
 import pygame as pg
 import pygame_menu.controls
+import pygame_menu.menu
+import pygame_menu.widgets
 
 from data.player.player import Player
 from ..map import *
@@ -29,7 +31,7 @@ class Menu(States):
         self.player_enter_btn = self.menu.add.label("Press Enter/Start to join")
         self.game_start_btn = self.menu.add.label("")
         self.menu.add.button('Play', lambda: self.move_state("game"))
-        self.menu.add.button('Leaderboard') #placeholder
+        self.menu.add.button('Leaderboard', lambda: self.move_state("leaderboard")) #placeholder
         self.menu.add.button('Settings') #placeholder
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
 
@@ -56,6 +58,7 @@ class Menu(States):
         self.visible_counter += 1
         States.players.update(dt)
         self.draw(screen)
+        
     def draw(self, screen):
         screen.fill((0,0,0))
         self.menu.draw(screen)
@@ -75,3 +78,63 @@ class Menu(States):
         num_players = len(States.players)
         x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
         States.players.add(Player(x, y, joystick, freeze=True))
+
+
+class Leaderboard(States):
+    def __init__(self):
+        States.__init__(self)
+        self.next = 'menu'
+        self.menu = None
+        self.visible_switch = 50
+        self.visible_counter = 0 
+        self.text_dict = {}
+
+    def cleanup(self):
+        print('cleaning up Main Menu state stuff')
+    def startup(self):
+        print('starting Main Menu state stuff')
+        mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0) # transparent background
+
+                )
+        self.menu = pygame_menu.Menu('Leaderboard', c.SCREEN_WIDTH, c.SCREEN_HEIGHT,
+                       theme=mytheme)
+
+        #NOTE Get entries
+        leaderboard_data = [
+            ('Alice', 100),
+            ('Bob', 90),
+            ('Charlie', 80),
+            ('Dana', 70),
+            ('Eli', 60),
+        ]
+
+
+        self.leaderboard_table = self.menu.add.table()
+        self.leaderboard_table.add_row(["Name","Score"], cell_padding=[20,20,5,5])
+        for name, score in sorted(leaderboard_data, key=lambda x: x[1], reverse=True)[:5]:
+            self.leaderboard_table.add_row([name, score], cell_padding=[20,20,5,5])
+
+
+        self.menu.add.button('Back', lambda: self.move_state("menu"))
+
+
+    def get_event(self, events):
+        self.menu.update(events)
+        for event in events:
+            if event.type == pg.QUIT:
+                self.quit = True
+            if event.type == pg.JOYBUTTONDOWN:
+                if event.button == 7 and not States.player_set.__contains__(event.instance_id):
+                    self.add_player(event.instance_id)
+
+            if event.type == pg.KEYDOWN:
+                if not States.player_set.__contains__("Keyboard") and event.key == pg.K_RETURN:
+                    self.add_player()
+
+    def update(self, screen, dt):
+        self.draw(screen)
+        
+    def draw(self, screen):
+        screen.fill((0,0,0))
+        self.menu.draw(screen)
+       

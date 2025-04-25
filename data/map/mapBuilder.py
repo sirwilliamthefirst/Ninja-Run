@@ -113,11 +113,13 @@ class Tree():
         mean =  random.randint(c.BRANCH_HEIGHT_MEAN - c.BRANCH_HEIGHT_BOUND, c.BRANCH_HEIGHT_MEAN + c.BRANCH_HEIGHT_BOUND)
         scale = c.BRANCH_HEIGHT_SCALE 
         branch_heights = []
-        for _ in range(num_branches):
+        for i in range(num_branches):
             while True:
                 # Generate a potential branch height
-                randomHeight = skewnorm.rvs(a=skew, loc=mean, scale=scale)
-
+                if(i < 3): 
+                    randomHeight = skewnorm.rvs(a=skew, loc=mean, scale=scale)
+                else:
+                    randomHeight = random.uniform(0, c.SCREEN_HEIGHT)
                 # Clamp the height to screen bounds
                 randomHeight = max(0, min(c.SCREEN_HEIGHT, randomHeight))
 
