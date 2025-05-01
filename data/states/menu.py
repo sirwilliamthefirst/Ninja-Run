@@ -1,13 +1,12 @@
 import pygame as pg
-import pygame_menu.controls
-import pygame_menu.menu
-import pygame_menu.widgets
-
 from data.player.player import Player
 from ..map import *
 from pygame.locals import *
 from .states import States
 import pygame_menu
+from data.api.client import APIClient
+import json
+ 
 
 class Menu(States):
     def __init__(self):
@@ -100,19 +99,14 @@ class Leaderboard(States):
                        theme=mytheme)
 
         #NOTE Get entries
-        leaderboard_data = [
-            ('Alice', 100),
-            ('Bob', 90),
-            ('Charlie', 80),
-            ('Dana', 70),
-            ('Eli', 60),
-        ]
-
-
-        self.leaderboard_table = self.menu.add.table()
-        self.leaderboard_table.add_row(["Name","Score"], cell_padding=[20,20,5,5])
-        for name, score in sorted(leaderboard_data, key=lambda x: x[1], reverse=True)[:5]:
-            self.leaderboard_table.add_row([name, score], cell_padding=[20,20,5,5])
+        leaderboard_data= APIClient.get_scores()
+        if "error" in leaderboard_data:
+            self.menu.add.label("Error fetching leaderboard data")
+        else:
+            self.leaderboard_table = self.menu.add.table()
+            self.leaderboard_table.add_row(["Name","Score"], cell_padding=[20,20,5,5])
+            for item in sorted(leaderboard_data, key=lambda x: x['score'], reverse=True)[:5]:
+                self.leaderboard_table.add_row([item['name'], item['score']], cell_padding=[20,20,5,5])
 
 
         self.menu.add.button('Back', lambda: self.move_state("menu"))

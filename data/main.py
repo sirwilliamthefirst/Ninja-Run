@@ -6,6 +6,7 @@ import data.control as control
 import data.states as states
 
 
+
 settings = {
     'size':(c.SCREEN_WIDTH, c.SCREEN_HEIGHT),
     'fps' :c.FPS
@@ -14,7 +15,6 @@ settings = {
 pg.init()
 pg.font.init()  # Initialize the font module
 pg.joystick.init()
-
 app = control.Control(**settings)
 state_dict = {
     'menu': states.Menu(),
