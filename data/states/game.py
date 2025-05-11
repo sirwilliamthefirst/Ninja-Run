@@ -37,9 +37,14 @@ class Game(States):
 
         #make enemy stuff
         self.enemy_factory = EnemyFactory()
+        num_player_divisor = len(States.players) + 1
+        cur_player_num = 0
         for player in States.players:
+            cur_player_num += 1
+            starty = c.SCREEN_HEIGHT * (cur_player_num/num_player_divisor)
             spawn_tree = self.stage.get_tree(c.SPAWN_TREE)
-            spawn_branch = spawn_tree.get_middle_branch()
+            spawn_branch = Branch(c.SPAWN_PLATFORM_WIDTH, c.PLATFORM_HEIGHT, spawn_tree.get_rect().centerx , starty)
+            spawn_tree.add_branch(spawn_branch)
             x, y = spawn_branch.get_top_center()
             player.unfreeze()
             player.move(x, y)

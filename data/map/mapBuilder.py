@@ -100,6 +100,8 @@ class Tree():
         self.generate_branches(self.num_branches)
 
 
+
+
     def generate_branches(self, num_branches = None):
         #if none, generate random number branches
         if not num_branches:
@@ -139,7 +141,8 @@ class Tree():
             self.branches.append(branch)
 
     def get_rect(self):
-        return self.img_rect   
+        return self.img_rect 
+      
     def move_ip(self, x,y):
         self.img_rect.move_ip(x,y)
         for branch in self.branches:
@@ -162,11 +165,17 @@ class Tree():
 
     def get_branches(self):
         return self.branches
+    
+    def add_branch(self, branch):
+        self.branches.append(branch)
+        self.branches.sort(key=lambda b: b.get_top_center()[1])
 
 
 
 class Branch():
-    def __init__(self, width, height, centerx, topy, branch_image):
+    def __init__(self, width, height, centerx, topy, branch_image = None):
+        if branch_image is None:
+            branch_image = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/branch.png'))).convert_alpha() 
         self.centerx = centerx 
         self.img = pygame.transform.scale(branch_image, (width, height))  # Flexible tile size
         self.img_rect = self.img.get_rect()
