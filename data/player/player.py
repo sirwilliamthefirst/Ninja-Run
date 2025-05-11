@@ -59,9 +59,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         delta_x = intent_dict[c.Actions.MOVE_X]
         delta_y = intent_dict[c.Actions.MOVE_Y]
         if self.is_airborn:
-            self.x_vel = numpy.clip(self.x_vel + (c.AIRBORN_SHIFT * delta_x), -c.MAX_SPEED, c.MAX_SPEED)
+            self.x_vel = numpy.clip(self.x_vel + (c.AIRBORN_SHIFT * delta_x), -c.MAX_LEFT_SPEED, c.MAX_RIGHT_SPEED)
         else:
-             self.x_vel = numpy.clip(self.x_vel + (c.BASE_SPEED * delta_x), -c.MAX_SPEED, c.MAX_SPEED)
+             self.x_vel = numpy.clip(self.x_vel + (c.BASE_SPEED * delta_x), -c.MAX_LEFT_SPEED, c.MAX_RIGHT_SPEED)
         
         if delta_y > 0:
             if self.is_airborn:
