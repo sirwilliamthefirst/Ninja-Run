@@ -2,7 +2,7 @@ import pygame as pg
 from data.player.player import Player
 from ..map import *
 from pygame.locals import *
-from .states import States
+from .states import Game_States, States
 import pygame_menu
 from data.api.client import APIClient
 import json
@@ -29,7 +29,7 @@ class Menu(States):
 
         self.player_enter_btn = self.menu.add.label("Press Enter/Start to join")
         self.game_start_btn = self.menu.add.label("")
-        self.menu.add.button('Play', lambda: self.move_state("game"))
+        self.menu.add.button('Play', lambda: self.move_state(Game_States.GAME.value))
         self.menu.add.button('Leaderboard', lambda: self.move_state("leaderboard")) #placeholder
         self.menu.add.button('Settings') #placeholder
         self.menu.add.button('Quit', pygame_menu.events.EXIT)

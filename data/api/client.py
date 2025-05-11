@@ -1,3 +1,4 @@
+import datetime
 import requests
 
 
@@ -19,7 +20,7 @@ class LeaderboardClient:
         except requests.RequestException as e:
             return {"error": str(e)}
 
-    def submit_score(self, player_name, score):
+    def submit_score(api_url: str, name: str, score: float, kills: int, time_alive: int):
         """
         Submit a player's score to the API.
         :param player_name: The name of the player.
@@ -27,7 +28,14 @@ class LeaderboardClient:
         :return: A dictionary containing the API response or an error message.
         """
         try:
-            payload = {"player_name": player_name, "score": score}
+            data = {
+            "name": name,
+            "score": score,
+            "kills": kills,
+            "time_alive": time_alive,
+            "date": datetime.utcnow().isoformat()  # or datetime.now().isoformat() if local time
+            }
+
             response = requests.post(f"{self.base_url}/submit", json=payload)
             response.raise_for_status()
             return response.json()
