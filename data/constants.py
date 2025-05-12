@@ -30,7 +30,7 @@ MAP_UPDATE_INTERVAL = 10
 GENERATIONALGO = "forest"
 
 # Platforms
-PLATFORM_SPEED = -5 * WIDTH_SCALE #Negative because they move to the left -1 is good for tesing -5 is good tho i think
+PLATFORM_SPEED = -4 * WIDTH_SCALE #Negative because they move to the left -1 is good for tesing -5 is good tho i think
 PLATFORM_WIDTH = 50 * WIDTH_SCALE #32
 PLATFORM_AVRG_WIDTH = 80 * WIDTH_SCALE#32
 PLATFORM_WIDTH_DEVIATION = 20 * WIDTH_SCALE

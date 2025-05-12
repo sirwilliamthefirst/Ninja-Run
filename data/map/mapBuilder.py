@@ -25,7 +25,6 @@ class MapBuilder():
         self.height_functions = []
 
     def update(self):
-        #append to end of list using 
         for tree in self.tree_list:
             tree.move_ip(c.PLATFORM_SPEED, 0)
             if tree.get_rect().right < c.DEADZONE: #-(c.PLATFORM_AVRG_WIDTH * 2):

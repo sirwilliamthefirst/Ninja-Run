@@ -41,7 +41,24 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.coyote_timer = 0
         self.done_dying = False
         self.particle_group = pygame.sprite.Group()
-        
+
+    # Update sprite animation
+    def update(self, dt):
+        if(not self.dead):
+            if self.freeze == False:
+                self.handle_move()
+                if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
+                    self.kill(c.DeathType.FALL)
+            if self.attack_cooldown < c.ATTACK_RATE:
+                self.attack_cooldown += 1
+            self.animate()
+        self.particle_group.update(1)
+        if(self.dead and len(self.particle_group) == 0):
+            self.done_dying = True
+        if(self.is_airborn):
+            self.coyote_timer += 1
+        else:
+            self.coyote_timer = 0
 
     def attack(self):
         if(not self.attacking and self.attack_cooldown >= c.ATTACK_RATE):
@@ -50,6 +67,11 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             self.image = self.attackSprites[0]
             self.attacking = True
 
+    def handle_gravity(self):
+        if self.is_airborn:
+            if self.y_vel < c.MAX_GRAVITY:
+                self.y_vel += c.GRAVITY
+  
     def handle_move(self):
         if not self.is_airborn:
             self.x_vel = 0
@@ -58,11 +80,14 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         intent_dict = self.input_handler.get_inputs()
         delta_x = intent_dict[c.Actions.MOVE_X]
         delta_y = intent_dict[c.Actions.MOVE_Y]
+        Speed_addition = c.MAX_LEFT_SPEED if delta_x < 0 else c.MAX_RIGHT_SPEED if delta_x > 0 else 0
         if self.is_airborn:
             self.x_vel = numpy.clip(self.x_vel + (c.AIRBORN_SHIFT * delta_x), -c.MAX_LEFT_SPEED, c.MAX_RIGHT_SPEED)
         else:
-             self.x_vel = numpy.clip(self.x_vel + (c.BASE_SPEED * delta_x), -c.MAX_LEFT_SPEED, c.MAX_RIGHT_SPEED)
+            self.x_vel = numpy.clip(self.x_vel + (Speed_addition * delta_x), -c.MAX_LEFT_SPEED, c.MAX_RIGHT_SPEED)
         
+        print(f'X speed = {self.x_vel} Speed addition = {Speed_addition}')
+
         if delta_y > 0:
             if self.is_airborn:
                 self.y_vel += c.VERTICLE_SHIFT * abs(delta_y)
@@ -84,7 +109,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.rect.bottom = self.pos_y
         self.rect.x = self.pos_x
 
-
     def move(self, x, y):
         self.pos_x = x
         self.pos_y = y
@@ -100,29 +124,10 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             self.y_vel = c.JUMP
             self.jump_timer += 1
 
-    def handle_gravity(self):
-        if self.is_airborn:
-            if self.y_vel < c.MAX_GRAVITY:
-                self.y_vel += c.GRAVITY
+   
 
         
-    # Update sprite animation
-    def update(self, dt):
-        if(not self.dead):
-            if self.freeze == False:
-                self.handle_move()
-                if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
-                    self.kill(c.DeathType.FALL)
-            if self.attack_cooldown < c.ATTACK_RATE:
-                self.attack_cooldown += 1
-            self.animate()
-        self.particle_group.update(1)
-        if(self.dead and len(self.particle_group) == 0):
-            self.done_dying = True
-        if(self.is_airborn):
-            self.coyote_timer += 1
-        else:
-            self.coyote_timer = 0
+    
 
         
     def jump(self):
