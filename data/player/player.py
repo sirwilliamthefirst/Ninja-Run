@@ -81,20 +81,20 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         delta_x = intent_dict[c.Actions.MOVE_X]
         delta_y = intent_dict[c.Actions.MOVE_Y]
         Speed_addition = c.MAX_LEFT_SPEED if delta_x < 0 else c.MAX_RIGHT_SPEED if delta_x > 0 else 0
-        if self.is_airborn:
+        if self.is_airborn and not self.double_jumped_frame:
             self.x_vel = numpy.clip(self.x_vel + (c.AIRBORN_SHIFT * delta_x), -c.MAX_LEFT_SPEED, c.MAX_RIGHT_SPEED)
         else:
             self.x_vel = numpy.clip(self.x_vel + (Speed_addition * delta_x), -c.MAX_LEFT_SPEED, c.MAX_RIGHT_SPEED)
         
         if delta_y > 0:
-            if self.is_airborn:
+            if self.is_airborn :
                 self.y_vel += c.VERTICLE_SHIFT * abs(delta_y)
             if delta_y > c.FALL_THRU_TOLERENCE: #some tolerance, so player must really press on joystick
                     self.fall_thru = True
                     self.is_airborn = True #drop from platform
         else:
             self.fall_thru = False 
-        
+        self.double_jumped_frame = False
         if intent_dict[c.Actions.ATTACK]: self.attack()
         if intent_dict[c.Actions.JUMP_PRESS]: self.jump_press()
         if intent_dict[c.Actions.JUMP_HOLD]: self.jump_hold()
@@ -145,6 +145,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             self.current_sprite = 0
             self.image = self.jumpSprites[self.current_sprite]
             self.can_doubleJump = False 
+            self.double_jumped_frame = True
 
     def animate(self):
         if(self.attacking):
