@@ -27,7 +27,8 @@ class Samurai(Enemy):
             self.load_images()
 
         self.rect = self.idle_images[0].get_rect()
-        self.rect.topleft = [pos_x, pos_y]
+        self.rect.top = pos_y
+        self.rect.centerx = pos_x
         
         # Initial state
         self.state = "idle"

@@ -108,6 +108,8 @@ class Game(States):
         tree = self.stage.create_tree()
         if(random.random() > .50): #Makes enemies
             branch_rect = tree.get_random_branch().get_rect()
-            self.enemies.add(self.enemy_factory.spawn_enemy(branch_rect.x, branch_rect.y))
+            enemy_width, enemy_name = self.enemy_factory.get_enemy_width() #(width, enemy_name) tuple
+            spawn_x = random.uniform(branch_rect.left, branch_rect.right - (enemy_width/2))
+            self.enemies.add(self.enemy_factory.spawn_enemy(spawn_x, branch_rect.y, enemy_name))
         self.map_spawn_counter = 0
   

@@ -86,8 +86,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         else:
             self.x_vel = numpy.clip(self.x_vel + (Speed_addition * delta_x), -c.MAX_LEFT_SPEED, c.MAX_RIGHT_SPEED)
         
-        print(f'X speed = {self.x_vel} Speed addition = {Speed_addition}')
-
         if delta_y > 0:
             if self.is_airborn:
                 self.y_vel += c.VERTICLE_SHIFT * abs(delta_y)
