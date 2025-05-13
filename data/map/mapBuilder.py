@@ -99,15 +99,14 @@ class Tree():
         self.generate_branches(self.num_branches)
 
 
-
-
+  
     def generate_branches(self, num_branches = None):
         #if none, generate random number branches
         if not num_branches:
             #randomNum = random.gauss(c.BRANCH_AVRG_NUM, c.BRANCH_NUM_DEVIATION)
             randomNum = random.uniform(c.BRANCH_NUM_LOWER, c.BRANCH_NUM_HIGHER)
             num_branches = int(randomNum)
-            num_branches = num_branches if num_branches > 0 else 1
+            num_branches = int(max(1, randomNum))
 
         #TODO: Make these constants
         skew = c.BRANCH_HEIGHT_SKEW 
