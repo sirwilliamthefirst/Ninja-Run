@@ -26,7 +26,7 @@ GRID_UNITS_X = int(SCREEN_WIDTH // GRID_SIZE)
 GRID_UNITS_Y = int(SCREEN_HEIGHT / GRID_SIZE) #REPLACE Y WITH PERLIN NOISE VALUES
 
 # Map Generation
-MAP_UPDATE_INTERVAL = 10
+MAP_UPDATE_INTERVAL = 0.01
 GENERATIONALGO = "forest"
 
 # Platforms
@@ -82,8 +82,8 @@ COYOTE_TIME = 10
 #Player Skills 
 ATTACK_RATE = 25
 
-
-
+#Juciness
+SLOW_DOWN_TIME = 0.5 #seconds
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform

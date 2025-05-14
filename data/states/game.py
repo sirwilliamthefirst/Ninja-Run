@@ -51,17 +51,29 @@ class Game(States):
 
         # Timing
         self.last_map_update = pygame.time.get_ticks()
+        self.map_update_timer = 0
+        self.time_slow_multiplier = 1
+        self.time_slow_timer = 0
 
     def get_event(self, events):
         return
           
     def update(self, screen, dt):
         self.draw(screen)
-        current_time = pygame.time.get_ticks()
-
-        if current_time - self.last_map_update > c.MAP_UPDATE_INTERVAL:
-            score_text = self.font.render(f'Score: {self.score}', True, (255, 255, 255))
-            screen.blit(score_text, (10, 10))
+        self.map_update_timer += dt * self.time_slow_multiplier
+        if self.time_slow_multiplier < 1 and self.time_slow_timer < c.SLOW_DOWN_TIME:
+            self.time_slow_timer += dt
+        else:
+            self.time_slow_multiplier = 1
+            self.time_slow_timer = 0
+        score_text = self.font.render(f'Score: {self.score}', True, (255, 255, 255))
+        screen.blit(score_text, (10, 10))
+        
+        print(f"Time dialation: {self.time_slow_multiplier} dt = {dt} dt * mult = {dt * self.time_slow_multiplier}" )
+        #if current_time - self.last_map_update > c.MAP_UPDATE_INTERVAL:
+        if self.map_update_timer >= c.MAP_UPDATE_INTERVAL: 
+            self.map_update_timer = 0
+            
             self.stage.update()
             self.enemies.update()
             if self.map_spawn_counter >= c.TREE_GAP:#self.unit_size:
@@ -77,11 +89,11 @@ class Game(States):
                         #TODO ADD RICOCHET IF PLAYER AND ENEMY ATTACK COLLIDES
                         if player.is_attacking():
                             enemy.die()
+                            self.time_slow_multiplier = 0.5
                             self.score += 20
                         elif enemy.is_collidable():
                             player.kill(c.DeathType.ENEMY)
                 player.drag()
-            self.last_map_update = current_time
             #Check if all players are dead, if not, update score
             all_dead_and_done = all(player.is_dead() and player.is_done_dying() for player in States.players)
             any_in_progress_dying = any(player.is_dead() and not player.is_done_dying() for player in States.players)
