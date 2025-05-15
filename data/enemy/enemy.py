@@ -15,6 +15,9 @@ class Enemy(pygame.sprite.Sprite):
             return self.collidable
         return False
     
+    def is_dead(self):
+        return self.dead
+
     def draw_particles(self, screen):
         self.particle_group.draw(screen)
 
@@ -25,19 +28,17 @@ class Enemy(pygame.sprite.Sprite):
             color = self.image.get_at(pixel)
             direction = pygame.math.Vector2(random.uniform(-0.2, 0.2), random.uniform(-1, 0))
             direction = direction.normalize()
-            speed = random.randint(2, 5)
+            speed = random.randint(120, 300)
+            
             particles.Particle(self.particle_group, pos, color, direction, speed)
         self.dead = True
         self.image = self.image.copy()
         self.image.set_alpha(0)
         
 
-    def shift(self, x, y):
-        self.pos_x += x
-        self.pos_y += y
+    def move_ip(self, x, y):
+        self.rect.move_ip(x, y)
 
-        self.rect.bottom = self.pos_y
-        self.rect.x = self.pos_x
 
     def get_random_position_within(self):
         random_x = random.randint(self.rect.left, self.rect.right)

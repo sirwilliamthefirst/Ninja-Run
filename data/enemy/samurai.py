@@ -27,7 +27,7 @@ class Samurai(Enemy):
             self.load_images()
 
         self.rect = self.idle_images[0].get_rect()
-        self.rect.top = pos_y
+        self.rect.bottom = pos_y
         self.rect.centerx = pos_x
         
         # Initial state
@@ -36,13 +36,13 @@ class Samurai(Enemy):
 
         # State timing control
         self.state_time = random.randint(0,40)
-        self.state_duration = {"idle": 50, "preparing": 30, "attacking": 10}  # frames for each state
+        self.state_duration = {"idle": 0.8, "preparing": 0.5, "attacking": 0.15}  # seconds for each state
 
 
-    def update(self):
+    def update(self, dt):
         """ Update the enemy state and animation. """
         if(not self.dead):
-            self.state_time += 1
+            self.state_time += dt
             # Handle state transitions
             if self.state == "idle":
                 self.handle_idle_state()
@@ -50,10 +50,10 @@ class Samurai(Enemy):
                 self.handle_preparing_state()
             elif self.state == "attacking":
                 self.handle_attacking_state()
-            self.shift(c.PLATFORM_SPEED, 0)
+            self.move_ip(c.PLATFORM_SPEED * dt, 0)
         elif(len(self.particle_group) == 0):
             self.kill()
-        self.particle_group.update(1)
+        self.particle_group.update(dt)
 
     def handle_idle_state(self):
         if self.state_time >= self.state_duration["idle"]:

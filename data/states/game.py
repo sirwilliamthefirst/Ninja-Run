@@ -17,6 +17,7 @@ class Game(States):
         self.enemies = pg.sprite.Group()
         self.score = 0
         self.font = pygame.font.Font(None, 36)
+        self.stacked_dt = 0 #for debugging
     def cleanup(self):
         print('cleaning Game state')
         States.player_set.clear()
@@ -60,50 +61,47 @@ class Game(States):
           
     def update(self, screen, dt):
         self.draw(screen)
-        self.map_update_timer += dt * self.time_slow_multiplier
+        dt_scaled = dt * self.time_slow_multiplier
         if self.time_slow_multiplier < 1 and self.time_slow_timer < c.SLOW_DOWN_TIME:
-            self.time_slow_timer += dt
+            self.time_slow_timer += dt # USE Real dt because we want real time seconds
         else:
             self.time_slow_multiplier = 1
             self.time_slow_timer = 0
         score_text = self.font.render(f'Score: {self.score}', True, (255, 255, 255))
         screen.blit(score_text, (10, 10))
+        self.stacked_dt += dt
+
+        self.stage.update(dt_scaled)
+        self.enemies.update(dt_scaled)
+        States.players.update(dt_scaled)
+        self.map_update_timer += dt_scaled
+        if self.map_spawn_counter >= c.TREE_GAP:#self.unit_size:
+            self.add_tree()
+            self.map_spawn_counter = 0
+        self.map_spawn_counter += -c.PLATFORM_SPEED * dt_scaled
         
-        print(f"Time dialation: {self.time_slow_multiplier} dt = {dt} dt * mult = {dt * self.time_slow_multiplier}" )
-        #if current_time - self.last_map_update > c.MAP_UPDATE_INTERVAL:
-        if self.map_update_timer >= c.MAP_UPDATE_INTERVAL: 
-            self.map_update_timer = 0
+        for player in States.players:
+            tools.collisionHandler.handle_verticle_collision(player, self.stage.get_map())
+            for enemy in self.enemies:
+                if tools.collisionHandler.check_collision(player, enemy):
+                    #TODO ADD RICOCHET IF PLAYER AND ENEMY ATTACK COLLIDES
+                    if player.is_attacking() and not enemy.is_dead():
+                        enemy.die()
+                        self.time_slow_multiplier = 0.5
+                        self.score += 20
+                    elif enemy.is_collidable():
+                        player.kill(c.DeathType.ENEMY)
+            player.drag(dt_scaled)
+        #Check if all players are dead, if not, update score
+        all_dead_and_done = all(player.is_dead() and player.is_done_dying() for player in States.players)
+        any_in_progress_dying = any(player.is_dead() and not player.is_done_dying() for player in States.players)
+
+        if all_dead_and_done:
+            self.done = True
+        elif not any_in_progress_dying:
+            # Only update score if no one is mid-death
+            self.score += 1
             
-            self.stage.update()
-            self.enemies.update()
-            if self.map_spawn_counter >= c.TREE_GAP:#self.unit_size:
-                self.update_forest()
-            self.map_spawn_counter += abs(c.PLATFORM_SPEED)
-
-
-            States.players.update(dt)
-            for player in States.players:
-                tools.collisionHandler.handle_verticle_collision(player, self.stage.get_map())
-                for enemy in self.enemies:
-                    if tools.collisionHandler.check_collision(player, enemy):
-                        #TODO ADD RICOCHET IF PLAYER AND ENEMY ATTACK COLLIDES
-                        if player.is_attacking():
-                            enemy.die()
-                            self.time_slow_multiplier = 0.5
-                            self.score += 20
-                        elif enemy.is_collidable():
-                            player.kill(c.DeathType.ENEMY)
-                player.drag()
-            #Check if all players are dead, if not, update score
-            all_dead_and_done = all(player.is_dead() and player.is_done_dying() for player in States.players)
-            any_in_progress_dying = any(player.is_dead() and not player.is_done_dying() for player in States.players)
-
-            if all_dead_and_done:
-                self.done = True
-            elif not any_in_progress_dying:
-                # Only update score if no one is mid-death
-                self.score += 1
-                
             
     
     def draw(self, screen):
@@ -116,12 +114,12 @@ class Game(States):
         for enemy in self.enemies:
             enemy.draw_particles(screen)
 
-    def update_forest(self):
+    def add_tree(self):
         tree = self.stage.create_tree()
         if(random.random() > .50): #Makes enemies
             branch_rect = tree.get_random_branch().get_rect()
             enemy_width, enemy_name = self.enemy_factory.get_enemy_width() #(width, enemy_name) tuple
             spawn_x = random.uniform(branch_rect.left, branch_rect.right - (enemy_width/2))
             self.enemies.add(self.enemy_factory.spawn_enemy(spawn_x, branch_rect.y, enemy_name))
-        self.map_spawn_counter = 0
+        
   

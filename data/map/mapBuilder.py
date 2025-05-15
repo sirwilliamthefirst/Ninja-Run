@@ -24,9 +24,9 @@ class MapBuilder():
         self.num_background_tiles = math.ceil(self.screen_width / c.BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
         self.height_functions = []
 
-    def update(self):
+    def update(self, dt):
         for tree in self.tree_list:
-            tree.move_ip(c.PLATFORM_SPEED, 0)
+            tree.move_ip(c.PLATFORM_SPEED * dt, 0)
             if tree.get_rect().right < c.DEADZONE: #-(c.PLATFORM_AVRG_WIDTH * 2):
                 self.tree_list.remove(tree)
              
