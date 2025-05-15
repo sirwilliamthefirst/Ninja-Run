@@ -30,7 +30,6 @@ class collisionHandler():
     """
     def handle_verticle_collision(player, tiles):
         if player.get_fall_thru():
-            #print("FALL!")
             return
         
         dy = math.ceil(player.get_dy())
@@ -40,7 +39,6 @@ class collisionHandler():
         tiles,
         key=lambda tile: abs(tile.get_rect().top - player.rect.bottom) if player.rect.right > tile.get_rect().left and player.rect.left < tile.get_rect().right else float('inf')
     )
-        #print([abs(tile[1].top - player.rect.bottom) for tile in sorted_tiles])
 
         collision_left_bound = (player.rect.centerx + player.rect.left)/2
         collision_right_bound = (player.rect.centerx + player.rect.right)/2 

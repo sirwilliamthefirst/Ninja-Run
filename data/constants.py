@@ -18,31 +18,36 @@ HEIGHT_SCALE = SCREEN_HEIGHT/600
 WINDOW_TITLE = "Ninja Run"
 FPS = 60 
 
-# Player Appearance
-SPRITE_WIDTH = 50 * WIDTH_SCALE # Adjust ratios if needed
-SPRITE_HEIGHT = 44 * HEIGHT_SCALE
+#MAP---------------------------------
 
-#Define Map stuff 
+#Map grid 
 GRID_SIZE = 120 * WIDTH_SCALE
 GRID_UNITS_X = int(SCREEN_WIDTH // GRID_SIZE) 
 GRID_UNITS_Y = int(SCREEN_HEIGHT / GRID_SIZE) #REPLACE Y WITH PERLIN NOISE VALUES
-MAP_UPDATE_INTERVAL = 10
+
+# Map Generation
+MAP_UPDATE_INTERVAL = 0.01
+GENERATIONALGO = "forest"
+
+# Platforms
+PLATFORM_SPEED = -240 * WIDTH_SCALE #Negative because they move to the left -1 is good for tesing -5 is good tho i think
 PLATFORM_WIDTH = 50 * WIDTH_SCALE #32
-PLATFORM_AVRG_WIDTH = 80 * WIDTH_SCALE#32
-PLATFORM_SPEED = -5 * WIDTH_SCALE #Negative because they move to the left -1 is good for tesing -5 is good tho i think
-PLATFORM_WIDTH_DEVIATION = 20 * WIDTH_SCALE
-PLATFORM_MIN_WIDTH = 45 * WIDTH_SCALE 
+PLATFORM_AVRG_WIDTH = 100 * WIDTH_SCALE#32
+PLATFORM_WIDTH_DEVIATION = (PLATFORM_AVRG_WIDTH * .10) * WIDTH_SCALE
+PLATFORM_MIN_WIDTH = (PLATFORM_AVRG_WIDTH *.75) * WIDTH_SCALE 
 PLATFORM_HEIGHT = 20 * HEIGHT_SCALE  #4
+SPAWN_PLATFORM_WIDTH = 200 * WIDTH_SCALE
+
+#Forest
 TREE_WIDTH = 50 * WIDTH_SCALE
 TREE_HEIGHT = SCREEN_HEIGHT
-PLATFORM_PROBABILITY = 0.85 #Threshhold for random num generator to determine number of platforms
-GENERATIONALGO = "forest"
+TREE_GAP = 200
+SPAWN_TREE = 3
 
 BRANCH_NUM_LOWER = 3
 BRANCH_NUM_HIGHER = 6
 BRANCH_NUM_DEVIATION = 3 
 BRANCH_MIN_SPACING = 40  * HEIGHT_SCALE#CAUTION: If to big, can cause infinite loop
- 
 BRANCH_HEIGHT_MEAN = int(500 * HEIGHT_SCALE)
 BRANCH_HEIGHT_BOUND = int(100 * HEIGHT_SCALE)
 BRANCH_HEIGHT_SCALE = int(200 * HEIGHT_SCALE)
@@ -51,25 +56,38 @@ BRANCH_HEIGHT_SKEW = int(-4 * HEIGHT_SCALE)
 
 
 BACKGROUND_IMAGE_DIMENSIONS = [928 * WIDTH_SCALE, 600 * HEIGHT_SCALE] #Width and Height of background image file, used for moving background
-BACKGROUND_SCROLL_SPEED = 5 * WIDTH_SCALE #Sets speed at which background moves
+BACKGROUND_SCROLL_SPEED = 3 * WIDTH_SCALE #Sets speed at which background moves
 
+#PLAYER ----------------------------------------
+
+#Appearance
+SPRITE_WIDTH = 50 * WIDTH_SCALE # Adjust ratios if needed
+SPRITE_HEIGHT = 44 * HEIGHT_SCALE
 
 # Player Physics
-BASE_SPEED = 5 * WIDTH_SCALE
-MAX_SPEED = 5 * WIDTH_SCALE
-GRAVITY = 0.8 * HEIGHT_SCALE
-MAX_GRAVITY = 20 * HEIGHT_SCALE
-AIRBORN_SHIFT = 0.7 * WIDTH_SCALE
-VERTICLE_SHIFT = 0.4 * HEIGHT_SCALE
-JUMP = -10 * HEIGHT_SCALE
-DRAG_SPEED = 0.7 * WIDTH_SCALE
+BASE_SPEED = 300 * WIDTH_SCALE
+DRAG_SPEED = 42 * WIDTH_SCALE
+MAX_SPEED = 300 * WIDTH_SCALE
+MAX_RIGHT_SPEED = 300 * WIDTH_SCALE
+MAX_LEFT_SPEED = (300 + DRAG_SPEED) * WIDTH_SCALE
+GRAVITY = 48 * HEIGHT_SCALE
+MAX_GRAVITY = 1200 * HEIGHT_SCALE
+AIRBORN_SHIFT = 42  * WIDTH_SCALE
+VERTICLE_SHIFT = 24 * HEIGHT_SCALE
+JUMP = -480 * HEIGHT_SCALE
+JUMP_TIME = 0.2
+JUMP_CUT_MULT= 0.5
+COYOTE_TIME = 1
+
+#Player Skills 
 ATTACK_RATE = 25
 
-SPAWN_TREE = 3
+#Juciness
+SLOW_DOWN_TIME = 0.5 #seconds
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform
-DEADZONE = -100 #where the player dies if off the map
+DEADZONE = -400 #where the player dies if off the map
 
 
 #assets path

@@ -16,7 +16,7 @@ class Particle(pygame.sprite.Sprite):
         self.direction = direction
         self.speed = speed
         self.alpha = 255
-        self.fade_speed = 5
+        self.fade_speed = 1000
         self.size = 4
 
         self.create_surf()

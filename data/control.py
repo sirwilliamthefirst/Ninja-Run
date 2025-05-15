@@ -6,7 +6,7 @@ class Control:
     def __init__(self, **settings):
         self.__dict__.update(settings)
         self.done = False
-        self.screen = pg.display.set_mode(self.size)
+        self.screen = pg.display.set_mode(self.size, pg.RESIZABLE)
         self.clock = pg.time.Clock() 
         self.fps = 60
     def setup_states(self, state_dict, start_state):
@@ -26,16 +26,20 @@ class Control:
             self.done = True
         elif self.state.done:
             self.flip_state()
+        
         self.state.update(self.screen, dt)
     def event_loop(self):
         events = pg.event.get()
         for event in events:
             if event.type == pg.QUIT:
                 self.done = True
+            if event.type == pg.VIDEORESIZE:
+                pass
+               
         self.state.get_event(events)
     def main_game_loop(self):
         while not self.done:
-            delta_time = self.clock.tick(self.fps)
+            delta_time = self.clock.tick(self.fps) / 1000.0
             self.event_loop()
             self.update(delta_time)
             pg.display.update()

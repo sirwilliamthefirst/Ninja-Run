@@ -7,11 +7,9 @@ import data.particles as particles
 from data.player.input_handler import Input_handler
 from data.tools import sprite_loader
 
-RUN_SPRITE_FRAMES = 10
-  
+RUN_SPRITE_FRAMES = 10  
 JUMP_SPRITE_FRAMES = 10
 ATTACK_SPRITE_FRAMES = 10
-
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
     def __init__(self, pos_x, pos_y, joystick = None, freeze = False):
@@ -40,47 +38,77 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.rect.topleft = [pos_x, pos_y]
         self.freeze = freeze
         self.dead = False
+        self.coyote_timer = 0
         self.done_dying = False
         self.particle_group = pygame.sprite.Group()
-        
 
-    def attack(self):
-        if(not self.attacking and self.attack_cooldown >= c.ATTACK_RATE):
+    # Update sprite animation
+    def update(self, dt):
+        if(not self.dead):
+            if self.freeze == False:
+                self.handle_move(dt)
+                if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
+                    self.kill(c.DeathType.FALL)
+            if self.attack_cooldown < c.ATTACK_RATE:
+                self.attack_cooldown += dt
+            self.animate()
+        self.particle_group.update(dt)
+        if(self.dead and len(self.particle_group) == 0):
+            self.done_dying = True
+        if(self.is_airborn):
+            self.coyote_timer += dt
+        else:
+            self.coyote_timer = 0
+
+    def attack(self, dt):
+        if(not self.attacking and self.attack_cooldown >= c.ATTACK_RATE * dt):
             self.attack_cooldown = 0
             self.current_sprite = 0
             self.image = self.attackSprites[0]
             self.attacking = True
 
-    def handle_move(self):
+    def handle_gravity(self, dt):
+        if self.is_airborn:
+            if self.y_vel < c.MAX_GRAVITY:
+                self.y_vel += c.GRAVITY * dt
+  
+    def handle_move(self, dt):
         if not self.is_airborn:
             self.x_vel = 0
             self.y_vel = 0
         
         intent_dict = self.input_handler.get_inputs()
-        delta_x = intent_dict[c.Actions.MOVE_X]
-        delta_y = intent_dict[c.Actions.MOVE_Y]
-        if self.is_airborn:
-            self.x_vel = numpy.clip(self.x_vel + (c.AIRBORN_SHIFT * delta_x), -c.MAX_SPEED, c.MAX_SPEED)
+        dx = intent_dict[c.Actions.MOVE_X]
+        dy = intent_dict[c.Actions.MOVE_Y]
+        Speed_addition = c.MAX_LEFT_SPEED if dx < 0 else c.MAX_RIGHT_SPEED if dx > 0 else 0
+        if self.is_airborn and not self.double_jumped_frame:
+            self.x_vel = numpy.clip(self.x_vel + (c.AIRBORN_SHIFT * dx * dt), -c.MAX_LEFT_SPEED * dt, c.MAX_RIGHT_SPEED * dt) 
+            print(f'{self.x_vel + (c.AIRBORN_SHIFT * dx * dt)} {-c.MAX_LEFT_SPEED} {c.MAX_RIGHT_SPEED}')
         else:
-             self.x_vel = numpy.clip(self.x_vel + (c.BASE_SPEED * delta_x), -c.MAX_SPEED, c.MAX_SPEED)
+            self.x_vel = numpy.clip(self.x_vel + (Speed_addition * dx * dt), -c.MAX_LEFT_SPEED * dt, c.MAX_RIGHT_SPEED * dt)
+            print(f'{self.x_vel + (Speed_addition * dx * dt)} {-c.MAX_LEFT_SPEED} {c.MAX_RIGHT_SPEED}')
+
         
-        if delta_y > 0:
-            if self.is_airborn:
-                self.y_vel += c.VERTICLE_SHIFT * abs(delta_y)
-            if delta_y > c.FALL_THRU_TOLERENCE: #some tolerance, so player must really press on joystick
+        if dy > 0:
+            if self.is_airborn :
+                self.y_vel += c.VERTICLE_SHIFT * abs(dy) * dt
+            if dy > c.FALL_THRU_TOLERENCE: #some tolerance, so player must really press on joystick
                     self.fall_thru = True
                     self.is_airborn = True #drop from platform
-            else:
-                self.fall_thru = False 
-        if intent_dict[c.Actions.ATTACK]: self.attack()
-        if intent_dict[c.Actions.JUMP_PRESS]: self.jump_press()
-        if intent_dict[c.Actions.JUMP_HOLD]: self.jump_hold()
-        self.handle_gravity()
+        else:
+            self.fall_thru = False 
+        self.double_jumped_frame = False
+        if intent_dict[c.Actions.ATTACK]: self.attack(dt)
+        if intent_dict[c.Actions.JUMP_PRESS]: self.jump_press(dt)
+        if intent_dict[c.Actions.JUMP_HOLD]: self.jump_hold(dt)
+        if not intent_dict[c.Actions.JUMP_HOLD] and not intent_dict[c.Actions.JUMP_PRESS] and self.y_vel < 0:
+            self.is_jumping = False
+            self.y_vel *= c.JUMP_CUT_MULT #* dt
+        self.handle_gravity(dt)
         self.pos_x += self.x_vel
         self.pos_y += self.y_vel
         self.rect.bottom = self.pos_y
         self.rect.x = self.pos_x
-
 
     def move(self, x, y):
         self.pos_x = x
@@ -89,50 +117,38 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.rect.x = y
 
    
-    def jump_press(self):
-       self.jump()
+    def jump_press(self, dt):
+       self.jump(dt)
     
-    def jump_hold(self):
-        if(self.is_airborn):
-            self.y_vel += -c.VERTICLE_SHIFT
-        else:
-            self.jump()
+    def jump_hold(self, dt):
+        if(self.is_airborn and self.is_jumping and self.jump_timer < c.JUMP_TIME):
+            self.y_vel = c.JUMP * dt
+            self.jump_timer += dt
 
-    def handle_gravity(self):
-        if self.is_airborn:
-            if self.y_vel < c.MAX_GRAVITY:
-                self.y_vel += c.GRAVITY
+   
 
         
-    # Update sprite animation
-    def update(self, dt):
-        if(not self.dead):
-            if self.freeze == False:
-                self.handle_move()
-                if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
-                    self.kill(c.DeathType.FALL)
-            if self.attack_cooldown < c.ATTACK_RATE:
-                self.attack_cooldown += 1
-            self.animate()
-        self.particle_group.update(1)
-        if(self.dead and len(self.particle_group) == 0):
-            self.done_dying = True
+    
 
         
-    def jump(self):
-        if(not self.is_jumping and not self.is_airborn):
+    def jump(self,dt):
+        if(not self.is_jumping and (not self.is_airborn or self.coyote_timer < c.COYOTE_TIME)):
+            self.jump_timer = 0 
             self.is_jumping = True
-            self.y_vel = c.JUMP
+            self.y_vel = c.JUMP *dt
             self.is_airborn = True
             #reset current sprite and make it the fist jump
+            self.coyote_timer = c.COYOTE_TIME
             self.current_sprite = 0
             self.image = self.jumpSprites[self.current_sprite]
         elif(self.can_doubleJump and self.is_airborn):
-            self.y_vel = c.JUMP
+            self.jump_timer = c.JUMP_TIME/2
+            self.is_jumping = True
+            self.y_vel = c.JUMP * dt
             self.current_sprite = 0
             self.image = self.jumpSprites[self.current_sprite]
             self.can_doubleJump = False 
-
+            self.double_jumped_frame = True
 
     def animate(self):
         if(self.attacking):
@@ -141,10 +157,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             if(self.current_sprite == ATTACK_SPRITE_FRAMES - 1):
                 self.attacking = False
         elif(self.is_airborn):
-            if(self.is_jumping and self.current_sprite >= 5):
-                self.is_jumping = False
-                self.current_sprite = 5
-            elif(self.current_sprite >= 7):
+            if(self.current_sprite >= 7):
                 self.current_sprite = 5
             else:
                 self.current_sprite += 1
@@ -165,9 +178,9 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
 
 
-    def drag(self):
+    def drag(self, dt):
         if(not self.is_airborn):
-            self.pos_x += -c.DRAG_SPEED
+            self.pos_x += -c.DRAG_SPEED * dt
 
     def draw_particles(self, screen):
         self.particle_group.draw(screen)
@@ -183,6 +196,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def land(self):
         self.is_airborn = False
+        self.is_jumping = False
         self.can_doubleJump = True
         self.y_vel = 0
 
@@ -215,12 +229,13 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
                     color = self.image.get_at(pixel)
                     direction = pygame.math.Vector2(random.uniform(-0.2, 0.2), random.uniform(-1, 0))
                     direction = direction.normalize()
-                    speed = random.randint(2, 5)
+                    speed = random.randint(120, 300)
                     particles.Particle(self.particle_group, pos, color, direction, speed)
-                self.image.set_alpha(0)
             case _:
                 print("Unknown death.")
         self.dead = True
+        self.image.set_alpha(0)
+
 
     #Get a random position within the player rect
     def get_random_position_within(self):

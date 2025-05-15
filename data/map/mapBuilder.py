@@ -24,10 +24,9 @@ class MapBuilder():
         self.num_background_tiles = math.ceil(self.screen_width / c.BACKGROUND_IMAGE_DIMENSIONS[0]) + 1
         self.height_functions = []
 
-    def update(self):
-        #append to end of list using 
+    def update(self, dt):
         for tree in self.tree_list:
-            tree.move_ip(c.PLATFORM_SPEED, 0)
+            tree.move_ip(c.PLATFORM_SPEED * dt, 0)
             if tree.get_rect().right < c.DEADZONE: #-(c.PLATFORM_AVRG_WIDTH * 2):
                 self.tree_list.remove(tree)
              
@@ -100,24 +99,27 @@ class Tree():
         self.generate_branches(self.num_branches)
 
 
+  
     def generate_branches(self, num_branches = None):
         #if none, generate random number branches
         if not num_branches:
             #randomNum = random.gauss(c.BRANCH_AVRG_NUM, c.BRANCH_NUM_DEVIATION)
             randomNum = random.uniform(c.BRANCH_NUM_LOWER, c.BRANCH_NUM_HIGHER)
             num_branches = int(randomNum)
-            num_branches = num_branches if num_branches > 0 else 1
+            num_branches = int(max(1, randomNum))
 
         #TODO: Make these constants
         skew = c.BRANCH_HEIGHT_SKEW 
         mean =  random.randint(c.BRANCH_HEIGHT_MEAN - c.BRANCH_HEIGHT_BOUND, c.BRANCH_HEIGHT_MEAN + c.BRANCH_HEIGHT_BOUND)
         scale = c.BRANCH_HEIGHT_SCALE 
         branch_heights = []
-        for _ in range(num_branches):
+        for i in range(num_branches):
             while True:
                 # Generate a potential branch height
-                randomHeight = skewnorm.rvs(a=skew, loc=mean, scale=scale)
-
+                if(i < 3): 
+                    randomHeight = skewnorm.rvs(a=skew, loc=mean, scale=scale)
+                else:
+                    randomHeight = random.uniform(0, c.SCREEN_HEIGHT)
                 # Clamp the height to screen bounds
                 randomHeight = max(0, min(c.SCREEN_HEIGHT, randomHeight))
 
@@ -137,7 +139,8 @@ class Tree():
             self.branches.append(branch)
 
     def get_rect(self):
-        return self.img_rect   
+        return self.img_rect 
+      
     def move_ip(self, x,y):
         self.img_rect.move_ip(x,y)
         for branch in self.branches:
@@ -148,7 +151,6 @@ class Tree():
 
     def get_middle_branch(self):
         sorted_branches = sorted(self.branches, key = lambda branch: branch.get_top_center()[1])
-        print(sorted_branches)
         if sorted_branches:
             middle_index = len(sorted_branches) // 2
             return sorted_branches[middle_index]
@@ -161,11 +163,17 @@ class Tree():
 
     def get_branches(self):
         return self.branches
+    
+    def add_branch(self, branch):
+        self.branches.append(branch)
+        self.branches.sort(key=lambda b: b.get_top_center()[1])
 
 
 
 class Branch():
-    def __init__(self, width, height, centerx, topy, branch_image):
+    def __init__(self, width, height, centerx, topy, branch_image = None):
+        if branch_image is None:
+            branch_image = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/branch.png'))).convert_alpha() 
         self.centerx = centerx 
         self.img = pygame.transform.scale(branch_image, (width, height))  # Flexible tile size
         self.img_rect = self.img.get_rect()

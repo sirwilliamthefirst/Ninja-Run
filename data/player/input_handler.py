@@ -25,7 +25,6 @@ class Input_handler():
             self.pressed_keys = {i for i, key in enumerate(self.keys) if self.old_keys and self.old_keys[i]} 
 
             button_state = self.keys
-            print(len(self.pressed_keys))
             pressed_state = self.pressed_keys
 
         else:
@@ -34,7 +33,6 @@ class Input_handler():
             self.j_pressed = {i for i, key in enumerate(self.j_state) if self.old_j_state and self.old_j_state[i]}
             #self.j_pressed = {key: value for key, value in self.j_state.items() if self.old_j_state and value}
             button_state = self.j_state
-            print(len(self.j_pressed))
             pressed_state = self.j_pressed
         
         axis = self.get_axis()
