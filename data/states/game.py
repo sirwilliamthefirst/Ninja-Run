@@ -35,7 +35,7 @@ class Game(States):
         self.stage = MapBuilder(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GRID_UNITS_X) 
         self.stage.generate(c.GENERATIONALGO)
         #self.stage.generate() #USe this for random stage select... at some point, make a stage select screen and build there
-
+        self.end_wait = 0
         #make enemy stuff
         self.enemy_factory = EnemyFactory()
         num_player_divisor = len(States.players) + 1
@@ -87,19 +87,27 @@ class Game(States):
                     #TODO ADD RICOCHET IF PLAYER AND ENEMY ATTACK COLLIDES
                     if player.is_attacking() and not enemy.is_dead():
                         enemy.die()
-                        self.time_slow_multiplier = 0.5
+                        #self.time_slow_multiplier = 0.5
                         self.score += 20
                     elif enemy.is_collidable():
                         player.kill(c.DeathType.ENEMY)
+            for player2 in States.players:
+                if(player != player2) and tools.collisionHandler.check_collision(player, player2):
+                        if player.is_attacking() and not player2.is_attacking():
+                            player2.kill(c.DeathType.ENEMY)
+
+                            
             player.drag(dt_scaled)
         #Check if all players are dead, if not, update score
         all_dead_and_done = all(player.is_dead() and player.is_done_dying() for player in States.players)
         any_in_progress_dying = any(player.is_dead() and not player.is_done_dying() for player in States.players)
 
         if all_dead_and_done:
-            self.done = True
+            self.end_wait += dt
+            if self.end_wait >= 1:
+                self.done = True
         elif not any_in_progress_dying:
-            # Only update score if no one is mid-death
+            # Only update score if no one is mid-death FIX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             self.score += 1
             
             

@@ -114,17 +114,7 @@ class Leaderboard(States):
 
     def get_event(self, events):
         self.menu.update(events)
-        for event in events:
-            if event.type == pg.QUIT:
-                self.quit = True
-            if event.type == pg.JOYBUTTONDOWN:
-                if event.button == 7 and not States.player_set.__contains__(event.instance_id):
-                    self.add_player(event.instance_id)
-
-            if event.type == pg.KEYDOWN:
-                if not States.player_set.__contains__("Keyboard") and event.key == pg.K_RETURN:
-                    self.add_player()
-
+       
     def update(self, screen, dt):
         self.draw(screen)
         

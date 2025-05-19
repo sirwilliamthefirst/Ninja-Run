@@ -87,8 +87,8 @@ SLOW_DOWN_TIME = 0.5 #seconds
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform
-DEADZONE = -400 #where the player dies if off the map
-
+DEADZONE_X = -100 #where the player dies if off the map x axis
+DEADZONE_Y = 610 #where the player dies if off the map y axis
 
 #assets path
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath( __file__ )))
