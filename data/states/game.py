@@ -8,6 +8,8 @@ from ..map import *
 from pygame.locals import *
 import data.constants as c  # Import constants
 
+
+
 class Game(States):
     def __init__(self):
         States.__init__(self)
@@ -91,10 +93,11 @@ class Game(States):
                         self.score += 20
                     elif enemy.is_collidable():
                         player.kill(c.DeathType.ENEMY)
-            for player2 in States.players:
-                if(player != player2) and tools.collisionHandler.check_collision(player, player2):
-                        if player.is_attacking() and not player2.is_attacking():
-                            player2.kill(c.DeathType.ENEMY)
+            if States.pvp_flag:
+                for player2 in States.players:
+                    if (player != player2) and tools.collisionHandler.check_collision(player, player2):
+                            if player.is_attacking() and not player2.is_attacking():
+                                player2.kill(c.DeathType.ENEMY)
 
                             
             player.drag(dt_scaled)

@@ -10,6 +10,7 @@ class States(object):
     player_set = set()
     players = pygame.sprite.Group()
     joysticks = None
+    pvp_flag = False
 
     def __init__(self):
         self.done = False
