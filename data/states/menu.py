@@ -9,6 +9,9 @@ import json
  
 
 class Menu(States):
+
+    pvp_button_font = {'color' : (120, 6, 6)}
+
     def __init__(self):
         States.__init__(self)
         self.next = 'game'
@@ -29,12 +32,8 @@ class Menu(States):
         States.pvp_flag = False
         self.player_enter_btn = self.menu.add.label("Press Enter/Start to join")
         self.game_start_btn = self.menu.add.label("")
-        self.menu.add.button('Play', lambda: self.move_state(Game_States.GAME.value))
-        if len(States.players) > 1:
-            self.menu.add.button("PVP", lambda: self.start_pvp())
-        self.menu.add.button('Leaderboard', lambda: self.move_state("leaderboard")) #placeholder
-        self.menu.add.button('Settings') #placeholder
-        self.menu.add.button('Quit', pygame_menu.events.EXIT)
+        self.make_menu_buttons(self.menu)
+       
 
     def get_event(self, events):
         self.menu.update(events)
@@ -45,7 +44,7 @@ class Menu(States):
                 if event.button == 7 and not States.player_set.__contains__(event.instance_id):
                     self.add_player(event.instance_id)
                     if(len(States.players) > 1):
-                        self.menu.add.button("PVP", lambda: self.start_pvp())
+                        self.make_menu_buttons(self.menu)
                         self.menu.force_surface_update()
 
 
@@ -53,7 +52,7 @@ class Menu(States):
                 if not States.player_set.__contains__("Keyboard") and event.key == pg.K_RETURN:
                     self.add_player()
                     if(len(States.players) > 1):
-                        self.menu.add.button("PVP", lambda: self.start_pvp())
+                        self.make_menu_buttons(self.menu)
                         self.menu.force_surface_update()
 
     def update(self, screen, dt):
@@ -90,6 +89,17 @@ class Menu(States):
     def start_pvp(self):
         States.pvp_flag = True
         self.move_state(Game_States.GAME.value)
+
+    def make_menu_buttons(self, menu):
+        menu.clear()
+        menu.add.button('Play', lambda: self.move_state(Game_States.GAME.value))
+        if len(States.players) > 1:
+            pvp_button = menu.add.button("PVP", lambda: self.start_pvp())
+            print(pvp_button.update_font.__doc__)
+            pvp_button.update_font(Menu.pvp_button_font)  # Change the font color to red
+        menu.add.button('Leaderboard', lambda: self.move_state("leaderboard")) #placeholder
+        menu.add.button('Settings') #placeholder
+        menu.add.button('Quit', pygame_menu.events.EXIT)
 
 
 class Leaderboard(States):
