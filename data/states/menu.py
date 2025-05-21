@@ -5,7 +5,6 @@ from pygame.locals import *
 from .states import Game_States, States
 import pygame_menu
 from data.api.client import APIClient
-import json
  
 
 class Menu(States):
@@ -96,7 +95,7 @@ class Menu(States):
         if len(States.players) > 1:
             pvp_button = menu.add.button("PVP", lambda: self.start_pvp())
             print(pvp_button.update_font.__doc__)
-            pvp_button.update_font(Menu.pvp_button_font)  # Change the font color to red
+            pvp_button.set_font(c.PVP_FONT_PATH, 30, (120, 6, 6), (255,255,255), (120, 6, 6), (255,255,255), None, False)  # Change the font color to red
         menu.add.button('Leaderboard', lambda: self.move_state("leaderboard")) #placeholder
         menu.add.button('Settings') #placeholder
         menu.add.button('Quit', pygame_menu.events.EXIT)

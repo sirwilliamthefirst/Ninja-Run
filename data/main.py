@@ -13,7 +13,7 @@ settings = {
 }
   
 pg.init()
-pg.font.init()  # Initialize the font module
+pg.font.init() 
 pg.joystick.init()
 app = control.Control(**settings)
 state_dict = {

@@ -94,6 +94,10 @@ DEADZONE_Y = 610 #where the player dies if off the map y axis
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath( __file__ )))
 ASSETS_PATH = os.path.join(BASE_PATH, "assets")
 
+#Fonts
+PVP_FONT_PATH = os.path.join(ASSETS_PATH, "fonts", "bloodsoul", "Bloodsoul PERSONAL USE ONLY!.ttf")
+
+
 #Screen positions, Divided into 4:3 Aspect (x, y) * (WIDTH, HEIGHT)
 SCREEN_COORDINATES = {
     "Top": {
@@ -192,3 +196,4 @@ DEFAULT_JOY_MAP = {
     Actions.ATTACK: 2,
     Actions.DASH: 1
 }
+
