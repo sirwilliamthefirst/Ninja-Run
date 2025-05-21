@@ -42,7 +42,7 @@ class Menu(States):
             if event.type == pg.JOYBUTTONDOWN:
                 if event.button == 7 and not States.player_set.__contains__(event.instance_id):
                     self.add_player(event.instance_id)
-                    if(len(States.players) > 1):
+                    if(len(States.players) > 0):
                         self.make_menu_buttons(self.menu)
                         self.menu.force_surface_update()
 
@@ -50,7 +50,7 @@ class Menu(States):
             if event.type == pg.KEYDOWN:
                 if not States.player_set.__contains__("Keyboard") and event.key == pg.K_RETURN:
                     self.add_player()
-                    if(len(States.players) > 1):
+                    if(len(States.players) > 0):
                         self.make_menu_buttons(self.menu)
                         self.menu.force_surface_update()
 
@@ -91,10 +91,11 @@ class Menu(States):
 
     def make_menu_buttons(self, menu):
         menu.clear()
-        menu.add.button('Play', lambda: self.move_state(Game_States.GAME.value))
-        if len(States.players) > 1:
+        if len(States.players) == 1:
+            menu.add.button('Play', lambda: self.move_state(Game_States.GAME.value))
+        elif len(States.players) > 1:
+            menu.add.button('Play (Co-op)', lambda: self.move_state(Game_States.GAME.value))
             pvp_button = menu.add.button("PVP", lambda: self.start_pvp())
-            print(pvp_button.update_font.__doc__)
             pvp_button.set_font(c.PVP_FONT_PATH, 30, (120, 6, 6), (255,255,255), (120, 6, 6), (255,255,255), None, False)  # Change the font color to red
         menu.add.button('Leaderboard', lambda: self.move_state("leaderboard")) #placeholder
         menu.add.button('Settings') #placeholder
