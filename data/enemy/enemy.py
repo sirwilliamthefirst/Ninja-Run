@@ -21,6 +21,9 @@ class Enemy(pygame.sprite.Sprite):
     def draw_particles(self, screen):
         self.particle_group.draw(screen)
 
+    def get_rect(self):
+        return self.rect
+
     def die(self):
         for _ in range(50):
             pos = self.get_random_position_within()

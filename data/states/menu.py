@@ -9,7 +9,6 @@ from data.api.client import APIClient
 
 class Menu(States):
 
-    pvp_button_font = {'color' : (120, 6, 6)}
 
     def __init__(self):
         States.__init__(self)
