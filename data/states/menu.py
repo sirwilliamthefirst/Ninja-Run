@@ -5,10 +5,11 @@ from pygame.locals import *
 from .states import Game_States, States
 import pygame_menu
 from data.api.client import APIClient
-import json
  
 
 class Menu(States):
+
+
     def __init__(self):
         States.__init__(self)
         self.next = 'game'
@@ -26,13 +27,11 @@ class Menu(States):
                 )
         self.menu = pygame_menu.Menu('Ninja Run', c.SCREEN_WIDTH, c.SCREEN_HEIGHT,
                        theme=mytheme)
-
+        States.pvp_flag = False
         self.player_enter_btn = self.menu.add.label("Press Enter/Start to join")
         self.game_start_btn = self.menu.add.label("")
-        self.menu.add.button('Play', lambda: self.move_state(Game_States.GAME.value))
-        self.menu.add.button('Leaderboard', lambda: self.move_state("leaderboard")) #placeholder
-        self.menu.add.button('Settings') #placeholder
-        self.menu.add.button('Quit', pygame_menu.events.EXIT)
+        self.make_menu_buttons(self.menu)
+       
 
     def get_event(self, events):
         self.menu.update(events)
@@ -42,10 +41,17 @@ class Menu(States):
             if event.type == pg.JOYBUTTONDOWN:
                 if event.button == 7 and not States.player_set.__contains__(event.instance_id):
                     self.add_player(event.instance_id)
+                    if(len(States.players) > 0):
+                        self.make_menu_buttons(self.menu)
+                        self.menu.force_surface_update()
+
 
             if event.type == pg.KEYDOWN:
                 if not States.player_set.__contains__("Keyboard") and event.key == pg.K_RETURN:
                     self.add_player()
+                    if(len(States.players) > 0):
+                        self.make_menu_buttons(self.menu)
+                        self.menu.force_surface_update()
 
     def update(self, screen, dt):
         if self.visible_counter >= self.visible_switch:
@@ -77,6 +83,22 @@ class Menu(States):
         num_players = len(States.players)
         x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
         States.players.add(Player(x, y, joystick, freeze=True))
+
+    def start_pvp(self):
+        States.pvp_flag = True
+        self.move_state(Game_States.GAME.value)
+
+    def make_menu_buttons(self, menu):
+        menu.clear()
+        if len(States.players) == 1:
+            menu.add.button('Play', lambda: self.move_state(Game_States.GAME.value))
+        elif len(States.players) > 1:
+            menu.add.button('Play (Co-op)', lambda: self.move_state(Game_States.GAME.value))
+            pvp_button = menu.add.button("PVP", lambda: self.start_pvp())
+            pvp_button.set_font(c.PVP_FONT_PATH, 30, (120, 6, 6), (255,255,255), (120, 6, 6), (255,255,255), None, False)  # Change the font color to red
+        menu.add.button('Leaderboard', lambda: self.move_state("leaderboard")) #placeholder
+        menu.add.button('Settings') #placeholder
+        menu.add.button('Quit', pygame_menu.events.EXIT)
 
 
 class Leaderboard(States):
@@ -114,21 +136,13 @@ class Leaderboard(States):
 
     def get_event(self, events):
         self.menu.update(events)
-        for event in events:
-            if event.type == pg.QUIT:
-                self.quit = True
-            if event.type == pg.JOYBUTTONDOWN:
-                if event.button == 7 and not States.player_set.__contains__(event.instance_id):
-                    self.add_player(event.instance_id)
-
-            if event.type == pg.KEYDOWN:
-                if not States.player_set.__contains__("Keyboard") and event.key == pg.K_RETURN:
-                    self.add_player()
-
+       
     def update(self, screen, dt):
         self.draw(screen)
         
     def draw(self, screen):
         screen.fill((0,0,0))
         self.menu.draw(screen)
+
+
        

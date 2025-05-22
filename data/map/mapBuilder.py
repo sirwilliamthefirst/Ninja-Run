@@ -27,7 +27,7 @@ class MapBuilder():
     def update(self, dt):
         for tree in self.tree_list:
             tree.move_ip(c.PLATFORM_SPEED * dt, 0)
-            if tree.get_rect().right < c.DEADZONE: #-(c.PLATFORM_AVRG_WIDTH * 2):
+            if tree.get_rect().right < c.DEADZONE_X: #-(c.PLATFORM_AVRG_WIDTH * 2):
                 self.tree_list.remove(tree)
              
     def create_tree(self):

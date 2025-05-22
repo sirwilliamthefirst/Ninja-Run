@@ -87,12 +87,16 @@ SLOW_DOWN_TIME = 0.5 #seconds
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform
-DEADZONE = -400 #where the player dies if off the map
-
+DEADZONE_X = -100 #where the player dies if off the map x axis
+DEADZONE_Y = 610 #where the player dies if off the map y axis
 
 #assets path
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath( __file__ )))
 ASSETS_PATH = os.path.join(BASE_PATH, "assets")
+
+#Fonts
+PVP_FONT_PATH = os.path.join(ASSETS_PATH, "fonts", "bloodsoul", "Bloodsoul PERSONAL USE ONLY!.ttf")
+
 
 #Screen positions, Divided into 4:3 Aspect (x, y) * (WIDTH, HEIGHT)
 SCREEN_COORDINATES = {
@@ -192,3 +196,4 @@ DEFAULT_JOY_MAP = {
     Actions.ATTACK: 2,
     Actions.DASH: 1
 }
+

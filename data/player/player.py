@@ -11,6 +11,10 @@ RUN_SPRITE_FRAMES = 10
 JUMP_SPRITE_FRAMES = 10
 ATTACK_SPRITE_FRAMES = 10
 
+MAX_CHAKRA = 100
+STARTING_CHAKRA = 20
+CHAKRA_REGEN_RATE = 0.5 # per second
+
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
     def __init__(self, pos_x, pos_y, joystick = None, freeze = False):
         super().__init__()
@@ -41,17 +45,20 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         self.coyote_timer = 0
         self.done_dying = False
         self.particle_group = pygame.sprite.Group()
+        self.chakra = STARTING_CHAKRA
 
     # Update sprite animation
     def update(self, dt):
         if(not self.dead):
             if self.freeze == False:
                 self.handle_move(dt)
-                if self.pos_y > c.SCREEN_HEIGHT or self.pos_x < c.DEADZONE:
+                self.animate()
+                if self.pos_y > c.DEADZONE_Y or self.pos_x < c.DEADZONE_X:
                     self.kill(c.DeathType.FALL)
+            else:
+                self.animate()
             if self.attack_cooldown < c.ATTACK_RATE:
                 self.attack_cooldown += dt
-            self.animate()
         self.particle_group.update(dt)
         if(self.dead and len(self.particle_group) == 0):
             self.done_dying = True
@@ -82,13 +89,10 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         dy = intent_dict[c.Actions.MOVE_Y]
         Speed_addition = c.MAX_LEFT_SPEED if dx < 0 else c.MAX_RIGHT_SPEED if dx > 0 else 0
         if self.is_airborn and not self.double_jumped_frame:
-            self.x_vel = numpy.clip(self.x_vel + (c.AIRBORN_SHIFT * dx * dt), -c.MAX_LEFT_SPEED * dt, c.MAX_RIGHT_SPEED * dt) 
-            print(f'{self.x_vel + (c.AIRBORN_SHIFT * dx * dt)} {-c.MAX_LEFT_SPEED} {c.MAX_RIGHT_SPEED}')
+            self.x_vel = numpy.clip(self.x_vel + (c.AIRBORN_SHIFT * dx * dt), -c.MAX_LEFT_SPEED * dt, c.MAX_RIGHT_SPEED * dt)
         else:
             self.x_vel = numpy.clip(self.x_vel + (Speed_addition * dx * dt), -c.MAX_LEFT_SPEED * dt, c.MAX_RIGHT_SPEED * dt)
-            print(f'{self.x_vel + (Speed_addition * dx * dt)} {-c.MAX_LEFT_SPEED} {c.MAX_RIGHT_SPEED}')
 
-        
         if dy > 0:
             if self.is_airborn :
                 self.y_vel += c.VERTICLE_SHIFT * abs(dy) * dt
@@ -101,6 +105,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         if intent_dict[c.Actions.ATTACK]: self.attack(dt)
         if intent_dict[c.Actions.JUMP_PRESS]: self.jump_press(dt)
         if intent_dict[c.Actions.JUMP_HOLD]: self.jump_hold(dt)
+        #if intent_dict[c.Actions.ABILITY_1]: self.abilty_1(self.ability,dt)
         if not intent_dict[c.Actions.JUMP_HOLD] and not intent_dict[c.Actions.JUMP_PRESS] and self.y_vel < 0:
             self.is_jumping = False
             self.y_vel *= c.JUMP_CUT_MULT #* dt
@@ -124,12 +129,6 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         if(self.is_airborn and self.is_jumping and self.jump_timer < c.JUMP_TIME):
             self.y_vel = c.JUMP * dt
             self.jump_timer += dt
-
-   
-
-        
-    
-
         
     def jump(self,dt):
         if(not self.is_jumping and (not self.is_airborn or self.coyote_timer < c.COYOTE_TIME)):
@@ -221,6 +220,14 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         match death_type:
             case c.DeathType.FALL:
                 print("Fell off a cliff.")
+                for _ in range(50):
+                    pos = self.get_random_position_within()
+                    pixel = self.get_random_pixel()
+                    color = self.image.get_at(pixel)
+                    direction = pygame.math.Vector2(random.uniform(-0.2, 0.2), random.uniform(-1, 0))
+                    direction = direction.normalize()
+                    speed = random.randint(120, 300)
+                    particles.Particle(self.particle_group, pos, color, direction, speed)
             case c.DeathType.ENEMY:
                 print("Explode.")
                 for _ in range(50):
@@ -252,5 +259,24 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
 
     def get_controller_id(self):
         return self.joystick.get_guid() if self.joystick else None
-    
-    
+
+
+            
+        
+class ISkill:
+    def use(self, target=None):
+        pass
+
+class Ninja_Time(ISkill):
+    def __init__(self, player):
+        self.player = player
+        self.cooldown = 0
+        self.active = False
+        self.duration = 5
+        self.start_time = 0
+
+    def use(self, target=None):
+        if self.cooldown <= 0:
+            self.active = True
+            self.start_time = pygame.time.get_ticks()
+            self.cooldown = 10 # Set cooldown time in seconds
