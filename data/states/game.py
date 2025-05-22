@@ -94,8 +94,9 @@ class Game(States):
                     if player.is_attacking() and not enemy.is_dead():
                         enemy.die()
                         #self.time_slow_multiplier = 0.5
-                        self.score += 20
-                        self.floating_texts.append(FloatingText("+20", enemy.get_rect().center))
+                        enemy_value = enemy.get_worth()
+                        self.score += enemy_value
+                        self.floating_texts.append(FloatingText(f"+{enemy_value}", enemy.get_rect().center))
                     elif enemy.is_collidable():
                         player.kill(c.DeathType.ENEMY)
             if States.pvp_flag:

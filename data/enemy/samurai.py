@@ -10,15 +10,13 @@ ATTACK_LENGTH = 20
 IDLE_FRAMES = 1
 ATTACK_FRAMES = 3
 PREPARE_FRAMES = 1
-
 class Samurai(Enemy):
      # Class variable to hold shared images
     idle_images = []
     preparing_images = []
     attacking_images = []
-
-    def __init__(self, pos_x, pos_y):
-        super().__init__()
+    def __init__(self, pos_x, pos_y, worth=20):
+        super().__init__(worth)
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.image_index = 0

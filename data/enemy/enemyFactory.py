@@ -2,15 +2,17 @@ import random
 from .samurai import *
 class EnemyFactory():
 
-    enemyTypes = {
+    enemy_types = {
         "samurai": Samurai
     }
 
-    
+    enemy_worths = {
+        "samurai": 25
+    }
 
     def __init__(self):
         self.enemy_widths = {}
-        for name, cls in self.enemyTypes.items():
+        for name, cls in self.enemy_types.items():
             temp_enemy = cls(0, 0)
             self.enemy_widths[name] = temp_enemy.rect.width
         pass
@@ -18,9 +20,10 @@ class EnemyFactory():
 
     def spawn_enemy(self, x, y, enemy = None) -> Enemy:
         if enemy: 
-            return self.enemyTypes[enemy](x,y)
+            return self.enemy_types[enemy](x,y, self.enemy_worths[enemy])
         else:
-            return random.choice(list(self.enemyTypes.values()))(x,y)
+            enemy_type = random.choice(list(self.enemy_types.keys()))
+            return random.choice(list(self.enemy_types[enemy_type]))(x,y, self.enemy_worths[enemy_type]) 
         
 
     def get_enemy_width(self, enemy=None) -> tuple[int, str]:

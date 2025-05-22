@@ -4,12 +4,12 @@ import pygame
 from data import particles 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, worth=20):
         super().__init__()
         self.collidable = False
         self.dead = False
         self.particle_group = pygame.sprite.Group()
-
+        self.worth = worth
     def is_collidable(self):
         if(not self.dead):
             return self.collidable
@@ -23,6 +23,9 @@ class Enemy(pygame.sprite.Sprite):
 
     def get_rect(self):
         return self.rect
+
+    def get_worth(self):
+        return self.worth
 
     def die(self):
         for _ in range(50):
