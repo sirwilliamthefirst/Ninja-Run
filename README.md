@@ -3,28 +3,41 @@ You are a ninja jumping through the trees! Do you best to not fall, and dodge (o
 
 # Version 2.0: Whats new
 -PVP mode + Co-op mode (appear once conditions met)
+
 -Player death animiation + time after death to check score
+
 -Starting platforms
+
 -Samurai Enemy 
+
 -Attack button for player
+
 -Adjusted backwards movement to be more responsive
+
 -New logic for double jump momentum calculation 
+
 -Score addition text on enemy kill
 
 # Controls:
 ## Keyboard
 Move: Arrow Keys
-Attack: A 
+
+Attack: A
+
 Jump: Space
 
 ## Xbox Controller 
 Move: Left joystick
+
 Attack: X 
+
 Jump: A
 
 ## Playstation Controller 
 Move: Left joystick
+
 Attack: Square 
+
 Jump: X
 
 # Running the game
