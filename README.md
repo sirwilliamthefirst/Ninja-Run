@@ -8,13 +8,13 @@ You are a ninja jumping through the trees! Do you best to not fall, and dodge (o
 
 -Starting platforms
 
--Samurai Enemy 
+-Samurai Enemy
 
 -Attack button for player
 
 -Adjusted backwards movement to be more responsive
 
--New logic for double jump momentum calculation 
+-New logic for double jump momentum calculation
 
 -Score addition text on enemy kill
 
@@ -26,22 +26,25 @@ Attack: A
 
 Jump: Space
 
-## Xbox Controller 
+## Xbox Controller
 Move: Left joystick
 
-Attack: X 
+Attack: X
 
 Jump: A
 
-## Playstation Controller 
+## Playstation Controller
 Move: Left joystick
 
-Attack: Square 
+Attack: Square
 
 Jump: X
 
 # Running the game
-Run the main.py file to start the game, or build the game and run the .exe (if windows)
+Run `python main.py` to start the game, or build the game and run the .exe (if windows) or .app (for macos)
 
-# Building the game 
-To build the project, run: pyinstaller --onefile --noconsole --add-data "assets:assets" .\ninja_run.py
+# Building the game
+```bash
+pip install -r requirements.txt
+pyinstaller --onefile --noconsole --add-data "assets:assets" ninja_run.py
+```
