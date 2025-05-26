@@ -31,7 +31,7 @@ class Menu(States):
         self.player_enter_btn = self.menu.add.label("Press Enter/Start to join")
         self.game_start_btn = self.menu.add.label("")
         self.make_menu_buttons(self.menu)
-       
+        self.in_use_colors = set()
 
     def get_event(self, events):
         self.menu.update(events)
@@ -74,6 +74,15 @@ class Menu(States):
 
     #CAUTION: Does not check if player is already added
     def add_player(self, joystick_id = None):
+        if len(States.players) == 0: # If this is the second player, get available colors
+            self.available_colors = Player.get_available_colors()
+            print(f"Available colors: {self.available_colors}")
+         # Get colors already in use
+        decide_color = next((color for color in self.available_colors if color not in self.in_use_colors), None)
+        if decide_color is not None:
+            self.in_use_colors.add(decide_color)
+        else:
+            decide_color = "default"
         joystick = None
         if joystick_id != None:
             States.player_set.add(joystick_id)
@@ -82,7 +91,7 @@ class Menu(States):
             States.player_set.add("Keyboard")
         num_players = len(States.players)
         x, y = getattr(c, f"PLAYER{num_players+1}_MENU_POS")
-        States.players.add(Player(x, y, joystick, freeze=True))
+        States.players.add(Player(x, y, joystick, freeze=True, player_num=num_players+1, color=decide_color))
 
     def start_pvp(self):
         States.pvp_flag = True
@@ -111,9 +120,8 @@ class Leaderboard(States):
         self.text_dict = {}
 
     def cleanup(self):
-        print('cleaning up Main Menu state stuff')
+        print('cleaning up Leaderboard menu state stuff')
     def startup(self):
-        print('starting Main Menu state stuff')
         mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0) # transparent background
 
                 )
