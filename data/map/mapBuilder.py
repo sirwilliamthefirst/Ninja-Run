@@ -160,6 +160,7 @@ class Tree():
         screen.blit(self.img, self.img_rect)
         for branch in self.branches:
             branch.draw(screen)
+            pygame.draw.rect(screen, (255,0,0), branch.rect, 2)
 
     def get_branches(self):
         return self.branches
@@ -176,21 +177,21 @@ class Branch():
             branch_image = pygame.image.load((os.path.join(c.ASSETS_PATH, 'map/branch.png'))).convert_alpha() 
         self.centerx = centerx 
         self.img = pygame.transform.scale(branch_image, (width, height))  # Flexible tile size
-        self.img_rect = self.img.get_rect()
-        self.img_rect.centerx = centerx
-        self.img_rect.y = topy
+        self.rect = self.img.get_rect()
+        self.rect.centerx = centerx
+        self.rect.y = topy
 
     def draw(self, screen):
-         screen.blit(self.img, self.img_rect)
+         screen.blit(self.img, self.rect)
     
     def get_rect(self):
-        return self.img_rect
+        return self.rect
     
     def get_top_center(self):
-        return (self.img_rect.centerx, self.img_rect.top)
+        return (self.rect.centerx, self.rect.top)
 
     def move_ip(self, x, y):
-        self.img_rect.move_ip(x, y)
+        self.rect.move_ip(x, y)
 
 #List of Stages
 GENERATION = {

@@ -23,7 +23,7 @@ FPS = 60
 #Map grid 
 GRID_SIZE = 120 * WIDTH_SCALE
 GRID_UNITS_X = int(SCREEN_WIDTH // GRID_SIZE) 
-GRID_UNITS_Y = int(SCREEN_HEIGHT / GRID_SIZE) #REPLACE Y WITH PERLIN NOISE VALUES
+GRID_UNITS_Y = int(SCREEN_HEIGHT / GRID_SIZE) 
 
 # Map Generation
 MAP_UPDATE_INTERVAL = 0.01
@@ -41,7 +41,7 @@ SPAWN_PLATFORM_WIDTH = 200 * WIDTH_SCALE
 #Forest
 TREE_WIDTH = 50 * WIDTH_SCALE
 TREE_HEIGHT = SCREEN_HEIGHT
-TREE_GAP = 200
+TREE_GAP = 200 * WIDTH_SCALE
 SPAWN_TREE = 3
 
 BRANCH_NUM_LOWER = 3
@@ -87,8 +87,8 @@ SLOW_DOWN_TIME = 0.5 #seconds
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform
-DEADZONE_X = -100 #where the player dies if off the map x axis
-DEADZONE_Y = 610 #where the player dies if off the map y axis
+DEADZONE_X = -100 * WIDTH_SCALE #where the player dies if off the map x axis
+DEADZONE_Y = 610 * HEIGHT_SCALE#where the player dies if off the map y axis
 
 #assets path
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath( __file__ )))
