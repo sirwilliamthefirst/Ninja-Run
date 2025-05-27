@@ -263,6 +263,8 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
                     direction = direction.normalize()
                     speed = random.randint(120, 300)
                     particles.Particle(self.particle_group, pos, color, direction, speed)
+                if self.joystick:
+                    self.joystick.rumble(0.5, 0.5, 500)  # Rumble for 1 second
             case c.DeathType.ENEMY:
                 print("Explode.")
                 for _ in range(50):
