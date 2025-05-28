@@ -4,7 +4,7 @@ import pygame_menu
 import data.constants as c  # Import constants
 import data.control as control
 import data.states as states
-
+from pygame._sdl2 import controller
 
 
 settings = {
@@ -15,6 +15,7 @@ settings = {
 pg.init()
 pg.font.init() 
 pg.joystick.init()
+controller.init()  # Initialize SDL2 controller support
 app = control.Control(**settings)
 state_dict = {
     'menu': states.Menu(),
@@ -23,10 +24,15 @@ state_dict = {
 }
 
 #I think this may be a bug with pygame but, joystick events are not tracked until they are placed in an object.. so we do that here
+for i in range(controller.get_count()):
+    new_control = controller.Controller(i)  # Access the first controller
+    print(f"Controller initialized: {new_control.name}")
+    
+'''
 for i in range(pg.joystick.get_count()):
     joystick = pg.joystick.Joystick(i)  # Access the first joystick
     print(f"Joystick initialized: {joystick.get_name()}")
-
+'''
 pg.display.set_caption('Ninja Run')
 app.setup_states(state_dict, 'menu')
 

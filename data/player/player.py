@@ -6,6 +6,7 @@ import data.constants as c  # Import constants
 import data.particles as particles
 from data.player.input_handler import Input_handler
 from data.tools import sprite_loader
+from pygame._sdl2 import controller
 
 RUN_SPRITE_FRAMES = 10  
 JUMP_SPRITE_FRAMES = 10
@@ -23,7 +24,7 @@ def load_sprites(self):
         attackSprites = sprite_loader.load_sprites(os.path.join(c.ASSETS_PATH, f"player_{self.player_num}"), "Attack", ATTACK_SPRITE_FRAMES, c.SPRITE_WIDTH, c.SPRITE_HEIGHT)
 
 class Player(pygame.sprite.Sprite): #maybe make an object class that player inherits that inherits sprites
-    def __init__(self, pos_x, pos_y, joystick = None, freeze = False, player_num = 1, color = "default"):
+    def __init__(self, pos_x : float, pos_y : float, joystick : controller = None , freeze : bool = False , player_num : int = 1 , color : str = "default" ):
         super().__init__()
         # Find our path
         #self.mypath = os.path.dirname(os.path.realpath( __file__ ))
@@ -75,14 +76,14 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
         else:
             self.coyote_timer = 0
 
-    def attack(self, dt):
+    def attack(self, dt : float):
         if(not self.attacking and self.attack_cooldown >= c.ATTACK_RATE * dt):
             self.attack_cooldown = 0
             self.current_sprite = 0
             self.image = self.sprites["attack"][0]
             self.attacking = True
 
-    def change_color(self, new_color):
+    def change_color(self, new_color : str):
         """Change player color"""
         if new_color == self.color:
             return True
@@ -105,6 +106,7 @@ class Player(pygame.sprite.Sprite): #maybe make an object class that player inhe
             self.color = old_color
             self.load_sprites()
             return False
+        
     @classmethod
     def get_available_colors(self):
         """Get available colors for this player"""

@@ -38,8 +38,8 @@ class Menu(States):
         for event in events:
             if event.type == pg.QUIT:
                 self.quit = True
-            if event.type == pg.JOYBUTTONDOWN:
-                if event.button == 7 and not States.player_set.__contains__(event.instance_id):
+            if event.type == pg.CONTROLLERBUTTONDOWN:
+                if event.button == pg.CONTROLLER_BUTTON_START and not States.player_set.__contains__(event.instance_id):
                     self.add_player(event.instance_id)
                     if(len(States.players) > 0):
                         self.make_menu_buttons(self.menu)
@@ -86,7 +86,7 @@ class Menu(States):
         joystick = None
         if joystick_id != None:
             States.player_set.add(joystick_id)
-            joystick = next(stick for stick in States.joysticks if joystick_id == stick.get_id())
+            joystick = next(stick for stick in States.joysticks if joystick_id == stick.id)
         else:
             States.player_set.add("Keyboard")
         num_players = len(States.players)

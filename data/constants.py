@@ -178,22 +178,25 @@ class Actions(Enum):
     MOVE_Y = "y_axis"
     JUMP_PRESS = "jump_press"
     JUMP_HOLD = "jump_hold"
-    DASH = "dash"
+    SKILL = "skill"
     ATTACK = "attack"
+
+
 
 DEFAULT_KEY_MAP = {
     Actions.JUMP_PRESS: pygame.K_SPACE,
     Actions.MOVE_X: [pygame.K_LEFT, pygame.K_RIGHT],
     Actions.MOVE_Y: [pygame.K_UP, pygame.K_DOWN],
     Actions.ATTACK: pygame.K_a,
-    Actions.DASH: pygame.K_s
+    Actions.SKILL: pygame.K_s
 }
 
 DEFAULT_JOY_MAP = {
-    Actions.JUMP_PRESS: 0,
-    Actions.MOVE_X: 0,
-    Actions.MOVE_Y: 1,
-    Actions.ATTACK: 2,
-    Actions.DASH: 1
+    Actions.JUMP_PRESS: pygame.CONTROLLER_BUTTON_A,
+    Actions.MOVE_X: pygame.CONTROLLER_AXIS_LEFTX,
+    Actions.MOVE_Y: pygame.CONTROLLER_AXIS_LEFTY,
+    Actions.ATTACK: pygame.CONTROLLER_BUTTON_X,
+    Actions.SKILL: pygame.CONTROLLER_BUTTON_LEFTSHOULDER
 }
+
 

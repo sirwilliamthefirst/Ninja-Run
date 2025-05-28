@@ -1,9 +1,11 @@
 from typing import Union
 import pygame as pg
+from pygame._sdl2 import controller
 from data.constants import Actions, DEFAULT_KEY_MAP, DEFAULT_JOY_MAP # Import constants
 
+
 class Input_handler():
-    def __init__(self, joystick : Union[pg.joystick.Joystick, None] = None, 
+    def __init__(self, joystick : Union[controller.Controller, None] = None, 
                  keyboard_mapping : dict[Actions, int] = DEFAULT_KEY_MAP,
                  joystick_mapping : dict[Actions, int] = DEFAULT_JOY_MAP):
         self.joystick = joystick
@@ -29,15 +31,19 @@ class Input_handler():
 
         else:
             self.old_j_state = self.j_state
-            self.j_state = {i: self.joystick.get_button(i) for i in range(self.joystick.get_numbuttons())}
+            self.j_state = {i: self.joystick.get_button(i) for i in range(pg.CONTROLLER_BUTTON_MAX)}
             self.j_pressed = {i for i, key in enumerate(self.j_state) if self.old_j_state and self.old_j_state[i]}
             #self.j_pressed = {key: value for key, value in self.j_state.items() if self.old_j_state and value}
             button_state = self.j_state
             pressed_state = self.j_pressed
-        
+
+        #Joysticks can return a value between -32768 and 32767. Triggers however can only return a value between 0 and 32768.
         axis = self.get_axis()
+
+
         action_dict[Actions.MOVE_X] = axis[0]
         action_dict[Actions.MOVE_Y] = axis[1]
+
         if Actions.JUMP_PRESS in self.control_map and self.control_map[Actions.JUMP_PRESS] in pressed_state:
             action_dict[Actions.JUMP_HOLD] = 1
             action_dict[Actions.JUMP_PRESS] = 0
@@ -48,13 +54,13 @@ class Input_handler():
             action_dict[Actions.JUMP_HOLD] = 0
             action_dict[Actions.JUMP_PRESS] = 0
         action_dict[Actions.ATTACK] = 1 if button_state[self.control_map[Actions.ATTACK]] else 0
-        action_dict[Actions.DASH] = 1 if button_state[self.control_map[Actions.DASH]] else 0
+        action_dict[Actions.SKILL] = 1 if button_state[self.control_map[Actions.SKILL]] else 0
 
         return action_dict
 
     def get_axis(self) -> tuple[int, int]:
         if self.joystick:
-            return (self.joystick.get_axis(0), self.joystick.get_axis(1))
+            return (self.joystick.get_axis(pg.CONTROLLER_AXIS_LEFTX)/32767, self.joystick.get_axis(pg.CONTROLLER_AXIS_LEFTY)/32767)
         else:
            return (self.keys[pg.K_RIGHT] - self.keys[pg.K_LEFT], self.keys[pg.K_DOWN] - self.keys[pg.K_UP]) 
 
