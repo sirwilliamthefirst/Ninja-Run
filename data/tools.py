@@ -30,6 +30,7 @@ class collisionHandler():
     """
     def handle_verticle_collision(player, tiles):
         if player.get_fall_thru():
+            print("Player is falling through tiles, skipping collision check.")
             return
         
         dy = math.ceil(player.get_dy())
@@ -58,8 +59,11 @@ class collisionHandler():
 
 class sprite_loader():
 
-    def load_sprites(folder_path, file_prefix, frames):
+    def load_sprites(folder_path, file_prefix, frames, width=None, height=None):
         sprites_sequence = []
         for i in range(frames):
-            sprites_sequence.append(pg.image.load(os.path.join(folder_path, f'{file_prefix}__{i}.png')).convert_alpha())
+            image = pg.image.load(os.path.join(folder_path, f'{file_prefix}__{i}.png')).convert_alpha()
+            if width and height:  
+                image = pg.transform.scale(image, (width, height))
+            sprites_sequence.append(image)
         return sprites_sequence

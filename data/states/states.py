@@ -1,6 +1,6 @@
 from enum import Enum
 import pygame 
-import pygame_menu
+from pygame._sdl2 import controller
 
 class Game_States(Enum):
         GAME = "game"
@@ -17,7 +17,7 @@ class States(object):
         self.next = None
         self.quit = False
         self.previous = None
-        States.joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+        States.joysticks = [controller.Controller(x) for x in range(controller.get_count())]
 
     def move_state(self, next_state : str = None):
         if not next_state: return

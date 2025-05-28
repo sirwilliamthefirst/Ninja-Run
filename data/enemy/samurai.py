@@ -91,11 +91,17 @@ class Samurai(Enemy):
     def load_images(self):
 
         for i in range(IDLE_FRAMES):
-            self.idle_images.append(pg.image.load(os.path.join(c.ASSETS_PATH, f'enemy/samurai/Idle__{i}.png')).convert_alpha())
+            image = pg.image.load(os.path.join(c.ASSETS_PATH, f'enemy/samurai/Idle__{i}.png')).convert_alpha()
+            image = pg.transform.scale(image, (image.get_width() * c.WIDTH_SCALE, image.get_height() * c.HEIGHT_SCALE))
+            self.idle_images.append(image)
 
         for i in range(PREPARE_FRAMES):
-            self.preparing_images.append(pg.image.load(os.path.join(c.ASSETS_PATH, f'enemy/samurai/Prepare__{i}.png')).convert_alpha())
+            image = pg.image.load(os.path.join(c.ASSETS_PATH, f'enemy/samurai/Prepare__{i}.png')).convert_alpha()
+            image = pg.transform.scale(image, (image.get_width() * c.WIDTH_SCALE, image.get_height() * c.HEIGHT_SCALE))
+            self.preparing_images.append(image)
 
         for i in range(ATTACK_FRAMES):
-            self.attacking_images.append(pg.image.load(os.path.join(c.ASSETS_PATH, f'enemy/samurai/Attack__{i}.png')).convert_alpha())
+            image = pg.image.load(os.path.join(c.ASSETS_PATH, f'enemy/samurai/Attack__{i}.png')).convert_alpha()
+            image = pg.transform.scale(image, (image.get_width() * c.WIDTH_SCALE, image.get_height() * c.HEIGHT_SCALE))
+            self.attacking_images.append(image)
 

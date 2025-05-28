@@ -23,7 +23,7 @@ FPS = 60
 #Map grid 
 GRID_SIZE = 120 * WIDTH_SCALE
 GRID_UNITS_X = int(SCREEN_WIDTH // GRID_SIZE) 
-GRID_UNITS_Y = int(SCREEN_HEIGHT / GRID_SIZE) #REPLACE Y WITH PERLIN NOISE VALUES
+GRID_UNITS_Y = int(SCREEN_HEIGHT / GRID_SIZE) 
 
 # Map Generation
 MAP_UPDATE_INTERVAL = 0.01
@@ -41,7 +41,7 @@ SPAWN_PLATFORM_WIDTH = 200 * WIDTH_SCALE
 #Forest
 TREE_WIDTH = 50 * WIDTH_SCALE
 TREE_HEIGHT = SCREEN_HEIGHT
-TREE_GAP = 200
+TREE_GAP = 200 * WIDTH_SCALE
 SPAWN_TREE = 3
 
 BRANCH_NUM_LOWER = 3
@@ -87,8 +87,8 @@ SLOW_DOWN_TIME = 0.5 #seconds
 
 # Tolerances and thresholds
 FALL_THRU_TOLERENCE = 0.9 #how much to push down on the stick to fall thru a platform
-DEADZONE_X = -100 #where the player dies if off the map x axis
-DEADZONE_Y = 610 #where the player dies if off the map y axis
+DEADZONE_X = -100 * WIDTH_SCALE #where the player dies if off the map x axis
+DEADZONE_Y = 610 * HEIGHT_SCALE#where the player dies if off the map y axis
 
 #assets path
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath( __file__ )))
@@ -178,22 +178,25 @@ class Actions(Enum):
     MOVE_Y = "y_axis"
     JUMP_PRESS = "jump_press"
     JUMP_HOLD = "jump_hold"
-    DASH = "dash"
+    SKILL = "skill"
     ATTACK = "attack"
+
+
 
 DEFAULT_KEY_MAP = {
     Actions.JUMP_PRESS: pygame.K_SPACE,
     Actions.MOVE_X: [pygame.K_LEFT, pygame.K_RIGHT],
     Actions.MOVE_Y: [pygame.K_UP, pygame.K_DOWN],
     Actions.ATTACK: pygame.K_a,
-    Actions.DASH: pygame.K_s
+    Actions.SKILL: pygame.K_s
 }
 
 DEFAULT_JOY_MAP = {
-    Actions.JUMP_PRESS: 0,
-    Actions.MOVE_X: 0,
-    Actions.MOVE_Y: 1,
-    Actions.ATTACK: 2,
-    Actions.DASH: 1
+    Actions.JUMP_PRESS: pygame.CONTROLLER_BUTTON_A,
+    Actions.MOVE_X: pygame.CONTROLLER_AXIS_LEFTX,
+    Actions.MOVE_Y: pygame.CONTROLLER_AXIS_LEFTY,
+    Actions.ATTACK: pygame.CONTROLLER_BUTTON_X,
+    Actions.SKILL: pygame.CONTROLLER_BUTTON_LEFTSHOULDER
 }
+
 

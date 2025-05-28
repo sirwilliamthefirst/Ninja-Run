@@ -128,6 +128,7 @@ class Game(States):
         States.players.draw(screen)
         for player in States.players:
             player.draw_particles(screen)
+            pygame.draw.rect(screen, (255,0,0), player.rect, 2)  # Draw player rect for debugging
         self.enemies.draw(screen)
         for enemy in self.enemies:
             enemy.draw_particles(screen)
@@ -146,7 +147,7 @@ class Game(States):
         
 class FloatingText:
     def __init__(self, text, pos):
-        self.font = pygame.font.Font(None, 20)
+        self.font = pygame.font.Font(None, int(20 * c.WIDTH_SCALE))
         self.text = text
         self.pos = pygame.Vector2(pos)
         self.alpha = 255
