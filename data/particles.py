@@ -4,12 +4,14 @@ from data.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Particle(pygame.sprite.Sprite):
-    def __init__(self,
-                 groups: pygame.sprite.Group,
-                 pos: list[int],
-                 color: str,
-                 direction: pygame.math.Vector2,
-                 speed: int):
+    def __init__(
+        self,
+        groups: pygame.sprite.Group,
+        pos: list[int],
+        color: str,
+        direction: pygame.math.Vector2,
+        speed: int,
+    ):
         super().__init__(groups)
         self.pos = pos
         self.color = color
@@ -24,7 +26,12 @@ class Particle(pygame.sprite.Sprite):
     def create_surf(self):
         self.image = pygame.Surface((self.size, self.size)).convert_alpha()
         self.image.set_colorkey("black")
-        pygame.draw.circle(surface=self.image, color=self.color, center=(self.size / 2, self.size / 2), radius=self.size / 2)
+        pygame.draw.circle(
+            surface=self.image,
+            color=self.color,
+            center=(self.size / 2, self.size / 2),
+            radius=self.size / 2,
+        )
         self.rect = self.image.get_rect(center=self.pos)
 
     def move(self, dt):
@@ -37,10 +44,10 @@ class Particle(pygame.sprite.Sprite):
 
     def check_pos(self):
         if (
-            self.pos[0] < -50 or
-            self.pos[0] > SCREEN_WIDTH + 50 or
-            self.pos[1] < -50 or
-            self.pos[1] > SCREEN_HEIGHT + 50
+            self.pos[0] < -50
+            or self.pos[0] > SCREEN_WIDTH + 50
+            or self.pos[1] < -50
+            or self.pos[1] > SCREEN_HEIGHT + 50
         ):
             self.kill()
 
@@ -56,12 +63,14 @@ class Particle(pygame.sprite.Sprite):
 
 
 class ExplodingParticle(Particle):
-    def __init__(self,
-                 groups: pygame.sprite.Group,
-                 pos: list[int],
-                 color: str,
-                 direction: pygame.math.Vector2,
-                 speed: int):
+    def __init__(
+        self,
+        groups: pygame.sprite.Group,
+        pos: list[int],
+        color: str,
+        direction: pygame.math.Vector2,
+        speed: int,
+    ):
         super().__init__(groups, pos, color, direction, speed)
         self.t0 = pygame.time.get_ticks()
         self.lifetime = randint(1000, 1200)
@@ -79,7 +88,7 @@ class ExplodingParticle(Particle):
 
     def inflate(self, dt):
         self.size += self.inflate_speed * dt
-        #self.create_surf()
+        # self.create_surf()
 
     def check_size(self):
         if self.size > self.max_size:
@@ -98,10 +107,12 @@ class ExplodingParticle(Particle):
 
 
 class FloatingParticle(Particle):
-    def __init__(self,
-                 groups: pygame.sprite.Group,
-                 pos: list[int],
-                 color: str,
-                 direction: pygame.math.Vector2,
-                 speed: int):
+    def __init__(
+        self,
+        groups: pygame.sprite.Group,
+        pos: list[int],
+        color: str,
+        direction: pygame.math.Vector2,
+        speed: int,
+    ):
         super().__init__(groups, pos, color, direction, speed)
