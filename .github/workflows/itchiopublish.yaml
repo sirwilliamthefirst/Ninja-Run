@@ -37,20 +37,15 @@ jobs:
           python-version: "3.13"
           cache: pip
       - name: Build pygame
-        run: >
+        run: |
           pip install -r requirements.txt pyinstaller
-
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
-        run: >
-          curl -L -o butler.zip
-          https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
-
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
           tar -xf butler.zip
-
           chmod +x butler
       - name: Push to Itch.io
-        run: >
-          $VERSION=${{ inputs.version || github.ref_name }} $USER=${{ inputs.user ||
-          env.ITCHIO_USER }} $TOKEN=${{ inputs.token || env.BUTLER_API_KEY }}
+        run: |
+          $VERSION=${{ inputs.version || github.ref_name }} $USER=${{ inputs.user || env.ITCHIO_USER }} $TOKEN=${{ inputs.token || env.BUTLER_API_KEY }}
           ./butler push dist/ "$USER/${{ inputs.game }}:${{inputs.channel }}" --userversion "$VERSION"
