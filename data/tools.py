@@ -13,7 +13,8 @@ import math
 
 EPSILON = 0.1
 
-class collisionHandler():
+
+class collisionHandler:
 
     def check_collision(one, two):
         """
@@ -22,44 +23,61 @@ class collisionHandler():
         True, it will check if their masks collide and return the result.  If the
         rectangles were not colliding, the mask check is not performed.
         """
-        return pg.sprite.collide_rect(one,two) #and pg.sprite.collide_mask(one,two)
-    
+        return pg.sprite.collide_rect(one, two)  # and pg.sprite.collide_mask(one,two)
 
     """
     Iterate over all tiles to check if player collides
     """
+
     def handle_verticle_collision(player, tiles):
         if player.get_fall_thru():
             return
-        
+
         dy = math.ceil(player.get_dy())
         on_tile = False
 
         sorted_tiles = sorted(
-        tiles,
-        key=lambda tile: abs(tile.get_rect().top - player.rect.bottom) if player.rect.right > tile.get_rect().left and player.rect.left < tile.get_rect().right else float('inf')
-    )
+            tiles,
+            key=lambda tile: (
+                abs(tile.get_rect().top - player.rect.bottom)
+                if player.rect.right > tile.get_rect().left
+                and player.rect.left < tile.get_rect().right
+                else float("inf")
+            ),
+        )
 
-        collision_left_bound = (player.rect.centerx + player.rect.left)/2
-        collision_right_bound = (player.rect.centerx + player.rect.right)/2 
+        collision_left_bound = (player.rect.centerx + player.rect.left) / 2
+        collision_right_bound = (player.rect.centerx + player.rect.right) / 2
         for tile in sorted_tiles:
             tile_rect = tile.get_rect()
             # Check if the player is falling and intersecting with the top of the tile
-            if (player.rect.bottom) <= tile_rect.top <= player.rect.bottom + dy and collision_right_bound >= tile_rect.left and collision_left_bound <= tile_rect.right:
-                if dy >= 0:  # Only check for collisions if the player is moving downwards
+            if (
+                (player.rect.bottom) <= tile_rect.top <= player.rect.bottom + dy
+                and collision_right_bound >= tile_rect.left
+                and collision_left_bound <= tile_rect.right
+            ):
+                if (
+                    dy >= 0
+                ):  # Only check for collisions if the player is moving downwards
                     # Land on the tile
                     player.rect.bottom = tile_rect.top
                     player.land()
                     on_tile = True
                     return
-        
+
         if not on_tile:
             player.fall()
 
-class sprite_loader():
 
-    def load_sprites(folder_path, file_prefix, frames):
+class sprite_loader:
+
+    def load_sprites(folder_path, file_prefix, frames, width=None, height=None):
         sprites_sequence = []
         for i in range(frames):
-            sprites_sequence.append(pg.image.load(os.path.join(folder_path, f'{file_prefix}__{i}.png')).convert_alpha())
+            image = pg.image.load(
+                os.path.join(folder_path, f"{file_prefix}__{i}.png")
+            ).convert_alpha()
+            if width and height:
+                image = pg.transform.scale(image, (width, height))
+            sprites_sequence.append(image)
         return sprites_sequence
