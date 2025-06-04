@@ -49,5 +49,5 @@ jobs:
         run: |
           $VERSION=${{ inputs.version || github.ref_name }} 
           #$USER=${{ inputs.user || secrets.ITCHIO_USER }} 
-          $TOKEN=${{ inputs.token || secrets.BUTLER_API_KEY }}
+          #$TOKEN=${{ inputs.token || secrets.BUTLER_API_KEY }}
           ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion $VERSION
