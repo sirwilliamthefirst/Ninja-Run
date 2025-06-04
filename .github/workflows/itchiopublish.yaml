@@ -48,6 +48,6 @@ jobs:
       - name: Push to Itch.io
         run: |
           $VERSION=${{ inputs.version || github.ref_name }} 
-          $USER=${{ inputs.user || secrets.ITCHIO_USER }} 
+          #$USER=${{ inputs.user || secrets.ITCHIO_USER }} 
           $TOKEN=${{ inputs.token || secrets.BUTLER_API_KEY }}
-          ./butler push dist/ "${USER}/${{ inputs.game }}:${{inputs.channel }}" --userversion $VERSION
+          ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion $VERSION
