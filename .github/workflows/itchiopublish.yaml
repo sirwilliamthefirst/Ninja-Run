@@ -40,7 +40,7 @@ jobs:
         run: >
           pip install -r requirements.txt pyinstaller
 
-          pyinstaller --onefile --noconsole --add-data "assets:assets" $MAIN_FILE
+          pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: >
           curl -L -o butler.zip
