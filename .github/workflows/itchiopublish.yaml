@@ -10,8 +10,7 @@ on:
         type: string
       version:
         description: version of our game
-        required: true
-        default: ${{ github.ref_name }}
+        required: false
         type: string
       game:
         description: Itch.io game
@@ -19,13 +18,11 @@ on:
         type: string
       token:
         description: Itch.io API token
-        required: true
-        default: ${{ secrets.BUTLER_API_KEY }}
+        required: false
         type: string
       user:
         description: Itch.io user
-        required: true
-        default: ${{ secrets.ITCHIO_USER }}
+        required: false
         type: string
 jobs:
   Build-For-Linux:
@@ -49,12 +46,14 @@ jobs:
           curl -L -o butler.zip
           https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
 
-          unzip butler.zip
+          tar -xf butler.zip
 
           chmod +x butler
       - name: Push to Itch.io
         run: >
-          butler push dist/ ${{ inputs.user }}/${{ inputs.game }}:${{ inputs.channel
-          }} --userversion ${{ inputs.version }}
-        env:
-          BUTLER_API_KEY: ${{ inputs.token }}
+          VERSION=${{ inputs.version || github.ref_name }} USER=${{ inputs.user ||
+          env.ITCHIO_USER }} TOKEN=${{ inputs.token || env.BUTLER_API_KEY }}
+          echo "Pushing version $VERSION to $USER/${{ inputs.game }}:${{
+          inputs.channel }}" ./butler push dist/ "$USER/${{ inputs.game }}:${{
+          inputs.channel }}" --userversion "$VERSION"
+        shell: bash
