@@ -47,7 +47,8 @@ jobs:
           chmod +x butler
       - name: Push to Itch.io
         run: |
-          $VERSION=${{ inputs.version || github.ref_name }} 
+          $VERSION=${{ inputs.version || github.ref_name }}
+          $VERSION
           #$USER=${{ inputs.user || secrets.ITCHIO_USER }} 
           #$TOKEN=${{ inputs.token || secrets.BUTLER_API_KEY }}
           ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion $VERSION
