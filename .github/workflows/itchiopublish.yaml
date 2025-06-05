@@ -43,7 +43,7 @@ jobs:
       - name: Install Butler
         run: |
           curl -o butler.zip https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default
-          tar -xf .\butler.zip
+          Expand-Archive -Path \butler.zip
       - name: Push to Itch.io
         run: |
           ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
