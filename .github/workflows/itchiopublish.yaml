@@ -43,6 +43,8 @@ jobs:
       - name: Install Butler
         run: |
           curl -o butler.zip https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default
+          Invoke-WebRequest -Uri "https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default" -OutFile "butler.zip" -MaximumRedirection 5
+
           Expand-Archive -Path .\butler.zip
       - name: Push to Itch.io
         run: |
