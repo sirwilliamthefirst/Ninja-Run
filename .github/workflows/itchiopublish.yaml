@@ -44,8 +44,8 @@ jobs:
         run: |
           curl -o butler.zip https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default
           Invoke-WebRequest -Uri "https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default" -OutFile "butler.zip" -MaximumRedirection 5 -AllowInsecureRedirect
-
           Expand-Archive -Path .\butler.zip
+          ls
       - name: Push to Itch.io
         run: |
           ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
