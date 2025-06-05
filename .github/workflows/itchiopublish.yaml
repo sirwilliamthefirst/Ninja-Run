@@ -30,6 +30,7 @@ jobs:
     env:
       MAIN_FILE: ninja_run.py
       BUILD_NAME: ninja_run
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
