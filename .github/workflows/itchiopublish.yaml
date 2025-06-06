@@ -1,13 +1,8 @@
 ---
-name: Publish to itch.io
+name: Publish pygame to itch.io
 on:
   workflow_dispatch:
     inputs:
-      channel:
-        description: Itch.io channel to push to
-        required: true
-        default: windows
-        type: string
       version:
         description: version of our game
         required: false
@@ -24,12 +19,22 @@ on:
         description: Itch.io user
         required: false
         type: string
+      main_file:
+        description: Main file to build
+        required: false
+        type: string
+      platforms:
+        description: Platform to build for. Options are windows, linux, macos. Comma separated list.
+        required: false
+        type: string
+        default: windows
 jobs:
-  Build-For-Linux:
+  Build-For-Windows:
+    if: contains(inputs.platforms, 'windows') || inputs.platforms == 'all'
+    name: Build for Windows
     runs-on: windows-latest
     env:
-      MAIN_FILE: ninja_run.py
-      BUILD_NAME: ninja_run
+      MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
       BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -43,10 +48,58 @@ jobs:
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: |
-          curl -o butler.zip https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default
           Invoke-WebRequest -Uri "https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default" -OutFile "butler.zip" -MaximumRedirection 5 -AllowInsecureRedirect
           Expand-Archive -Path .\butler.zip 
-          ls
       - name: Push to Itch.io
         run: |
-          .\butler\butler.exe push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
+          .\butler\butler.exe push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:windows" --userversion ${{ inputs.version || github.ref_name}} 
+  Build-For-Mac:
+    if: contains(inputs.platforms, 'macos') || inputs.platforms == 'all'
+    runs-on: macos-latest
+    env:
+      MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Build pygame
+        run: |
+          pip install -r requirements.txt pyinstaller
+          pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
+      - name: Install Butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/darwin-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler -V
+      - name: Push to Itch.io
+        run: |
+          ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:macos" --userversion ${{ inputs.version }} 
+  Build-For-linux:
+    if: contains(inputs.platforms, 'linux') || inputs.platforms == 'all'
+    runs-on: ubuntu-latest
+    env:
+      MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Build pygame
+        run: |
+          pip install -r requirements.txt pyinstaller
+          pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
+      - name: Install Butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler -V
+      - name: Push to Itch.io
+        run: |
+          ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:linux" --userversion ${{ inputs.version }}         

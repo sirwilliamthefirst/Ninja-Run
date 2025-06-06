@@ -1,5 +1,6 @@
 numpy==2.2.6
-psycopg2==2.9.10
+#psycopg2-binary==2.9.10
+#psycopg2==2.9.10
 pygame==2.6.1
 pygame_menu==4.5.2
 requests==2.32.3
