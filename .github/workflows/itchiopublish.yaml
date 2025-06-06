@@ -1,5 +1,5 @@
 ---
-name: Publish to itch.io
+name: Publish pygame to itch.io
 on:
   workflow_dispatch:
     inputs:
