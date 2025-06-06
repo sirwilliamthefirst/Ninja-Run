@@ -28,14 +28,15 @@ on:
         description: Main file to build
         required: false
         type: string
-      platform:
-        description: Platform to build for. Options are windows, linux, macos
+      platforms:
+        description: Platform to build for. Options are windows, linux, macos. Comma separated list.
         required: false
         type: string
         default: windows
 jobs:
   Build-For-Windows:
-    if: ${{ inputs.platform == 'windows' }}
+    if: contains(inputs.platforms, 'windows') || inputs.platforms == 'all'
+    name: Build for Windows
     runs-on: windows-latest
     env:
       MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
@@ -58,7 +59,7 @@ jobs:
         run: |
           .\butler\butler.exe push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
   Build-For-Mac:
-    if: ${{ inputs.platform == 'macos' }}
+    if: contains(inputs.platforms, 'macos') || inputs.platforms == 'all'
     runs-on: macos-latest
     env:
       MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
@@ -83,7 +84,7 @@ jobs:
         run: |
           ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
   Build-For-linux:
-    if: ${{ inputs.platform == 'linux' }}
+    if: contains(inputs.platforms, 'linux') || inputs.platforms == 'all'
     runs-on: ubuntu-latest
     env:
       MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
