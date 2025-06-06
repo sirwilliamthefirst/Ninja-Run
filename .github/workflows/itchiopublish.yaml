@@ -3,11 +3,6 @@ name: Publish to itch.io
 on:
   workflow_dispatch:
     inputs:
-      channel:
-        description: Itch.io channel to push to. Optiosns are windows, linux, macos
-        required: true
-        default: windows
-        type: string
       version:
         description: version of our game
         required: false
@@ -57,7 +52,7 @@ jobs:
           Expand-Archive -Path .\butler.zip 
       - name: Push to Itch.io
         run: |
-          .\butler\butler.exe push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:windows" --userversion ${{ inputs.version }} 
+          .\butler\butler.exe push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:windows" --userversion ${{ inputs.version || github.ref_name}} 
   Build-For-Mac:
     if: contains(inputs.platforms, 'macos') || inputs.platforms == 'all'
     runs-on: macos-latest
