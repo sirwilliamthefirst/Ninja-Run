@@ -57,7 +57,7 @@ jobs:
         run: |
           ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
   Build-For-Mac:
-    if: ${{ inputs.platform == 'mac' }}
+    if: ${{ inputs.platform == 'macos' }}
     runs-on: macos-latest
     env:
       MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
