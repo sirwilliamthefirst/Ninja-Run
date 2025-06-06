@@ -57,7 +57,7 @@ jobs:
           Expand-Archive -Path .\butler.zip 
       - name: Push to Itch.io
         run: |
-          .\butler\butler.exe push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
+          .\butler\butler.exe push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:windows" --userversion ${{ inputs.version }} 
   Build-For-Mac:
     if: contains(inputs.platforms, 'macos') || inputs.platforms == 'all'
     runs-on: macos-latest
@@ -82,7 +82,7 @@ jobs:
           ./butler -V
       - name: Push to Itch.io
         run: |
-          ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
+          ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:macos" --userversion ${{ inputs.version }} 
   Build-For-linux:
     if: contains(inputs.platforms, 'linux') || inputs.platforms == 'all'
     runs-on: ubuntu-latest
@@ -107,4 +107,4 @@ jobs:
           ./butler -V
       - name: Push to Itch.io
         run: |
-          ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }}         
+          ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:linux" --userversion ${{ inputs.version }}         
