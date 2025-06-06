@@ -39,6 +39,7 @@ jobs:
     runs-on: windows-latest
     env:
       MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -51,16 +52,17 @@ jobs:
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: |
-          curl -o butler.zip https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default
-          tar -xf .\butler.zip
+          Invoke-WebRequest -Uri "https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default" -OutFile "butler.zip" -MaximumRedirection 5 -AllowInsecureRedirect
+          Expand-Archive -Path .\butler.zip 
       - name: Push to Itch.io
         run: |
-          ./butler push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
+          .\butler\butler.exe push dist/ "${{ secrets.ITCHIO_USER }}/${{ inputs.game }}:${{inputs.channel }}" --userversion ${{ inputs.version }} 
   Build-For-Mac:
     if: ${{ inputs.platform == 'macos' }}
     runs-on: macos-latest
     env:
       MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -85,6 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
