@@ -4,7 +4,7 @@ from .states import States
 from ..player import *
 from ..enemy import *
 import data.tools as tools
-from ..map import *
+from ..mapBuilder import *
 from pygame.locals import *
 import data.constants as c  # Import constants
 
@@ -140,12 +140,16 @@ class Game(States):
     def draw(self, screen):
         screen.fill((0, 0, 0))
         self.stage.draw(screen)
-        States.players.draw(screen)
+        #States.players.draw(screen)
         for player in States.players:
+            player.draw(screen)
             player.draw_particles(screen)
+            collision_left_bound = (player.rect.centerx + player.rect.left) / 2
+            collision_right_bound = (player.rect.centerx + player.rect.right) / 2
             if c.DEBUG:
                 pygame.draw.rect(
-                    screen, (255, 0, 0), player.rect, 2
+                    #screen, (255, 0, 0), player.rect, 2
+                    screen, (255, 0, 0), pygame.Rect(collision_left_bound, player.rect.top, collision_right_bound - collision_left_bound, player.rect.bottom - player.rect.top), 2
                 )  # Draw player rect for debugging
         self.enemies.draw(screen)
         for enemy in self.enemies:
@@ -194,3 +198,23 @@ class FloatingText:
 
     def is_dead(self):
         return self.alpha == 0
+
+class Score():
+    def __init__(self, score=0, kills=0, time_alive=0):
+        self.score = score
+        self.kills = kills
+        self.time_alive = time_alive
+        self.killscore
+
+    def add_score(self, points):
+        self.score += points
+
+    def add_kill(self, kill_value):
+        self.killscore += kill_value
+        self.kills += 1
+        self.add_score(kill_value)
+
+    def get_score(self):
+        return self.score
+    
+    

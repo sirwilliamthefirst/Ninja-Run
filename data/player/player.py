@@ -17,29 +17,7 @@ STARTING_CHAKRA = 20
 CHAKRA_REGEN_RATE = 0.5  # per second
 
 
-def load_sprites(self):
-    # Set run Sprites
-    runSprites = sprite_loader.load_sprites(
-        os.path.join(c.ASSETS_PATH, f"player_{self.player_num}"),
-        "Run",
-        RUN_SPRITE_FRAMES,
-        c.SPRITE_WIDTH,
-        c.SPRITE_HEIGHT,
-    )
-    jumpSprites = sprite_loader.load_sprites(
-        os.path.join(c.ASSETS_PATH, f"player_{self.player_num}"),
-        "Jump",
-        JUMP_SPRITE_FRAMES,
-        c.SPRITE_WIDTH,
-        c.SPRITE_HEIGHT,
-    )
-    attackSprites = sprite_loader.load_sprites(
-        os.path.join(c.ASSETS_PATH, f"player_{self.player_num}"),
-        "Attack",
-        ATTACK_SPRITE_FRAMES,
-        c.SPRITE_WIDTH,
-        c.SPRITE_HEIGHT,
-    )
+
 
 
 class Player(
@@ -55,8 +33,6 @@ class Player(
         color: str = "default",
     ):
         super().__init__()
-        # Find our path
-        # self.mypath = os.path.dirname(os.path.realpath( __file__ ))
         self.player_num = player_num
         self.joystick = joystick
         self.input_handler = Input_handler(joystick)
@@ -84,6 +60,10 @@ class Player(
         self.done_dying = False
         self.particle_group = pygame.sprite.Group()
         self.chakra = STARTING_CHAKRA
+
+    def draw(self, screen):
+        if not self.dead:
+            screen.blit(self.image, self.rect)
 
     # Update sprite animation
     def update(self, dt):
@@ -143,7 +123,7 @@ class Player(
 
     def load_sprites(self, color="default"):
         """Load sprites using the global manager"""
-        self.sprites = GlobalSpriteManager.load_player_sprites(color)
+        self.sprites = GlobalSpriteManager.load_player_sprites(color).copy()
         if not self.sprites:
             print(
                 f"Failed to load sprites for player {self.player_num} with color {self.color}"
@@ -248,27 +228,25 @@ class Player(
 
     def animate(self, dt):
         animation_speed = 60  # Adjust this value to change animation speed
+        self.current_sprite += dt * animation_speed
         if self.attacking:
-            self.current_sprite += dt * animation_speed
-            current_sprite_int = int(self.current_sprite)
-            if current_sprite_int >= ATTACK_SPRITE_FRAMES - 1:
+            #self.current_sprite += dt * animation_speed
+            if self.current_sprite >= ATTACK_SPRITE_FRAMES - 1:
                 self.attacking = False
-                self.image = self.sprites["run"][current_sprite_int]
+                self.current_sprite = 0
+                self.image = self.sprites["run"][int(self.current_sprite)]
             else:
-                self.image = self.sprites["attack"][current_sprite_int]
+                self.image = self.sprites["attack"][int(self.current_sprite)]
         elif self.is_airborn:
+            #self.current_sprite += dt * animation_speed
             if self.current_sprite >= 7:
-                self.current_sprite = 5
-            else:
-                self.current_sprite += dt * animation_speed
-            current_sprite_int = int(self.current_sprite)
-            self.image = self.sprites["jump"][current_sprite_int]
+                self.current_sprite = 5          
+            self.image = self.sprites["jump"][int(self.current_sprite)]
         else:  # Then we are running, if not airborn
-            self.current_sprite += dt * animation_speed
+            #self.current_sprite += dt * animation_speed
             if self.current_sprite >= len(self.sprites["run"]):
                 self.current_sprite = 0
-            current_sprite_int = int(self.current_sprite)    
-            self.image = self.sprites["run"][current_sprite_int]
+            self.image = self.sprites["run"][int(self.current_sprite)]
 
     def drag(self, dt):
         if not self.is_airborn:
@@ -344,7 +322,7 @@ class Player(
             case _:
                 print("Unknown death.")
         self.dead = True
-        self.image.set_alpha(0)
+        #self.image.set_alpha(0)
 
     # Get a random position within the player rect
     def get_random_position_within(self):
