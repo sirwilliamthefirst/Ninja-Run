@@ -90,11 +90,11 @@ class Player(
         if not self.dead:
             if self.freeze == False:
                 self.handle_move(dt)
-                self.animate()
+                self.animate(dt)
                 if self.pos_y > c.DEADZONE_Y or self.pos_x < c.DEADZONE_X:
                     self.kill(c.DeathType.FALL)
             else:
-                self.animate()
+                self.animate(dt)
             if self.attack_cooldown < c.ATTACK_RATE:
                 self.attack_cooldown += dt
         self.particle_group.update(dt)
@@ -246,23 +246,29 @@ class Player(
             self.can_doubleJump = False
             self.double_jumped_frame = True
 
-    def animate(self):
+    def animate(self, dt):
+        animation_speed = 60  # Adjust this value to change animation speed
         if self.attacking:
-            self.current_sprite += 1
-            self.image = self.sprites["attack"][self.current_sprite]
-            if self.current_sprite == ATTACK_SPRITE_FRAMES - 1:
+            self.current_sprite += dt * animation_speed
+            current_sprite_int = int(self.current_sprite)
+            if current_sprite_int >= ATTACK_SPRITE_FRAMES - 1:
                 self.attacking = False
+                self.image = self.sprites["run"][current_sprite_int]
+            else:
+                self.image = self.sprites["attack"][current_sprite_int]
         elif self.is_airborn:
             if self.current_sprite >= 7:
                 self.current_sprite = 5
             else:
-                self.current_sprite += 1
-            self.image = self.sprites["jump"][self.current_sprite]
+                self.current_sprite += dt * animation_speed
+            current_sprite_int = int(self.current_sprite)
+            self.image = self.sprites["jump"][current_sprite_int]
         else:  # Then we are running, if not airborn
-            self.current_sprite += 1
+            self.current_sprite += dt * animation_speed
             if self.current_sprite >= len(self.sprites["run"]):
                 self.current_sprite = 0
-            self.image = self.sprites["run"][self.current_sprite]
+            current_sprite_int = int(self.current_sprite)    
+            self.image = self.sprites["run"][current_sprite_int]
 
     def drag(self, dt):
         if not self.is_airborn:
