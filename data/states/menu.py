@@ -1,6 +1,6 @@
 import pygame as pg
 from data.player.player import Player
-from ..map import *
+from ..mapBuilder import *
 from pygame.locals import *
 from .states import Game_States, States
 import pygame_menu

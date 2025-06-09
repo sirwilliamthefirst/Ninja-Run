@@ -94,9 +94,12 @@ class Game(States):
         self.map_spawn_counter += -c.PLATFORM_SPEED * dt_scaled
 
         for player in States.players:
+            print(f"dy before collision: {player.get_dy()} player bottom: {player.rect.bottom}")
             tools.collisionHandler.handle_verticle_collision(
                 player, self.stage.get_map()
             )
+            print(f"dy after collision: {player.get_dy()} player bottom: {player.rect.bottom}")
+
             for enemy in self.enemies:
                 if tools.collisionHandler.check_collision(player, enemy):
                     # TODO ADD RICOCHET IF PLAYER AND ENEMY ATTACK COLLIDES

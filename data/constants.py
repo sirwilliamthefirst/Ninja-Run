@@ -9,6 +9,7 @@ import pygame
 
 DEBUG = False
 
+
 # Setup Display 4/3 Aspect
 SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH", 800))
 SCREEN_HEIGHT = int(os.getenv("SCREEN_HEIGHT", 600))

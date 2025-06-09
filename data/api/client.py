@@ -20,7 +20,7 @@ class LeaderboardClient:
             return {"error": str(e)}
 
     def submit_score(
-        api_url: str, name: str, score: float, kills: int, time_alive: int
+        self, api_url: str, name: str, score: float, kills: int, time_alive: int
     ):
         """
         Submit a player's score to the API.
@@ -37,7 +37,7 @@ class LeaderboardClient:
                 "date": datetime.utcnow().isoformat(),  # or datetime.now().isoformat() if local time
             }
 
-            response = requests.post(f"{self.base_url}/submit", json=payload)
+            response = requests.post(f"{self.base_url}/submit", json=data)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
