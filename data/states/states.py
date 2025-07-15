@@ -1,7 +1,7 @@
 from enum import Enum
 import pygame
 from pygame._sdl2 import controller
-
+from data.api.supabase_client import LeaderboardClient
 
 class Game_States(Enum):
     GAME = "game"
@@ -14,6 +14,8 @@ class States(object):
     players = pygame.sprite.Group()
     joysticks = None
     pvp_flag = False
+    leaderboard = LeaderboardClient()
+    user = None
 
     def __init__(self):
         self.done = False
@@ -36,3 +38,12 @@ class States(object):
             self.done = True
             self.next = next_state
             self.menu.close()
+
+    def login():
+        States.leaderboard.sign_in_with_oauth()
+        username = States.leaderboard.get_username()
+        if username is None:
+            print("New user flow")
+        # Here you would typically show a login dialog or redirect to a login screen
+        # and handle the authentication process.
+

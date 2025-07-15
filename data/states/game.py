@@ -10,13 +10,29 @@ import data.constants as c  # Import constants
 
 
 class Game(States):
+
+    class Score:
+        def __init__(self, score=0, kills=0, time_alive=0):
+            self.score = score
+            self.kills = kills
+            self.time_alive = time_alive
+
+        def add_score(self, points):
+            self.score += points
+
+        def add_kill(self, kill_value):
+            self.kills += 1
+            self.add_score(kill_value)
+
+        def get_score(self):
+            return self.score
+        
     def __init__(self):
         States.__init__(self)
         self.next = "menu"
         self.map_spawn_counter = 0
         self.unit_size = c.SCREEN_WIDTH / c.GRID_UNITS_X
         self.enemies = pg.sprite.Group()
-        self.score = 0
         self.font = pygame.font.Font(None, 36)
         self.stacked_dt = 0  # for debugging
 
@@ -69,6 +85,9 @@ class Game(States):
         self.map_update_timer = 0
         self.time_slow_multiplier = 1
         self.time_slow_timer = 0
+
+        # Score
+        self.score = self.Score()
 
     def get_event(self, events):
         return
@@ -138,7 +157,7 @@ class Game(States):
                 self.done = True
         elif not any_in_progress_dying:
             # Only update score if no one is mid-death FIX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            self.score += 1
+            self.score.add_score(10 * dt)
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
