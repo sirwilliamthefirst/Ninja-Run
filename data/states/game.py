@@ -10,22 +10,6 @@ import data.constants as c  # Import constants
 
 
 class Game(States):
-
-    class Score:
-        def __init__(self, score=0, kills=0, time_alive=0):
-            self.score = score
-            self.kills = kills
-            self.time_alive = time_alive
-
-        def add_score(self, points):
-            self.score += points
-
-        def add_kill(self, kill_value):
-            self.kills += 1
-            self.add_score(kill_value)
-
-        def get_score(self):
-            return self.score
         
     def __init__(self):
         States.__init__(self)
@@ -42,8 +26,15 @@ class Game(States):
         States.players.empty()
         self.enemies.empty()
         self.map_spawn_counter = 0
-        self.score = 0
-
+        if States.leaderboard.current_user is not None and States.leaderboard.username is not None:
+            States.leaderboard.submit_score(
+                States.leaderboard.username,
+                self.score.get_score(),
+                self.score.get_kills(),
+                int(self.stacked_dt),
+                States.leaderboard.profile_id
+            )
+        self.score = None
     def startup(self):
         print("starting Game state")
         # look for joysticks
@@ -87,7 +78,7 @@ class Game(States):
         self.time_slow_timer = 0
 
         # Score
-        self.score = self.Score()
+        self.score = Score()
 
     def get_event(self, events):
         return
@@ -100,7 +91,7 @@ class Game(States):
         else:
             self.time_slow_multiplier = 1
             self.time_slow_timer = 0
-        score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255))
+        score_text = self.font.render(f"Score: {self.score.get_score()}", True, (255, 255, 255))
         screen.blit(score_text, (10, 10))
         self.stacked_dt += dt
 
@@ -113,11 +104,11 @@ class Game(States):
         self.map_spawn_counter += -c.PLATFORM_SPEED * dt_scaled
 
         for player in States.players:
-            print(f"dy before collision: {player.get_dy()} player bottom: {player.rect.bottom}")
+            #print(f"dy before collision: {player.get_dy()} player bottom: {player.rect.bottom}")
             tools.collisionHandler.handle_verticle_collision(
                 player, self.stage.get_map()
             )
-            print(f"dy after collision: {player.get_dy()} player bottom: {player.rect.bottom}")
+            #print(f"dy after collision: {player.get_dy()} player bottom: {player.rect.bottom}")
 
             for enemy in self.enemies:
                 if tools.collisionHandler.check_collision(player, enemy):
@@ -126,7 +117,7 @@ class Game(States):
                         enemy.die()
                         # self.time_slow_multiplier = 0.5
                         enemy_value = enemy.get_worth()
-                        self.score += enemy_value
+                        self.score.add_score(enemy_value)
                         self.floating_texts.append(
                             FloatingText(f"+{enemy_value}", enemy.get_rect().center)
                         )
@@ -157,7 +148,7 @@ class Game(States):
                 self.done = True
         elif not any_in_progress_dying:
             # Only update score if no one is mid-death FIX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            self.score.add_score(10 * dt)
+            self.score.add_score(100 * dt)
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
@@ -221,22 +212,21 @@ class FloatingText:
     def is_dead(self):
         return self.alpha == 0
 
-class Score():
-    def __init__(self, score=0, kills=0, time_alive=0):
-        self.score = score
-        self.kills = kills
-        self.time_alive = time_alive
-        self.killscore
+class Score:
+        def __init__(self, score=0, kills=0, time_alive=0):
+            self.score = score
+            self.kills = kills
+            self.time_alive = time_alive
 
-    def add_score(self, points):
-        self.score += points
+        def add_score(self, points):
+            self.score += points
 
-    def add_kill(self, kill_value):
-        self.killscore += kill_value
-        self.kills += 1
-        self.add_score(kill_value)
+        def add_kill(self, kill_value):
+            self.kills += 1
+            self.add_score(kill_value)
 
-    def get_score(self):
-        return self.score
+        def get_score(self):
+            return int(self.score)
     
-    
+        def get_kills(self):
+            return self.kills

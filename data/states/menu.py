@@ -194,7 +194,7 @@ class Leaderboard(States):
                 leaderboard_data.data, key=lambda x: x["score"], reverse=True
             )[:5]:
                 self.leaderboard_table.add_row(
-                    [item["name"], item["score"]], cell_padding=[20, 20, 5, 5]
+                    [item["profiles"]["username"], item["score"]], cell_padding=[20, 20, 5, 5]
                 )
 
         self.menu.add.button("Back", lambda: self.move_state("menu"))

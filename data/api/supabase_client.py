@@ -1,6 +1,6 @@
 
 
-import datetime
+from datetime import datetime, timezone
 import os
 import threading
 import time
@@ -19,6 +19,8 @@ class LeaderboardClient:
     supabase: Client = None 
     current_user = None
     refresh_token = None
+    username = None
+    profile_id = None
     class CallbackHandler(BaseHTTPRequestHandler):
         def do_GET(self):
             # Handle the OAuth callback here
@@ -93,29 +95,37 @@ class LeaderboardClient:
         Fetch the username of the currently authenticated user.
         :return: The username or None if not authenticated.
         """
-        if self.current_user is None:
+        if self.current_user is None or self.username is None:
             self.current_user = self.supabase.auth.get_user() 
         try:
-            username = self.supabase.table("profiles").select("username").eq("id", self.current_user.user.id).execute()
+            response = self.supabase.table("profiles").select("username", "profile_id").eq("id", self.current_user.user.id).execute()
+            self.username = response.data[0]['username'] if response.data else None
+            self.profile_id = response.data[0]['profile_id'] if response.data else None
         except requests.RequestException as e:
             print(f"Error fetching username: {e}")
             return None
-        return username
+        return self.username
     def get_scores(self):
         """
-        Fetch the leaderboard data from the API.
+        Fetch the leaderboard data from the API, joining with profiles to get the username.
         :return: A dictionary containing the leaderboard data or an error message.
         """
         try:
-            response = self.supabase.table("score").select("*").order("score", desc=True).execute()
-            #response = requests.get(f"{self.base_url}/highscores")
-            #response.raise_for_status()
+            # Join the "score" table with the "profiles" table to get the username for each score entry
+            response = (
+                self.supabase.table("score")
+                .select("score, kills, time_alive, profile_id, profiles(username)")
+                .order("score", desc=True)
+                .execute()
+            )
+            # The returned data will have a "profiles" field with the username for each score
+            # Optionally, you can flatten the data here if needed
             return response
         except requests.RequestException as e:
             return {"error": str(e)}
 
     def submit_score(
-        self, name: str, score: float, kills: int, time_alive: int, user_id: str = None 
+        self, name: str, score: float, kills: int, time_alive: int, profile_id: str = None 
     ):
         """
         Submit a player's score to the API.
@@ -123,21 +133,24 @@ class LeaderboardClient:
         :param score: The score of the player.
         :return: A dictionary containing the API response or an error message.
         """
-        if user_id is None:
+        if profile_id is None:
             return {"error": "User ID is required for score submission."}
         try:
             data = {
-                "name": name,
                 "score": score,
                 "kills": kills,
                 "time_alive": time_alive,
-                "user_id": self.supabase.auth.get_user().id,
-                "date": datetime.utcnow().isoformat(),  # or datetime.now().isoformat() if local time
+                "profile_id": profile_id,
+                #"date": datetime.now(timezone.utc).isoformat()  # or datetime.now().isoformat() if local time
             }
             response = self.supabase.table("score").insert(data).execute()
             #response = requests.post(f"{self.base_url}/submit", json=data)
             #response.raise_for_status()
-            return response
+            return {
+            "success": True,
+            "data": response.data,
+            "count": response.count
+            } 
         except requests.RequestException as e:
             return {"error": str(e)}
 
