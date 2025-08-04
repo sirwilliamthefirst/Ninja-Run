@@ -105,6 +105,18 @@ class LeaderboardClient:
             print(f"Error fetching username: {e}")
             return None
         return self.username
+
+    def get_user_id(self):
+        """
+        Fetch the id of the currently authenticated user.
+        :return: The id or None if not authenticated.
+        """
+        if self.current_user is None:
+            self.current_user = self.supabase.auth.get_user() 
+        return self.current_user.user.id
+
+
+
     def get_scores(self):
         """
         Fetch the leaderboard data from the API, joining with profiles to get the username.
@@ -164,10 +176,17 @@ class LeaderboardClient:
             response = requests.get(
                 f"{self.base_url}/rank", params={"player_name": player_name}
             )
-            response.raise_for_status()
-            return response.json()
+            return response
         except requests.RequestException as e:
             return {"error": str(e)}
 
-
+    def set_username(self, username: str, id: str = None):  
+        try:
+            if id is None:
+                id = self.current_user.user.id
+            response = self.supabase.table("profiles").upsert({"id": id , "username": username}).execute()
+            return response
+        except requests.RequestException as e:
+            return {"error": str(e)}
+        
 # APIClient = LeaderboardClient("https://your-production-server.com/")  # Production server URL

@@ -33,7 +33,10 @@ class Menu(States):
         self.in_use_colors = set()
 
     def get_event(self, events):
-        self.menu.update(events)
+        if States.new_user_menu is not None and States.new_user_menu.is_enabled():
+            States.new_user_menu.update(events)
+        else:
+            self.menu.update(events)
         for event in events:
             if event.type == pg.QUIT:
                 self.quit = True
@@ -50,7 +53,7 @@ class Menu(States):
             if event.type == pg.KEYDOWN:
                 if (
                     not States.player_set.__contains__("Keyboard")
-                    and event.key == pg.K_RETURN
+                    and event.key == pg.K_SPACE
                 ):
                     self.add_player()
                     if len(States.players) > 0:
@@ -72,7 +75,11 @@ class Menu(States):
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
-        self.menu.draw(screen)
+        #self.menu.draw(screen)
+        if States.new_user_menu is not None and States.new_user_menu.is_enabled():
+            States.new_user_menu.draw(screen)
+        else:
+            self.menu.draw(screen)
         States.players.draw(screen)
         if States.user:
             x, y = c.USERNAME_MENU_POS

@@ -31,7 +31,7 @@ pg.display.set_caption("Ninja Run")
 app.setup_states(state_dict, "menu")
 
 # setup any pygame_menu stuff
-pygame_menu.controls.KEY_APPLY = pg.K_a
+pygame_menu.controls.KEY_APPLY = pg.K_RETURN
 
 app.main_game_loop()
 pg.quit()
