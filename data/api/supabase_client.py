@@ -18,6 +18,7 @@ key: str = os.environ.get("SUPABASE_KEY")
 class LeaderboardClient:
     supabase: Client = None 
     current_user = None
+    user_highscore = None
     refresh_token = None
     username = None
     profile_id = None
@@ -145,7 +146,7 @@ class LeaderboardClient:
         :param score: The score of the player.
         :return: A dictionary containing the API response or an error message.
         """
-        if profile_id is None:
+        if profile_id is None or self.current_user is None:
             return {"error": "User ID is required for score submission."}
         try:
             data = {
@@ -155,14 +156,22 @@ class LeaderboardClient:
                 "profile_id": profile_id,
                 #"date": datetime.now(timezone.utc).isoformat()  # or datetime.now().isoformat() if local time
             }
-            response = self.supabase.table("score").insert(data).execute()
+            if self.user_highscore is None:
+                response = self.supabase.table("score").select("score").eq("profile_id", profile_id).execute()
+                self.user_highscore = response.data[0]["score"] if response.data else None 
+            if self.user_highscore is None or self.user_highscore < score:
+                response = self.supabase.table("score").upsert(data, on_conflict="profile_id").execute()
+                self.user_highscore = score
+                return {
+                "success": True,
+                "data": response.data,
+                "count": response.count
+                } 
+            else:
+                return None
             #response = requests.post(f"{self.base_url}/submit", json=data)
             #response.raise_for_status()
-            return {
-            "success": True,
-            "data": response.data,
-            "count": response.count
-            } 
+            
         except requests.RequestException as e:
             return {"error": str(e)}
 
