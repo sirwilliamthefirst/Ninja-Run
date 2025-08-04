@@ -1,7 +1,8 @@
-numpy==2.2.6
-#psycopg2-binary==2.9.10
-#psycopg2==2.9.10
+numpy==2.3.2
 pygame==2.6.1
-pygame_menu==4.5.2
-requests==2.32.3
-scipy==1.15.3
+pygame_menu==4.4.8
+Requests==2.32.4
+scipy==1.16.1
+supabase==2.17.0
+
+#Update using pipreqs --encoding=utf8 --savepath requirements2.txt  
