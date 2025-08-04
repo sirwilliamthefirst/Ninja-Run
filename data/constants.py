@@ -9,6 +9,7 @@ import pygame
 
 DEBUG = False
 
+
 # Setup Display 4/3 Aspect
 SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH", 800))
 SCREEN_HEIGHT = int(os.getenv("SCREEN_HEIGHT", 600))
@@ -206,3 +207,5 @@ DEFAULT_JOY_MAP = {
     Actions.ATTACK: pygame.CONTROLLER_BUTTON_X,
     Actions.SKILL: pygame.CONTROLLER_BUTTON_LEFTSHOULDER,
 }
+
+USERNAME_MENU_POS = SCREEN_POSITIONS["Top"][7]  # Position for username display in menu

@@ -1,11 +1,9 @@
 import pygame as pg
 from data.player.player import Player
-from ..map import *
+from ..mapBuilder import *
 from pygame.locals import *
 from .states import Game_States, States
 import pygame_menu
-from data.api.client import APIClient
-
 
 class Menu(States):
 
@@ -35,7 +33,10 @@ class Menu(States):
         self.in_use_colors = set()
 
     def get_event(self, events):
-        self.menu.update(events)
+        if States.new_user_menu is not None and States.new_user_menu.is_enabled():
+            States.new_user_menu.update(events)
+        else:
+            self.menu.update(events)
         for event in events:
             if event.type == pg.QUIT:
                 self.quit = True
@@ -52,7 +53,7 @@ class Menu(States):
             if event.type == pg.KEYDOWN:
                 if (
                     not States.player_set.__contains__("Keyboard")
-                    and event.key == pg.K_RETURN
+                    and event.key == pg.K_SPACE
                 ):
                     self.add_player()
                     if len(States.players) > 0:
@@ -74,8 +75,22 @@ class Menu(States):
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
-        self.menu.draw(screen)
+        #self.menu.draw(screen)
+        if States.new_user_menu is not None and States.new_user_menu.is_enabled():
+            States.new_user_menu.draw(screen)
+        else:
+            self.menu.draw(screen)
         States.players.draw(screen)
+        if States.user:
+            x, y = c.USERNAME_MENU_POS
+            screen.blit(
+                c.FONT.render(
+                    f"Username: {States.username}",
+                    True,
+                    (255, 255, 255),
+                ),
+                (x , y ),
+            )
         for label, text in self.text_dict.items():
             x, y = getattr(c, f"{label}_MENU_POS")
             screen.blit(text, (x * 0.8, y * 1.1))
@@ -147,6 +162,8 @@ class Menu(States):
         menu.add.button(
             "Leaderboard", lambda: self.move_state("leaderboard")
         )  # placeholder
+        if(States.user is None):
+            menu.add.button("Login", States.login)
         menu.add.button("Settings")  # placeholder
         menu.add.button("Quit", pygame_menu.events.EXIT)
 
@@ -172,7 +189,7 @@ class Leaderboard(States):
         )
 
         # NOTE Get entries
-        leaderboard_data = APIClient.get_scores()
+        leaderboard_data = States.leaderboard.get_scores()
         if "error" in leaderboard_data:
             self.menu.add.label("Error fetching leaderboard data")
         else:
@@ -181,10 +198,10 @@ class Leaderboard(States):
                 ["Name", "Score"], cell_padding=[20, 20, 5, 5]
             )
             for item in sorted(
-                leaderboard_data, key=lambda x: x["score"], reverse=True
+                leaderboard_data.data, key=lambda x: x["score"], reverse=True
             )[:5]:
                 self.leaderboard_table.add_row(
-                    [item["name"], item["score"]], cell_padding=[20, 20, 5, 5]
+                    [item["profiles"]["username"], item["score"]], cell_padding=[20, 20, 5, 5]
                 )
 
         self.menu.add.button("Back", lambda: self.move_state("menu"))
