@@ -91,6 +91,15 @@ class LeaderboardClient:
             auth_complete.clear()
             return False
 
+    def sign_out(self):
+        self.supabase.auth.sign_out()
+        self.current_user = None
+        self.username = None
+        self.profile_id = None
+        self.user_highscore = None
+        self.refresh_token = None
+        
+
     def get_username(self):
         """
         Fetch the username of the currently authenticated user.

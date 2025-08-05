@@ -165,10 +165,19 @@ class Menu(States):
             "Leaderboard", lambda: self.move_state("leaderboard")
         )  # placeholder
         if(States.username is None):
-            menu.add.button("Login", States.login)
+            menu.add.button("Login", lambda:self.loginFlow(menu))
+        else:
+            menu.add.button("Logout", lambda: self.logoutFlow(menu))
         menu.add.button("Settings")  # placeholder
         menu.add.button("Quit", pygame_menu.events.EXIT)
 
+    def loginFlow(self, menu):
+        States.login()
+        self.make_menu_buttons(menu)
+
+    def logoutFlow(self, menu):
+        States.logout()
+        self.make_menu_buttons(menu)
 
 class Leaderboard(States):
     def __init__(self):

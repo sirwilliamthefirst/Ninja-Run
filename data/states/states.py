@@ -82,3 +82,7 @@ class States(object):
         else:
             print("Login failed!")
         
+    @staticmethod
+    def logout():
+        States.leaderboard.sign_out()
+        States.username = None
