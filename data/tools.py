@@ -81,3 +81,9 @@ class sprite_loader:
                 image = pg.transform.scale(image, (width, height))
             sprites_sequence.append(image)
         return sprites_sequence
+
+
+def drawTextRightJustified(text, font, text_col, x, y, screen):
+    img = font.render(text, True, text_col)
+    rect = img.get_rect(topright = (x, y))
+    screen.blit(img, rect)

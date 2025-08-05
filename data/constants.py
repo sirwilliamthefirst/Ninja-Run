@@ -208,4 +208,4 @@ DEFAULT_JOY_MAP = {
     Actions.SKILL: pygame.CONTROLLER_BUTTON_LEFTSHOULDER,
 }
 
-USERNAME_MENU_POS = SCREEN_POSITIONS["Top"][7]  # Position for username display in menu
+USERNAME_MENU_POS = SCREEN_POSITIONS["Top"][8]  # Position for username display in menu

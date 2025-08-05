@@ -16,7 +16,7 @@ class States(object):
     joysticks = None
     pvp_flag = False
     leaderboard = LeaderboardClient()
-    user = None
+    username = None
     new_user_menu = None
     new_user_flow_active = False
 
@@ -45,8 +45,8 @@ class States(object):
     @staticmethod
     def login():
         if States.leaderboard.sign_in_with_oauth():
-            username = States.leaderboard.get_username()
-            if username is None:
+            States.username = States.leaderboard.get_username()
+            if States.username is None:
                 print("New user flow")
                 # Pop up a menu to ask for profile name
                 def set_profile_name(value, id):
@@ -82,3 +82,7 @@ class States(object):
         else:
             print("Login failed!")
         
+    @staticmethod
+    def logout():
+        States.leaderboard.sign_out()
+        States.username = None
