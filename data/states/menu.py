@@ -4,6 +4,7 @@ from ..mapBuilder import *
 from pygame.locals import *
 from .states import Game_States, States
 import pygame_menu
+import data.tools as tools
 
 class Menu(States):
 
@@ -13,6 +14,7 @@ class Menu(States):
         self.menu = None
         self.visible_switch = 50
         self.visible_counter = 0
+        self.font = pygame.font.Font(None, 36)
         self.text_dict = {}
 
     def cleanup(self):
@@ -81,15 +83,15 @@ class Menu(States):
         else:
             self.menu.draw(screen)
         States.players.draw(screen)
-        if States.user:
+        if States.username:
             x, y = c.USERNAME_MENU_POS
-            screen.blit(
-                c.FONT.render(
-                    f"Username: {States.username}",
-                    True,
-                    (255, 255, 255),
-                ),
-                (x , y ),
+            tools.drawTextRightJustified(
+                f"Welcome back, {States.username}!",
+                self.font,
+                (255, 255, 255),
+                x,
+                y,
+                screen
             )
         for label, text in self.text_dict.items():
             x, y = getattr(c, f"{label}_MENU_POS")
@@ -162,11 +164,20 @@ class Menu(States):
         menu.add.button(
             "Leaderboard", lambda: self.move_state("leaderboard")
         )  # placeholder
-        if(States.user is None):
-            menu.add.button("Login", States.login)
+        if(States.username is None):
+            menu.add.button("Login", lambda:self.loginFlow(menu))
+        else:
+            menu.add.button("Logout", lambda: self.logoutFlow(menu))
         menu.add.button("Settings")  # placeholder
         menu.add.button("Quit", pygame_menu.events.EXIT)
 
+    def loginFlow(self, menu):
+        States.login()
+        self.make_menu_buttons(menu)
+
+    def logoutFlow(self, menu):
+        States.logout()
+        self.make_menu_buttons(menu)
 
 class Leaderboard(States):
     def __init__(self):
