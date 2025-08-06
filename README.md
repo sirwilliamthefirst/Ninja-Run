@@ -1,22 +1,13 @@
 # Ninja Run
 You are a ninja jumping through the trees! Do you best to not fall, and dodge (or kill 😈) your enemies! See how long you can survive for!
 
-# Version 2.0: Whats new
--PVP mode + Co-op mode (appear once conditions met)
+# Version 2.1: 
+## Whats new
+- Added Google Login
+- Added Leaderboard for Highscores
 
--Player death animiation + time after death to check score
-
--Starting platforms
-
--Samurai Enemy
-
--Attack button for player
-
--Adjusted backwards movement to be more responsive
-
--New logic for double jump momentum calculation
-
--Score addition text on enemy kill
+## Changes
+- 
 
 # Controls:
 ## Keyboard
@@ -25,6 +16,10 @@ Move: Arrow Keys
 Attack: A
 
 Jump: Space
+
+Menu Select: Enter
+
+Menu Join: Space
 
 ## Xbox Controller
 Move: Left joystick
