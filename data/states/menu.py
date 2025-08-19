@@ -15,7 +15,9 @@ class Menu(States):
         self.visible_switch = 50
         self.visible_counter = 0
         self.font = pygame.font.Font(None, 36)
+        self.instruction_font = pygame.font.Font(None, 24)
         self.text_dict = {}
+        self.controller_flag = False #False for keyboard, True for controller
 
     def cleanup(self):
         print("cleaning up Main Menu state stuff")
@@ -43,6 +45,7 @@ class Menu(States):
             if event.type == pg.QUIT:
                 self.quit = True
             if event.type == pg.CONTROLLERBUTTONDOWN:
+                self.controller_flag = True
                 if (
                     event.button == pg.CONTROLLER_BUTTON_START
                     and not States.player_set.__contains__(event.instance_id)
@@ -51,8 +54,10 @@ class Menu(States):
                     if len(States.players) > 0:
                         self.make_menu_buttons(self.menu)
                         self.menu.force_surface_update()
-
+            if event.type == pg.CONTROLLERAXISMOTION:
+                self.controller_flag = True
             if event.type == pg.KEYDOWN:
+                self.controller_flag = False
                 if (
                     not States.player_set.__contains__("Keyboard")
                     and event.key == pg.K_SPACE
@@ -93,6 +98,14 @@ class Menu(States):
                 y,
                 screen
             )
+        instruction_text = c.INSTRUCTIONS_TEXT["controller"] if self.controller_flag else c.INSTRUCTIONS_TEXT["keyboard"]
+        newline_offset = 0
+        for text in instruction_text:
+            x, y = c.INSTRUCTION_MENU_POS
+            y += newline_offset
+            render_text = self.instruction_font.render(text, True, (255, 255, 255))
+            screen.blit(render_text, (x, y))
+            newline_offset += self.font.get_ascent()
         for label, text in self.text_dict.items():
             x, y = getattr(c, f"{label}_MENU_POS")
             screen.blit(text, (x * 0.8, y * 1.1))

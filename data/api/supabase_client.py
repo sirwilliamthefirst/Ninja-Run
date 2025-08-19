@@ -12,8 +12,8 @@ from urllib.parse import urlparse, parse_qs
 
 auth_complete = threading.Event()
 oauth_result = {}
-url: str = os.environ.get("SUPABASE_URL")
-key: str = os.environ.get("SUPABASE_KEY")
+url: str = "https://cjlilefuckqorxsrvynr.supabase.co"
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqbGlsZWZ1Y2txb3J4c3J2eW5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMTIyOTUsImV4cCI6MjA2NTY4ODI5NX0.4rxdDbv--ivsN4ZiEGDcOCS-dz6ZiwpQ9RnC7RKgkN4"
 
 class LeaderboardClient:
     supabase: Client = None 

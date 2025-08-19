@@ -7,18 +7,15 @@ import data.particles as particles
 from data.player.input_handler import Input_handler
 from data.tools import sprite_loader
 from pygame._sdl2 import controller
-
+import data.player.skills as skills
 RUN_SPRITE_FRAMES = 10
 JUMP_SPRITE_FRAMES = 10
 ATTACK_SPRITE_FRAMES = 10
 
 MAX_CHAKRA = 100
 STARTING_CHAKRA = 20
+CHAKRA_RECOVER_RATE = 10
 CHAKRA_REGEN_RATE = 0.5  # per second
-
-
-
-
 
 class Player(
     pygame.sprite.Sprite
@@ -60,6 +57,14 @@ class Player(
         self.done_dying = False
         self.particle_group = pygame.sprite.Group()
         self.chakra = STARTING_CHAKRA
+        self.chakra_recovery = CHAKRA_RECOVER_RATE
+        self.max_chakra = MAX_CHAKRA
+        # Initialize skills
+        self.skill = skills.Dash(self)  # Will be set by the game
+        self.skill_active = False
+        self.skill_cooldown = 0
+        self.move_locked = False
+        
 
     def draw(self, screen):
         if not self.dead:
@@ -69,7 +74,10 @@ class Player(
     def update(self, dt):
         if not self.dead:
             if self.freeze == False:
-                self.handle_move(dt)
+                intent_dict = self.input_handler.get_inputs()
+                self.handle_skill(dt, intent_dict)
+                self.handle_move(dt, intent_dict)
+                self.handle_attack(dt, intent_dict)
                 self.animate(dt)
                 if self.pos_y > c.DEADZONE_Y or self.pos_x < c.DEADZONE_X:
                     self.kill(c.DeathType.FALL)
@@ -91,6 +99,12 @@ class Player(
             self.current_sprite = 0
             self.image = self.sprites["attack"][0]
             self.attacking = True
+
+    def use_skill(self, dt: float):
+        """Use the player's skill if available"""
+        if self.skill:
+            return self.skill.use(dt)
+        return False
 
     def change_color(self, new_color: str):
         """Change player color"""
@@ -136,56 +150,71 @@ class Player(
             if self.y_vel < c.MAX_GRAVITY:
                 self.y_vel += c.GRAVITY * dt
 
-    def handle_move(self, dt):
-        if not self.is_airborn:
-            self.x_vel = 0
-            self.y_vel = 0
-
-        intent_dict = self.input_handler.get_inputs()
-        dx = intent_dict[c.Actions.MOVE_X]
-        dy = intent_dict[c.Actions.MOVE_Y]
-        Speed_addition = (
-            c.MAX_LEFT_SPEED if dx < 0 else c.MAX_RIGHT_SPEED if dx > 0 else 0
-        )
-        if self.is_airborn and not self.double_jumped_frame:
-            self.x_vel = numpy.clip(
-                self.x_vel + (c.AIRBORN_SHIFT * dx * dt),
-                -c.MAX_LEFT_SPEED * dt,
-                c.MAX_RIGHT_SPEED * dt,
-            )
-        else:
-            self.x_vel = numpy.clip(
-                self.x_vel + (Speed_addition * dx * dt),
-                -c.MAX_LEFT_SPEED * dt,
-                c.MAX_RIGHT_SPEED * dt,
-            )
-
-        if dy > 0:
-            if self.is_airborn:
-                self.y_vel += c.VERTICLE_SHIFT * abs(dy) * dt
-            if (
-                dy > c.FALL_THRU_TOLERENCE
-            ):  # some tolerance, so player must really press on joystick
-                self.fall_thru = True
-                self.is_airborn = True  # drop from platform
-        else:
-            self.fall_thru = False
-        self.double_jumped_frame = False
-        if intent_dict[c.Actions.ATTACK]:
+    def handle_attack(self, dt, intent_dict):
+        if intent_dict[c.Actions.ATTACK]: #and skill is not active or skill can be simulatanoues
             self.attack(dt)
-        if intent_dict[c.Actions.JUMP_PRESS]:
-            self.jump_press(dt)
-        if intent_dict[c.Actions.JUMP_HOLD]:
-            self.jump_hold(dt)
-        # if intent_dict[c.Actions.ABILITY_1]: self.abilty_1(self.ability,dt)
-        if (
-            not intent_dict[c.Actions.JUMP_HOLD]
-            and not intent_dict[c.Actions.JUMP_PRESS]
-            and self.y_vel < 0
-        ):
-            self.is_jumping = False
-            self.y_vel *= c.JUMP_CUT_MULT  # * dt
-        self.handle_gravity(dt)
+        #if intent_dict[c.Actions.SKILL]:
+         #   if self.skill._get_type() == "movement":
+          #      self.skill(dt)
+    def handle_skill(self,dt,intent_dict):
+        if self.skill and self.skill.can_use(self.chakra) and self.skill.can_use and intent_dict[c.Actions.SKILL]:
+            self.use_skill(dt) #contains an update technically
+        else:
+            self.skill.update(dt)
+        if (self.chakra < self.max_chakra):
+            recoveredChakra = self.chakra + (self.chakra_recovery * dt)
+            self.chakra = recoveredChakra if recoveredChakra < self.max_chakra else self.max_chakra
+        #print(f'chakra is {self.chakra}')
+    def handle_move(self, dt, intent_dict):
+        if not self.move_locked:
+            if not self.is_airborn:
+                self.x_vel = 0
+                self.y_vel = 0
+
+            dx = intent_dict[c.Actions.MOVE_X]
+            dy = intent_dict[c.Actions.MOVE_Y]
+            Speed_addition = (
+                c.MAX_LEFT_SPEED if dx < 0 else c.MAX_RIGHT_SPEED if dx > 0 else 0
+            )
+            if self.is_airborn and not self.double_jumped_frame:
+                self.x_vel = numpy.clip(
+                    self.x_vel + (c.AIRBORN_SHIFT * dx * dt),
+                    -c.MAX_LEFT_SPEED * dt,
+                    c.MAX_RIGHT_SPEED * dt,
+                )
+            else:
+                self.x_vel = numpy.clip(
+                    self.x_vel + (Speed_addition * dx * dt),
+                    -c.MAX_LEFT_SPEED * dt,
+                    c.MAX_RIGHT_SPEED * dt,
+                )
+
+            if dy > 0:
+                if self.is_airborn:
+                    self.y_vel += c.VERTICLE_SHIFT * abs(dy) * dt
+                if (
+                    dy > c.FALL_THRU_TOLERENCE
+                ):  # some tolerance, so player must really press on joystick
+                    self.fall_thru = True
+                    self.is_airborn = True  # drop from platform
+            else:
+                self.fall_thru = False
+            self.double_jumped_frame = False
+            if intent_dict[c.Actions.JUMP_PRESS]:
+                self.jump_press(dt)
+            if intent_dict[c.Actions.JUMP_HOLD]:
+                self.jump_hold(dt)
+            if intent_dict[c.Actions.SKILL] and self.skill.skill_type == "movement":
+                self.skill.use(self.chakra) #try to use the skill 
+            if (
+                not intent_dict[c.Actions.JUMP_HOLD]
+                and not intent_dict[c.Actions.JUMP_PRESS]
+                and self.y_vel < 0
+            ):
+                self.is_jumping = False
+                self.y_vel *= c.JUMP_CUT_MULT  # * dt
+            self.handle_gravity(dt)
+
         self.pos_x += self.x_vel
         self.pos_y += self.y_vel
         self.rect.bottom = self.pos_y
@@ -338,26 +367,6 @@ class Player(
 
     def get_controller_id(self):
         return self.joystick.get_guid() if self.joystick else None
-
-
-class ISkill:
-    def use(self, target=None):
-        pass
-
-
-class Ninja_Time(ISkill):
-    def __init__(self, player):
-        self.player = player
-        self.cooldown = 0
-        self.active = False
-        self.duration = 5
-        self.start_time = 0
-
-    def use(self, target=None):
-        if self.cooldown <= 0:
-            self.active = True
-            self.start_time = pygame.time.get_ticks()
-            self.cooldown = 10  # Set cooldown time in seconds
 
 
 class GlobalSpriteManager:

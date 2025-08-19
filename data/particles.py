@@ -116,3 +116,69 @@ class FloatingParticle(Particle):
         speed: int,
     ):
         super().__init__(groups, pos, color, direction, speed)
+
+
+class KunaiProjectile(Particle):
+    """A kunai projectile that can be thrown by the player"""
+
+    def __init__(self, x: float, y: float, vx: float, vy: float):
+        # Create a simple kunai projectile using the particle system
+        pos = [x, y]
+        direction = pygame.math.Vector2(vx, vy).normalize()
+        speed = (vx ** 2 + vy ** 2) ** 0.5
+
+        # Create a temporary group for the kunai
+        temp_group = pygame.sprite.Group()
+        super().__init__(temp_group, pos, "silver", direction, speed)
+
+        # Kunai-specific properties
+        self.size = 8
+        self.alpha = 255
+        self.fade_speed = 0  # Don't fade
+        self.lifetime = 3.0  # 3 seconds
+        self.age = 0.0
+
+        # Create kunai-shaped surface
+        self.create_kunai_surf()
+
+    def create_kunai_surf(self):
+        """Create a kunai-shaped surface"""
+        self.image = pygame.Surface((self.size * 2, self.size * 3)).convert_alpha()
+        self.image.set_colorkey("black")
+
+        # Draw kunai shape (simple triangle with handle)
+        points = [
+            (self.size, 0),  # Tip
+            (0, self.size * 2),  # Left edge
+            (self.size * 2, self.size * 2),  # Right edge
+        ]
+        pygame.draw.polygon(self.image, "silver", points)
+
+        # Draw handle
+        handle_rect = pygame.Rect(self.size - 2, self.size * 2, 4, self.size)
+        pygame.draw.rect(self.image, "brown", handle_rect)
+
+        self.rect = self.image.get_rect(center=self.pos)
+
+    def update(self, dt):
+        """Update kunai position and age"""
+        self.age += dt
+        if self.age >= self.lifetime:
+            self.kill()
+            return
+
+        # Move kunai
+        self.move(dt)
+
+        # Check if off screen
+        self.check_pos()
+
+    def check_pos(self):
+        """Check if kunai is off screen"""
+        if (
+            self.pos[0] < -50
+            or self.pos[0] > SCREEN_WIDTH + 50
+            or self.pos[1] < -50
+            or self.pos[1] > SCREEN_HEIGHT + 50
+        ):
+            self.kill()
