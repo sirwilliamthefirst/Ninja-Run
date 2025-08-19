@@ -1,10 +1,13 @@
 # Ninja Run
 You are a ninja jumping through the trees! Do you best to not fall, and dodge (or kill 😈) your enemies! See how long you can survive for!
 
-# Version 2.1: 
+# Version 2.1.1: 
 ## Whats new
 - Added Google Login
 - Added Leaderboard for Highscores
+### Minor fixes
+- Fixed leaderboard access
+- Added instructions to main menu
 
 ## Changes
 - 
