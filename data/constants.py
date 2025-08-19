@@ -105,6 +105,43 @@ PVP_FONT_PATH = os.path.join(
     ASSETS_PATH, "fonts", "bloodsoul", "Bloodsoul PERSONAL USE ONLY!.ttf"
 )
 
+MAX_PLAYERS = 2
+
+
+class DeathType(Enum):
+    FALL = "fall"
+    ENEMY = "enemy"
+
+
+class Actions(Enum):
+    MOVE_X = "x_axis"
+    MOVE_Y = "y_axis"
+    JUMP_PRESS = "jump_press"
+    JUMP_HOLD = "jump_hold"
+    SKILL = "skill"
+    ATTACK = "attack"
+
+
+DEFAULT_KEY_MAP = {
+    Actions.JUMP_PRESS: pygame.K_SPACE,
+    Actions.MOVE_X: [pygame.K_LEFT, pygame.K_RIGHT],
+    Actions.MOVE_Y: [pygame.K_UP, pygame.K_DOWN],
+    Actions.ATTACK: pygame.K_a,
+    Actions.SKILL: pygame.K_s,
+}
+
+DEFAULT_JOY_MAP = {
+    Actions.JUMP_PRESS: pygame.CONTROLLER_BUTTON_A,
+    Actions.MOVE_X: pygame.CONTROLLER_AXIS_LEFTX,
+    Actions.MOVE_Y: pygame.CONTROLLER_AXIS_LEFTY,
+    Actions.ATTACK: pygame.CONTROLLER_BUTTON_X,
+    Actions.SKILL: pygame.CONTROLLER_BUTTON_RIGHTSHOULDER
+}
+
+INSTRUCTIONS_TEXT = {
+    "keyboard": ["Keyboard:", "Arrow keys: move", "Space: Jump", "A to attack", "S: skill"],
+    "controller": ["XBOX/PS:", "Left Stick: move","A/X: jump", "X to attack", "RB\R1: skill"]
+}
 
 # Screen positions, Divided into 4:3 Aspect (x, y) * (WIDTH, HEIGHT)
 SCREEN_COORDINATES = {
@@ -164,7 +201,7 @@ SCREEN_COORDINATES = {
         8: (1.0, 1.0),
     },
 }
-
+#get the actual screen positions by multiplying the coordinates by the screen width and height
 SCREEN_POSITIONS = {
     key: {
         inner_key: (x * SCREEN_WIDTH, y * SCREEN_HEIGHT)
@@ -173,39 +210,10 @@ SCREEN_POSITIONS = {
     for key, sub_dict in SCREEN_COORDINATES.items()
 }
 
+USERNAME_MENU_POS = SCREEN_POSITIONS["Top"][8]  # Position for username display in menu
+INSTRUCTION_MENU_POS = (SCREEN_POSITIONS["Top"][0][0], SCREEN_POSITIONS["Top"][0][1] + (60 * HEIGHT_SCALE))  # Position for instructions display in menu
 PLAYER1_MENU_POS = SCREEN_POSITIONS["Lower_Center"][1]
 PLAYER2_MENU_POS = SCREEN_POSITIONS["Lower_Center"][7]
-MAX_PLAYERS = 2
 
 
-class DeathType(Enum):
-    FALL = "fall"
-    ENEMY = "enemy"
 
-
-class Actions(Enum):
-    MOVE_X = "x_axis"
-    MOVE_Y = "y_axis"
-    JUMP_PRESS = "jump_press"
-    JUMP_HOLD = "jump_hold"
-    SKILL = "skill"
-    ATTACK = "attack"
-
-
-DEFAULT_KEY_MAP = {
-    Actions.JUMP_PRESS: pygame.K_SPACE,
-    Actions.MOVE_X: [pygame.K_LEFT, pygame.K_RIGHT],
-    Actions.MOVE_Y: [pygame.K_UP, pygame.K_DOWN],
-    Actions.ATTACK: pygame.K_a,
-    Actions.SKILL: pygame.K_s,
-}
-
-DEFAULT_JOY_MAP = {
-    Actions.JUMP_PRESS: pygame.CONTROLLER_BUTTON_A,
-    Actions.MOVE_X: pygame.CONTROLLER_AXIS_LEFTX,
-    Actions.MOVE_Y: pygame.CONTROLLER_AXIS_LEFTY,
-    Actions.ATTACK: pygame.CONTROLLER_BUTTON_X,
-    Actions.SKILL: pygame.CONTROLLER_BUTTON_LEFTSHOULDER,
-}
-
-USERNAME_MENU_POS = SCREEN_POSITIONS["Top"][8]  # Position for username display in menu
