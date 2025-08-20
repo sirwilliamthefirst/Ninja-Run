@@ -87,3 +87,32 @@ def drawTextRightJustified(text, font, text_col, x, y, screen):
     img = font.render(text, True, text_col)
     rect = img.get_rect(topright = (x, y))
     screen.blit(img, rect)
+
+
+class HealthBar():
+    def __init__(self, x, y, w, h, value, max_value = None, barC = "blue", backC = "red"):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.barC = barC
+        self.backC = backC
+        self.value = value
+        self.max_value = max_value if max_value else value
+
+    def draw(self, surface):
+        #calculate health ratio
+        ratio = self.value / self.max_value
+        pg.draw.rect(surface, self.backC, (self.x, self.y, self.w, self.h))
+        pg.draw.rect(surface, self.barC, (self.x, self.y, self.w * ratio, self.h))
+
+    def move(self, x,y):
+        self.x = x
+        self.y = y
+    
+    def transform(self, w, h):
+        self.w = w
+        self.h = h
+
+    def set_value(self, value):
+        self.value = value

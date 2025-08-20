@@ -61,7 +61,12 @@ class Particle(pygame.sprite.Sprite):
         self.check_pos()
         self.check_alpha()
 
+class HealthParticles(Particle):
+    def __init__(self, groups: pygame.sprite.Group, pos: list[int], color: str, direction: pygame.math.Vector2, speed: int):
+        super().__init__(groups, pos, color, direction, speed)
+        self.life
 
+        
 class ExplodingParticle(Particle):
     def __init__(
         self,

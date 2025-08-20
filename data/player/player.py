@@ -5,7 +5,7 @@ import os
 import data.constants as c  # Import constants
 import data.particles as particles
 from data.player.input_handler import Input_handler
-from data.tools import sprite_loader
+from data.tools import sprite_loader, HealthBar
 from pygame._sdl2 import controller
 import data.player.skills as skills
 RUN_SPRITE_FRAMES = 10
@@ -65,10 +65,15 @@ class Player(
         self.skill_cooldown = 0
         self.move_locked = False
         
+        self.chakra_bar = HealthBar(self.pos_x + c.CHAKRA_BAR_X_OFFSET, self.pos_y - c.CHAKRA_BAR_Y_OFFSET, c.CHAKRA_BAR_WIDTH, c.CHAKRA_BAR_HEIGHT, value=self.chakra, max_value=self.max_chakra)
+        
 
     def draw(self, screen):
         if not self.dead:
             screen.blit(self.image, self.rect)
+            if self.chakra < self.max_chakra:
+                self.chakra_bar.draw(screen)
+
 
     # Update sprite animation
     def update(self, dt):
@@ -164,6 +169,8 @@ class Player(
         if (self.chakra < self.max_chakra):
             recoveredChakra = self.chakra + (self.chakra_recovery * dt)
             self.chakra = recoveredChakra if recoveredChakra < self.max_chakra else self.max_chakra
+            self.chakra_bar.set_value(self.chakra)
+
         #print(f'chakra is {self.chakra}')
     def handle_move(self, dt, intent_dict):
         if not self.move_locked:
@@ -219,6 +226,7 @@ class Player(
         self.pos_y += self.y_vel
         self.rect.bottom = self.pos_y
         self.rect.x = self.pos_x
+        self.chakra_bar.move(self.pos_x + c.CHAKRA_BAR_X_OFFSET, self.pos_y - c.CHAKRA_BAR_Y_OFFSET)
 
     def move(self, x, y):
         self.pos_x = x

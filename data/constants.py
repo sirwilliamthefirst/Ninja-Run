@@ -69,6 +69,10 @@ BACKGROUND_SCROLL_SPEED = 3 * WIDTH_SCALE  # Sets speed at which background move
 # Appearance
 SPRITE_WIDTH = 50 * WIDTH_SCALE  # Adjust ratios if needed
 SPRITE_HEIGHT = 44 * HEIGHT_SCALE
+CHAKRA_BAR_WIDTH = 30 * WIDTH_SCALE 
+CHAKRA_BAR_HEIGHT = 3 * HEIGHT_SCALE
+CHAKRA_BAR_Y_OFFSET = SPRITE_HEIGHT
+CHAKRA_BAR_X_OFFSET = (SPRITE_WIDTH - CHAKRA_BAR_WIDTH)/2 + 5
 
 # Player Physics
 BASE_SPEED = 300 * WIDTH_SCALE
@@ -140,7 +144,7 @@ DEFAULT_JOY_MAP = {
 
 INSTRUCTIONS_TEXT = {
     "keyboard": ["Keyboard:", "Arrow keys: move", "Space: Jump", "A to attack", "S: skill"],
-    "controller": ["XBOX/PS:", "Left Stick: move","A/X: jump", "X to attack", "RB\R1: skill"]
+    "controller": ["XBOX/PS:", "Left Stick: move","A/X: jump", "X to attack", "RB/R1: skill"]
 }
 
 # Screen positions, Divided into 4:3 Aspect (x, y) * (WIDTH, HEIGHT)
