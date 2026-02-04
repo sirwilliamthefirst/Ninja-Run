@@ -25,9 +25,13 @@ class States(object):
         self.next = None
         self.quit = False
         self.previous = None
-        States.joysticks = [
-            controller.Controller(x) for x in range(controller.get_count())
-        ]
+        States.joysticks = []
+        
+        for x in range(controller.get_count()):
+            try:
+                States.joysticks.append(x)    
+            except Exception as e:
+                print(f"⚠ Controller subsystem unavailable: {e}")
 
     def move_state(self, next_state: str = None):
         if not next_state:

@@ -23,8 +23,12 @@ state_dict = {
 
 # I think this may be a bug with pygame but, joystick events are not tracked until they are placed in an object.. so we do that here
 for i in range(controller.get_count()):
-    new_control = controller.Controller(i)  # Access the first controller
-    print(f"Controller initialized: {new_control.name}")
+    try:
+        new_control = controller.Controller(i)  # Access the first controller
+        print(f"Controller initialized: {new_control.name}")
+    except Exception as e:
+        print(f"⚠ Controller subsystem unavailable: {e}")
+
 
 
 pg.display.set_caption("Ninja Run")
