@@ -50,7 +50,7 @@ jobs:
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: |
-          Invoke-WebRequest -Uri "{{ env.BUTLER_URL }}/windows-amd64/LATEST/archive/default" -OutFile "butler.zip" -MaximumRedirection 5 -AllowInsecureRedirect
+          Invoke-WebRequest -Uri "${{ env.BUTLER_URL }}/windows-amd64/LATEST/archive/default" -OutFile "butler.zip" -MaximumRedirection 5 -AllowInsecureRedirect
           Expand-Archive -Path .\butler.zip 
       - name: Push to Itch.io
         run: |
@@ -71,7 +71,7 @@ jobs:
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: |
-          curl -L -o butler.zip {{ env.BUTLER_URL }}/darwin-amd64/LATEST/archive/default
+          curl -L -o butler.zip ${{ env.BUTLER_URL }}/darwin-amd64/LATEST/archive/default
           unzip butler.zip
           chmod +x butler
           ./butler -V
@@ -94,7 +94,7 @@ jobs:
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: |
-          curl -L -o butler.zip {{ env.BUTLER_URL }}/linux-amd64/LATEST/archive/default
+          curl -L -o butler.zip ${{ env.BUTLER_URL }}/linux-amd64/LATEST/archive/default
           unzip butler.zip
           chmod +x butler
           ./butler -V
