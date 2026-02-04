@@ -1,5 +1,10 @@
 ---
 name: Publish pygame to itch.io
+env:
+  MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
+  BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+  BUTLER_URL: "https://broth.itch.zone/butler"
+
 on:
   workflow_dispatch:
     inputs:
@@ -33,9 +38,6 @@ jobs:
     if: contains(inputs.platforms, 'windows') || inputs.platforms == 'all'
     name: Build for Windows
     runs-on: windows-latest
-    env:
-      MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
-      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -48,7 +50,7 @@ jobs:
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: |
-          Invoke-WebRequest -Uri "https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default" -OutFile "butler.zip" -MaximumRedirection 5 -AllowInsecureRedirect
+          Invoke-WebRequest -Uri "{{ env.BUTLER_URL }}/windows-amd64/LATEST/archive/default" -OutFile "butler.zip" -MaximumRedirection 5 -AllowInsecureRedirect
           Expand-Archive -Path .\butler.zip 
       - name: Push to Itch.io
         run: |
@@ -56,9 +58,7 @@ jobs:
   Build-For-Mac:
     if: contains(inputs.platforms, 'macos') || inputs.platforms == 'all'
     runs-on: macos-latest
-    env:
-      MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
-      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -71,7 +71,7 @@ jobs:
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: |
-          curl -L -o butler.zip https://broth.itch.ovh/butler/darwin-amd64/LATEST/archive/default
+          curl -L -o butler.zip {{ env.BUTLER_URL }}/darwin-amd64/LATEST/archive/default
           unzip butler.zip
           chmod +x butler
           ./butler -V
@@ -81,9 +81,7 @@ jobs:
   Build-For-linux:
     if: contains(inputs.platforms, 'linux') || inputs.platforms == 'all'
     runs-on: ubuntu-latest
-    env:
-      MAIN_FILE: ${{ inputs.main_file || 'main.py' }}
-      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -96,7 +94,7 @@ jobs:
           pyinstaller --onefile --noconsole --add-data "assets:assets" ${{ env.MAIN_FILE }}
       - name: Install Butler
         run: |
-          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          curl -L -o butler.zip {{ env.BUTLER_URL }}/linux-amd64/LATEST/archive/default
           unzip butler.zip
           chmod +x butler
           ./butler -V
